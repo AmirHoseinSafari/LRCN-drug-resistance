@@ -1,4 +1,5 @@
 from keras import Sequential
+from keras.callbacks import ModelCheckpoint
 from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, TimeDistributed
 from keras.utils import to_categorical
 import numpy as np
@@ -90,10 +91,11 @@ def model_256_128_64_2BS(FrameSize, X, X_train, X_test, y_train, y_test, epoch):
         batch_size=128,
         verbose=2,
         shuffle=True,
-        validation_data=(X_test, y_test)
+        validation_data=(X_test, y_test),
+        callbacks=[ModelCheckpoint('result/One_256_128_64_2BS.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
     )
 
-    model.save_weights("result/One_256_128_64_2BS.h5")
+    # model.save_weights("result/One_256_128_64_2BS.h5")
 
     plot.plot(history, "One_256_128_64_2BS")
 
@@ -125,10 +127,12 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch):
         batch_size=128,
         shuffle=True,
         verbose=2,
-        validation_data=(X_test, y_test)
+        validation_data=(X_test, y_test),
+        callbacks=[ModelCheckpoint('result/One_256_128_64_2.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
+
     )
 
-    model.save_weights("result/One_256_128_64_2.h5")
+    # model.save_weights("result/One_256_128_64_2.h5")
 
     plot.plot(history, "One_256_128_64_2")
 

@@ -1,4 +1,5 @@
 from keras import Sequential
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -44,7 +45,7 @@ def block_gradient_loss_function(self):
     # return 0
 
 
-def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch):
+def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping):
     batch_size = 128
     if len(X_train) // 128 != len(X_train) / 128:
         tmp = X_train[0]
@@ -83,23 +84,25 @@ def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, 
 
     # for i in range(0, 20):
     history = model.fit(
-            X_train,
-            y_train,
-            epochs=epoch,
-            batch_size=batch_size,
-            shuffle=True,
-            verbose=2,
-            validation_data=(X_test, y_test)
+        X_train,
+        y_train,
+        epochs=epoch,
+        batch_size=batch_size,
+        shuffle=True,
+        verbose=2,
+        validation_data=(X_test, y_test),
+        callbacks=[earlyStopping,
+                   ModelCheckpoint('result/256_128_64_2_StateFul.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
     )
         # model.reset_states()
-    model.save_weights("result/256_128_64_2_StateFul.h5")
+    # model.save_weights("result/256_128_64_2_StateFul.h5")
 
     plot.plot(history, "256_128_64_2_StateFul")
 
     # ROC_PR.ROC(model, X_test, y_test, "256_128_64_2_StateFul", True)
 
 
-def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch):
+def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping):
     model = Sequential()
     model.add(LSTM(256, input_shape=(FrameSize, X[0].shape[1]), return_sequences=True, recurrent_dropout=0.3))
     model.add(SpatialDropout1D(0.2))
@@ -124,17 +127,19 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch):
         batch_size=128,
         shuffle=True,
         verbose=2,
-        validation_data=(X_test, y_test)
+        validation_data=(X_test, y_test),
+        callbacks=[earlyStopping,
+                   ModelCheckpoint('result/256_128_64_2.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
     )
 
-    model.save_weights("result/256_128_64_2.h5")
+    # model.save_weights("result/256_128_64_2.h5")
 
     plot.plot(history, "256_128_64_2")
     print("here we call the function after training:")
     ROC_PR.ROC(model, X_test, y_test, "256_128_64_2", True)
 
 
-def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch):
+def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping):
     print(X.shape)
     print(FrameSize)
     model = Sequential()
@@ -168,10 +173,12 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
         batch_size=128,
         shuffle=True,
         verbose=2,
-        validation_data=(X_test, y_test)
+        validation_data=(X_test, y_test),
+        callbacks=[earlyStopping,
+                   ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
     )
 
-    model.save_weights("result/CNN256_LSTM128_64_2.h5")
+    # model.save_weights("result/CNN256_LSTM128_64_2.h5")
 
     plot.plot(history, "CNN256_LSTM128_64_2")
 
@@ -207,9 +214,11 @@ def run_model(df_train, labels, epoch):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-    model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch)
-    model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch)
-    model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch)
+    earlyStopping = EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1, verbose=1, patience=15)
+
+    model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
+    model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
+    model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
 
 
 if __name__ == '__main__':
