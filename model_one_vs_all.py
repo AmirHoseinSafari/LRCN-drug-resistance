@@ -9,7 +9,31 @@ import ROC_PR
 import plot
 import data_preprocess
 
+import tensorflow as tf
 
+
+def weighted_binary_crossentropy_nan(y_true, y_pred):
+    # y_pred is the probability of belonging to positive class as model returns
+    # The below three lines remove None values
+    index = ~tf.is_nan(y_true)
+    y_true = tf.boolean_mask(y_true, index)
+    y_pred = tf.boolean_mask(y_pred, index)
+
+    bce = K.binary_crossentropy(y_true, y_pred)
+
+    bce = tf.where(tf.is_nan(bce), tf.zeros_like(bce), bce)
+    bce = K.mean(bce, axis=-1)
+    # the K.cast(K.greater(y_true, 0.), K.floatx()) makes the labels of positive class, where are positive class weights, equal to 1 to make the formula correct
+
+    #    #weighted_bce = - y_true * K.log(y_pred + 1e-6) - ((1.0 - K.cast(K.greater(y_true, 0.), K.floatx())) * K.log(1.0 - y_pred + 1e-6))
+    #    weighted_bce = - tf.constant(globalVars.weight_matrix, dtype= np.float32) * K.log(y_pred + 1e-6) - (tf.constant(globalVars.weight_matrix, dtype= np.float32) *(1.0 - y_true) * K.log(1.0 - y_pred + 1e-6))
+    #
+    #    # it replaces nan values with zero
+    #    weighted_bce = tf.where(tf.is_nan(weighted_bce), tf.zeros_like(weighted_bce), weighted_bce)
+    #    weighted_bce = K.mean(weighted_bce, axis=-1)
+    #    return K.in_train_phase(weighted_bce, bce)
+
+    return bce
 def masked_multi_weighted_bce(alpha, y_pred):
     import tensorflow as tf
     y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
@@ -75,7 +99,7 @@ def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, 
     model.add(Dense(12, activation='sigmoid'))
 
     model.compile(
-        loss='binary_crossentropy',
+        loss=weighted_binary_crossentropy_nan,
         optimizer='Adam',
         metrics=['accuracy']
     )
@@ -113,7 +137,7 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, ea
     model.add(Dense(12, activation='sigmoid'))
 
     model.compile(
-        loss='binary_crossentropy',
+        loss=weighted_binary_crossentropy_nan,
         optimizer='Adam',
         metrics=['accuracy']
     )
@@ -159,7 +183,7 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
     model.add(Dense(12, activation='sigmoid'))
 
     model.compile(
-        loss='binary_crossentropy',
+        loss=weighted_binary_crossentropy_nan,
         optimizer='Adam',
         metrics=['accuracy']
     )
@@ -195,10 +219,10 @@ def run_model(df_train, labels, epoch):
     for j in range(0, len(labels[0])):
         tmp = []
         for i in range(0, len(labels)):
-            if labels[i][j][0] != 0.0 and labels[i][j][0] != 1.0:
-                tmp.extend([0])
-            else:
-                tmp.extend(labels[i][j])
+            # if labels[i][j][0] != 0.0 and labels[i][j][0] != 1.0:
+            #     tmp.extend([0])
+            # else:
+            tmp.extend(labels[i][j])
         y.append(tmp)
 
     X = df_train.values.tolist()
@@ -223,4 +247,4 @@ def run_model(df_train, labels, epoch):
 
 if __name__ == '__main__':
     df_train, labels = data_preprocess.process(6)
-    run_model(df_train, labels, 2)
+    run_model(df_train, labels, 10)
