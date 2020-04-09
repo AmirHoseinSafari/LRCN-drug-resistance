@@ -1,16 +1,12 @@
 from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 from matplotlib import pyplot as plt
+import numpy as np
 
 num_of_drugs = 12
 
 def ROC(model, X_test, y_test, name, multi=False):
-    print(y_test)
-    # print("____________")
-    # print(X_test)
-    # print(len(X_test))
     y_pred_keras_tmp = model.predict(X_test)
-    print(y_pred_keras_tmp)
     y_pred_keras = []
     y_test_tmp = []
     if multi == False:
@@ -21,25 +17,39 @@ def ROC(model, X_test, y_test, name, multi=False):
     else:
         for i in range(0, num_of_drugs):  # len(y_test[0])):
             y_test_tmp = y_test[:, i]
-            # print(y_test_tmp)
             y_pred_keras = y_pred_keras_tmp[:, i]
-            if i != 0:
-                ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False)
-            else:
-                ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), True)
+            i = 0
+            while i < len(y_test_tmp):
+                if y_test_tmp[i] != 0 and y_test_tmp[i] != 1:
+                    y_test_tmp = np.delete(y_test_tmp, i)
+                    y_pred_keras = np.delete(y_pred_keras, i)
+                else:
+                    i = i + 1
+            try:
+                if i != 0:
+                    ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False)
+                else:
+                    ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), True)
+            except():
+                print("error on " + i + " " + y_test_tmp)
         y_test_tmp = []
         y_pred_keras = []
         for i in range(0, num_of_drugs):  # len(y_test[0])):
             y_test_tmp.extend(y_test[:, i])
             # print(y_test_tmp)
             y_pred_keras.extend(y_pred_keras_tmp[:, i])
-        # print("_____")
-        # print(y_test_tmp)
-        # print(y_pred_keras)
+        i = 0
+        while i < len(y_test_tmp):
+            if y_test_tmp[i] != 0 and y_test_tmp[i] != 1:
+                y_test_tmp = np.delete(y_test_tmp, i)
+                y_pred_keras = np.delete(y_pred_keras, i)
+            else:
+                i = i + 1
         ROC_maker(y_test_tmp, y_pred_keras, name + " _ All" , True)
 
 
 def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True):
+    # print(y_test_tmp)
     fpr_keras, tpr_keras, _ = roc_curve(y_test_tmp, y_pred_keras)
     auc_keras = auc(fpr_keras, tpr_keras)
 

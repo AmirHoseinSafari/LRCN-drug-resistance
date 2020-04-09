@@ -12,9 +12,19 @@ import data_preprocess
 import tensorflow as tf
 
 
+def masked_loss_function(y_true, y_pred):
+    mask = K.cast(K.not_equal(y_true, -1), K.floatx())
+    return K.binary_crossentropy(y_true * mask, y_pred * mask)
+
+
+def masked_accuracy(y_true, y_pred):
+    dtype = K.floatx()
+    total = K.sum(K.cast(K.not_equal(y_true, -1), dtype))
+    correct = K.sum(K.cast(K.equal(y_true, K.round(y_pred)), dtype))
+    return correct / total
+
+
 def weighted_binary_crossentropy_nan(y_true, y_pred):
-    # y_pred is the probability of belonging to positive class as model returns
-    # The below three lines remove None values
     index = ~tf.is_nan(y_true)
     y_true = tf.boolean_mask(y_true, index)
     y_pred = tf.boolean_mask(y_pred, index)
@@ -23,50 +33,7 @@ def weighted_binary_crossentropy_nan(y_true, y_pred):
 
     bce = tf.where(tf.is_nan(bce), tf.zeros_like(bce), bce)
     bce = K.mean(bce, axis=-1)
-    # the K.cast(K.greater(y_true, 0.), K.floatx()) makes the labels of positive class, where are positive class weights, equal to 1 to make the formula correct
-
-    #    #weighted_bce = - y_true * K.log(y_pred + 1e-6) - ((1.0 - K.cast(K.greater(y_true, 0.), K.floatx())) * K.log(1.0 - y_pred + 1e-6))
-    #    weighted_bce = - tf.constant(globalVars.weight_matrix, dtype= np.float32) * K.log(y_pred + 1e-6) - (tf.constant(globalVars.weight_matrix, dtype= np.float32) *(1.0 - y_true) * K.log(1.0 - y_pred + 1e-6))
-    #
-    #    # it replaces nan values with zero
-    #    weighted_bce = tf.where(tf.is_nan(weighted_bce), tf.zeros_like(weighted_bce), weighted_bce)
-    #    weighted_bce = K.mean(weighted_bce, axis=-1)
-    #    return K.in_train_phase(weighted_bce, bce)
-
     return bce
-def masked_multi_weighted_bce(alpha, y_pred):
-    import tensorflow as tf
-    y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
-    # s = tf.Session()
-    # print(y_pred.numpy())
-    y_true_ = K.cast(K.greater(alpha, 0.), K.floatx())
-    mask = K.cast(K.not_equal(alpha, 0.), K.floatx())
-    num_not_missing = K.sum(mask, axis=-1)
-    alpha = K.abs(alpha)
-    bce = - alpha * y_true_ * K.log(y_pred) - (1.0 - alpha) * (1.0 - y_true_) * K.log(1.0 - y_pred)
-    masked_bce = bce * mask
-    return K.sum(masked_bce, axis=-1) / num_not_missing
-
-
-def block_gradient_loss_function(self):
-    newY = []
-    newY_predicted = []
-    l = K.binary_crossentropy
-
-    def loss(y_true, y_pred):
-        y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
-        y_true_ = K.cast(K.greater(y_true, 0.), K.floatx())
-        return l(y_true_, y_pred)
-    return loss
-    # print(K.binary_crossentropy(y, y_predicted))
-    # y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
-    # y_true_ = K.cast(K.greater(alpha, 0.), K.floatx())
-    # return K.binary_crossentropy(y_true_, y_pred)
-    # for i in range(0, len(y)):
-    #     if y != -1:
-    #         newY.append(y)
-    #         newY_predicted.append(y_predicted)
-    # return 0
 
 
 def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping):
@@ -74,7 +41,6 @@ def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, 
     if len(X_train) // 128 != len(X_train) / 128:
         tmp = X_train[0]
         tmp2 = y_train[0]
-        # print(tmp)
         for j in range(0, len(tmp2)):
             tmp2[j] = 0
         for j in range (0, len(tmp)):
@@ -99,14 +65,13 @@ def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, 
     model.add(Dense(12, activation='sigmoid'))
 
     model.compile(
-        loss=weighted_binary_crossentropy_nan,
+        loss=masked_loss_function,
         optimizer='Adam',
-        metrics=['accuracy']
+        metrics=[masked_accuracy]
     )
 
     print(model.summary())
 
-    # for i in range(0, 20):
     history = model.fit(
         X_train,
         y_train,
@@ -118,8 +83,6 @@ def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, 
         callbacks=[earlyStopping,
                    ModelCheckpoint('result/256_128_64_2_StateFul.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
     )
-        # model.reset_states()
-    # model.save_weights("result/256_128_64_2_StateFul.h5")
 
     plot.plot(history, "256_128_64_2_StateFul")
 
@@ -137,9 +100,9 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, ea
     model.add(Dense(12, activation='sigmoid'))
 
     model.compile(
-        loss=weighted_binary_crossentropy_nan,
+        loss=masked_loss_function,
         optimizer='Adam',
-        metrics=['accuracy']
+        metrics=[masked_accuracy]
     )
 
     print(model.summary())
@@ -156,10 +119,7 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, ea
                    ModelCheckpoint('result/256_128_64_2.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
     )
 
-    # model.save_weights("result/256_128_64_2.h5")
-
     plot.plot(history, "256_128_64_2")
-    print("here we call the function after training:")
     ROC_PR.ROC(model, X_test, y_test, "256_128_64_2", True)
 
 
@@ -183,12 +143,12 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
     model.add(Dense(12, activation='sigmoid'))
 
     model.compile(
-        loss=weighted_binary_crossentropy_nan,
+        loss=masked_loss_function,
         optimizer='Adam',
-        metrics=['accuracy']
+        metrics=[masked_accuracy]
     )
 
-    # print(model.summary())
+    print(model.summary())
 
     history = model.fit(
         X_train,
@@ -201,8 +161,6 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
         callbacks=[earlyStopping,
                    ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
     )
-
-    # model.save_weights("result/CNN256_LSTM128_64_2.h5")
 
     plot.plot(history, "CNN256_LSTM128_64_2")
 
@@ -219,10 +177,10 @@ def run_model(df_train, labels, epoch):
     for j in range(0, len(labels[0])):
         tmp = []
         for i in range(0, len(labels)):
-            # if labels[i][j][0] != 0.0 and labels[i][j][0] != 1.0:
-            #     tmp.extend([0])
-            # else:
-            tmp.extend(labels[i][j])
+            if labels[i][j][0] != 0.0 and labels[i][j][0] != 1.0:
+                tmp.extend([-1])
+            else:
+                tmp.extend(labels[i][j])
         y.append(tmp)
 
     X = df_train.values.tolist()
@@ -238,13 +196,46 @@ def run_model(df_train, labels, epoch):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-    earlyStopping = EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1, verbose=1, patience=15)
+    earlyStopping = EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1, verbose=1, patience=20)
 
-    model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
     model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
+    model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
 
 
 if __name__ == '__main__':
     df_train, labels = data_preprocess.process(6)
     run_model(df_train, labels, 10)
+
+
+
+# def masked_multi_weighted_bce(alpha, y_pred):
+#     y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
+#     y_true_ = K.cast(K.greater(alpha, 0.), K.floatx())
+#     mask = K.cast(K.not_equal(alpha, 0.), K.floatx())
+#     num_not_missing = K.sum(mask, axis=-1)
+#     alpha = K.abs(alpha)
+#     bce = - alpha * y_true_ * K.log(y_pred) - (1.0 - alpha) * (1.0 - y_true_) * K.log(1.0 - y_pred)
+#     masked_bce = bce * mask
+#     return K.sum(masked_bce, axis=-1) / num_not_missing
+#
+#
+# def block_gradient_loss_function(self):
+#     newY = []
+#     newY_predicted = []
+#     l = K.binary_crossentropy
+#
+#     def loss(y_true, y_pred):
+#         y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
+#         y_true_ = K.cast(K.greater(y_true, 0.), K.floatx())
+#         return l(y_true_, y_pred)
+#     return loss
+#     # print(K.binary_crossentropy(y, y_predicted))
+#     # y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
+#     # y_true_ = K.cast(K.greater(alpha, 0.), K.floatx())
+#     # return K.binary_crossentropy(y_true_, y_pred)
+#     # for i in range(0, len(y)):
+#     #     if y != -1:
+#     #         newY.append(y)
+#     #         newY_predicted.append(y_predicted)
+#     # return 0

@@ -16,17 +16,31 @@ def plot(history, name):
     plt.show()
     plt.draw()
     fig1.savefig('result/loss_' + name + '.png', dpi=100)
-
-    plt.clf()
-    acc = history.history['accuracy']
-    val_acc = history.history['val_accuracy']
-    plt.plot(epochs, acc, 'g', label='Training acc')
-    plt.plot(epochs, val_acc, 'y', label='Validation acc')
-    plt.title('Training and validation accuracy')
-    plt.xlabel('Epochs')
-    plt.ylabel('Accuracy')
-    plt.legend()
-    fig2 = plt.gcf()
-    plt.show()
-    plt.draw()
-    fig2.savefig('result/acc_' + name + '.png', dpi=100)
+    if history.history.__contains__("accuracy"):
+        plt.clf()
+        acc = history.history['accuracy']
+        val_acc = history.history['val_accuracy']
+        plt.plot(epochs, acc, 'g', label='Training acc')
+        plt.plot(epochs, val_acc, 'y', label='Validation acc')
+        plt.title('Training and validation accuracy')
+        plt.xlabel('Epochs')
+        plt.ylabel('Accuracy')
+        plt.legend()
+        fig2 = plt.gcf()
+        plt.show()
+        plt.draw()
+        fig2.savefig('result/acc_' + name + '.png', dpi=100)
+    else:
+        plt.clf()
+        acc = history.history['masked_accuracy']
+        val_acc = history.history['val_masked_accuracy']
+        plt.plot(epochs, acc, 'g', label='Training acc')
+        plt.plot(epochs, val_acc, 'y', label='Validation acc')
+        plt.title('Training and validation accuracy')
+        plt.xlabel('Epochs')
+        plt.ylabel('Accuracy')
+        plt.legend()
+        fig2 = plt.gcf()
+        plt.show()
+        plt.draw()
+        fig2.savefig('result/acc_' + name + '.png', dpi=100)
