@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 import ROC_PR
 import plot
 import data_preprocess
+from keras.utils.vis_utils import plot_model
 
 
 # def modelSimple(FrameSize, X, X_train, X_test, y_train, y_test):
@@ -133,6 +134,7 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch):
     )
 
     # model.save_weights("result/One_256_128_64_2.h5")
+    plot_model(model, to_file='model_plot1.png', show_shapes=True)
 
     plot.plot(history, "One_256_128_64_2")
 

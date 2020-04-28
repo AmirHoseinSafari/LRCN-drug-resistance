@@ -8,6 +8,7 @@ import keras.backend as K
 import ROC_PR
 import plot
 import data_preprocess
+from keras.utils.vis_utils import plot_model
 
 import tensorflow as tf
 
@@ -81,7 +82,7 @@ def model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, 
         verbose=2,
         validation_data=(X_test, y_test),
         callbacks=[earlyStopping,
-                   ModelCheckpoint('result/256_128_64_2_StateFul.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
+                   ModelCheckpoint('result/256_128_64_2_StateFul.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
     )
 
     plot.plot(history, "256_128_64_2_StateFul")
@@ -116,7 +117,7 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, ea
         verbose=2,
         validation_data=(X_test, y_test),
         callbacks=[earlyStopping,
-                   ModelCheckpoint('result/256_128_64_2.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
+                   ModelCheckpoint('result/256_128_64_2.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
     )
 
     plot.plot(history, "256_128_64_2")
@@ -148,8 +149,6 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
         metrics=[masked_accuracy]
     )
 
-    print(model.summary())
-
     history = model.fit(
         X_train,
         y_train,
@@ -159,31 +158,33 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
         verbose=2,
         validation_data=(X_test, y_test),
         callbacks=[earlyStopping,
-                   ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_accuracy', mode='max', save_best_only=True)]
+                   ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
     )
+
+    plot_model(model, to_file='model_plot.png', show_shapes=True)
 
     plot.plot(history, "CNN256_LSTM128_64_2")
 
     ROC_PR.ROC(model, X_test, y_test, "CNN256_LSTM128_64_2", True)
 
 
-def run_model(df_train, labels, epoch):
+def prepareDate(features, label):
     FrameSize = 200
 
     y = []
-    for i in range(0, len(labels)):
-        labels[i] = labels[i].values.tolist()
+    for i in range(0, len(label)):
+        label[i] = label[i].values.tolist()
 
-    for j in range(0, len(labels[0])):
+    for j in range(0, len(label[0])):
         tmp = []
-        for i in range(0, len(labels)):
-            if labels[i][j][0] != 0.0 and labels[i][j][0] != 1.0:
+        for i in range(0, len(label)):
+            if label[i][j][0] != 0.0 and label[i][j][0] != 1.0:
                 tmp.extend([-1])
             else:
-                tmp.extend(labels[i][j])
+                tmp.extend(label[i][j])
         y.append(tmp)
 
-    X = df_train.values.tolist()
+    X = features.values.tolist()
 
     for i in range(0, len(X)):
         if len(X[i]) < ((len(X[i]) // FrameSize + 1) * FrameSize):
@@ -193,13 +194,18 @@ def run_model(df_train, labels, epoch):
 
     X = np.array(X)
     y = np.array(y)
+    return X, y, FrameSize
+
+
+def run_model(df_train, labels, epoch):
+    X, y, FrameSize = prepareDate(df_train, labels)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-    earlyStopping = EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1, verbose=1, patience=20)
+    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=1, verbose=1, patience=20)
 
-    model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
+    model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
     model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
 
 

@@ -1,7 +1,7 @@
 import LoadData
 
-def process(numOfFiles):
-    df_train = LoadData.LoadData(list(range(1, numOfFiles)), 'Data/')
+def process(numOfFiles, nrow=0):
+    df_train = LoadData.LoadData(list(range(1, numOfFiles)), 'Data/', nrow)
 
     # df_train = df_train[df_train.columns[df_train.sum() > 5]]
 

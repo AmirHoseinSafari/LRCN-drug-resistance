@@ -8,8 +8,10 @@ Created on Tue Mar 10 18:23:59 2020
 @author: nafiseh
 """
 
-num = 40
-def LoadData(lst, path):
+num = 200
+
+
+def LoadData(lst, path, nrow=0):
     lst = sorted(np.unique(lst))
     dtypes = dict(zip(list(range(0, 20000)), [np.int8] * 20000))
 
@@ -28,6 +30,11 @@ def LoadData(lst, path):
         dt = pd.concat([dt, tmp], axis='columns', ignore_index=True)
 
     dt.columns = list(range(0, len(dt.columns)))
+
+    print(dt.shape)
+    dt = dt.loc[:, dt.sum() >= nrow]
+    print("After dropping")
+    print(dt.shape)
 
     return (dt)
 

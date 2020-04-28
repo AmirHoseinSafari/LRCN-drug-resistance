@@ -18,18 +18,23 @@ def ROC(model, X_test, y_test, name, multi=False):
         for i in range(0, num_of_drugs):  # len(y_test[0])):
             y_test_tmp = y_test[:, i]
             y_pred_keras = y_pred_keras_tmp[:, i]
-            i = 0
-            while i < len(y_test_tmp):
-                if y_test_tmp[i] != 0 and y_test_tmp[i] != 1:
-                    y_test_tmp = np.delete(y_test_tmp, i)
-                    y_pred_keras = np.delete(y_pred_keras, i)
+            # bug? cahnge i2 to i
+            i2 = 0
+            while i2 < len(y_test_tmp):
+                if y_test_tmp[i2] != 0 and y_test_tmp[i2] != 1:
+                    y_test_tmp = np.delete(y_test_tmp, i2)
+                    y_pred_keras = np.delete(y_pred_keras, i2)
                 else:
-                    i = i + 1
+                    i2 = i2 + 1
             try:
                 if i != 0:
-                    ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False)
+                    if i < num_of_drugs - 1:
+                        ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False, False)
+                    else:
+                        ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False, True)
                 else:
-                    ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), True)
+                    ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), True, False)
+
             except():
                 print("error on " + i + " " + y_test_tmp)
         y_test_tmp = []
@@ -45,10 +50,10 @@ def ROC(model, X_test, y_test, name, multi=False):
                 y_pred_keras = np.delete(y_pred_keras, i)
             else:
                 i = i + 1
-        ROC_maker(y_test_tmp, y_pred_keras, name + " _ All" , True)
+        ROC_maker(y_test_tmp, y_pred_keras, name + " _ All", True)
 
 
-def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True):
+def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True, save=True):
     # print(y_test_tmp)
     fpr_keras, tpr_keras, _ = roc_curve(y_test_tmp, y_pred_keras)
     auc_keras = auc(fpr_keras, tpr_keras)
@@ -57,7 +62,7 @@ def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True):
         plt.clf()
     plt.figure(1)
     plt.plot([0, 1], [0, 1], 'k--')
-    plt.plot(fpr_keras, tpr_keras, label='Keras (area = {:.3f})'.format(auc_keras))
+    plt.plot(fpr_keras, tpr_keras, label='area = {:.3f}'.format(auc_keras))
     plt.xlabel('False positive rate')
     plt.ylabel('True positive rate')
     plt.title('ROC curve _ ' + name)
@@ -65,7 +70,8 @@ def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True):
     fig1 = plt.gcf()
     plt.show()
     plt.draw()
-    fig1.savefig('result/ROC_' + name + '.png', dpi=100)
+    if save:
+        fig1.savefig('result/ROC_' + name + '.png', dpi=100)
     # Zoom in view of the upper left corner.
     # plt.figure(2)
     # plt.xlim(0, 0.2)
