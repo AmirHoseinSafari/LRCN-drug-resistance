@@ -1,6 +1,6 @@
 from keras import Sequential
 from keras.callbacks import ModelCheckpoint
-from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, TimeDistributed
+from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, TimeDistributed, Conv1D, MaxPooling1D
 from keras.utils import to_categorical
 import numpy as np
 from matplotlib import pyplot as plt
@@ -175,6 +175,43 @@ def model_256_128_64_2_100Ep(FrameSize, X, X_train, X_test, y_train, y_test):
     ROC_PR.ROC(model, X_test, y_test, "One_256_128_64_2_100Ep")
 
 
+def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch):
+    model = Sequential()
+    model.add(Dropout(0.2))
+    model.add(Conv1D(filters=5, kernel_size=3, activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=3))
+    model.add(LSTM(256, return_sequences=True, recurrent_dropout=0.3))
+    model.add(SpatialDropout1D(0.2))
+    model.add(LSTM(128, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.2))
+    model.add(Dense(64))
+    model.add(Dropout(0.2))
+    model.add(Dense(2, activation='sigmoid'))
+
+    model.compile(
+        loss='categorical_crossentropy',
+        optimizer='Adam',
+        metrics=['accuracy']
+    )
+
+    history = model.fit(
+        X_train,
+        y_train,
+        epochs=epoch,
+        batch_size=128,
+        shuffle=True,
+        verbose=2,
+        validation_data=(X_test, y_test),
+        callbacks=[ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='accuracy', mode='max', save_best_only=True)]
+    )
+
+    # plot_model(model, to_file='model_plot.png', show_shapes=True)
+
+    plot.plot(history, "One_CNN256_LSTM128_64_2")
+
+    ROC_PR.ROC(model, X_test, y_test, "One_CNN256_LSTM128_64_2", False)
+
+
 # def model_256_128_64_TD_2(FrameSize, X, X_train, X_test, y_train, y_test):
 #     model = Sequential()
 #     # model.add(Embedding(2, 50, input_length=None))
@@ -264,10 +301,11 @@ def run_model(df_train, labels, epoch):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-    model_256_128_64_2BS(FrameSize, X, X_train, X_test, y_train, y_test, epoch)
+    model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch)
+    # model_256_128_64_2BS(FrameSize, X, X_train, X_test, y_train, y_test, epoch)
     model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch)
 
 
 if __name__ == '__main__':
     df_train, labels = data_preprocess.process(6)
-    run_model(df_train, labels)
+    run_model(df_train, labels, 20)
