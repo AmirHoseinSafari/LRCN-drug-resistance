@@ -8,7 +8,7 @@ import keras.backend as K
 import ROC_PR
 import plot
 import data_preprocess
-from keras.utils.vis_utils import plot_model
+# from keras.utils.vis_utils import plot_model
 
 import tensorflow as tf
 
@@ -161,7 +161,7 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
                    ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
     )
 
-    plot_model(model, to_file='model_plot.png', show_shapes=True)
+    # plot_model(model, to_file='model_plot.png', show_shapes=True)
 
     plot.plot(history, "CNN256_LSTM128_64_2")
 
