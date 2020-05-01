@@ -200,13 +200,48 @@ def prepareDate(features, label):
 def run_model(df_train, labels, epoch):
     X, y, FrameSize = prepareDate(df_train, labels)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+    # for i in range(0, 12):
+    #     print(i)
+    # zero = 0
+    # one = 0
+    # nan = 0
+    # tt = 10
+    # for i2 in range(0, 12):
+    #     zero = 0
+    #     one = 0
+    #     nan = 0
+    #     tt = 10
+    #     for i in range(0, len(y[:, 10])):
+    #         if y[i, i2] == 0:
+    #             zero += 1
+    #         elif y[i, i2] == 1:
+    #             one += 1
+    #         else:
+    #             if tt > 0 and i2 == 9:
+    #                 y[i, i2] = 1
+    #                 tt = tt - 1
+    #             nan += 1
+    #     zero = 0
+    #     one = 0
+    #     nan = 0
+    #     for i in range(0, len(y[:, 10])):
+    #         if y[i, i2] == 0:
+    #             zero += 1
+    #         elif y[i, i2] == 1:
+    #             one += 1
+    #         else:
+    #             nan += 1
+    #     print(one)
+    #     print(zero)
+    #     print(nan)
+    # for i in range(0, 12):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, stratify=y[:, 7:9], shuffle=True)
 
-    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=1, verbose=1, patience=20)
+    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=1, verbose=1, patience=50)
 
     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
-    model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
-    model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
+    # model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
+    # model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
 
 
 if __name__ == '__main__':
