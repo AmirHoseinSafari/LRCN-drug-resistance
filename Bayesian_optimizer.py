@@ -22,7 +22,7 @@ def masked_accuracy(y_true, y_pred):
     return correct / total
 
 
-def get_model(dropout2_rate=0.2, dense_1_neurons=64, filterCNN=5, kernelCNN=3, LSTM1=256, LSTM2=128):
+def get_model(dropout2_rate=0.2, dense_1_neurons=64, filterCNN=5, kernelCNN=3, LSTM1=128, LSTM2=64):
     model = Sequential()
     model.add(Dropout(dropout2_rate))
     model.add(Conv1D(filters=filterCNN, kernel_size=kernelCNN, activation='relu', padding='same'))
@@ -40,8 +40,8 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64, filterCNN=5, kernelCNN=3, L
 def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, LSTM2):
     # Create the model using a specified hyperparameters.
     dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
-    LSTM1 = max(int(LSTM1 * 256), 256)
-    LSTM2 = max(int(LSTM2 * 128), 128)
+    LSTM1 = max(int(LSTM1 * 128), 128)
+    LSTM2 = max(int(LSTM2 * 64), 64)
     kernelCNN = max(int(kernelCNN), 3)
     filterCNN = max(int(filterCNN), 4)
     if kernelCNN >= filterCNN:
@@ -97,7 +97,7 @@ def BO(X_train2, X_test2, y_train2, y_test2):
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 3.1), "filterCNN": (3.9, 8.1), "kernelCNN": (2.9, 6.1), "LSTM1": (0.9, 3.1), "LSTM2": (0.9, 3.1)}
+    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 4.1), "filterCNN": (3.9, 8.1), "kernelCNN": (2.9, 6.1), "LSTM1": (0.9, 4.1), "LSTM2": (0.9, 4.1)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
