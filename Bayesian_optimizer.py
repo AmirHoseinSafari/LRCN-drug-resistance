@@ -42,6 +42,8 @@ def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, L
     dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
     LSTM1 = max(int(LSTM1 * 256), 256)
     LSTM2 = max(int(LSTM2 * 128), 128)
+    kernelCNN = max(int(kernelCNN), 3)
+    filterCNN = max(int(filterCNN), 4)
     if kernelCNN >= filterCNN:
         kernelCNN = filterCNN - 1
 
@@ -58,7 +60,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, L
     history = model.fit(
         X_train,
         y_train,
-        epochs=1,
+        epochs=50,
         batch_size=128,
         shuffle=True,
         verbose=2,
@@ -90,12 +92,12 @@ def BO(X_train2, X_test2, y_train2, y_test2):
 
     fit_with_partial = partial(fit_with)
 
-    fit_with_partial(dropout2_rate=0.2, dense_1_neurons_x128=1, filterCNN=5, kernelCNN=3, LSTM1=256, LSTM2=128)
+    fit_with_partial(dropout2_rate=0.2, dense_1_neurons_x128=1, filterCNN=5, kernelCNN=3, LSTM1=1, LSTM2=1)
 
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 3.1), "filterCNN": (4,8), "kernelCNN": (3,6), "LSTM1": (0.9, 3.1), "LSTM2": (0.9, 3.1)}
+    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 3.1), "filterCNN": (3.9, 8.1), "kernelCNN": (2.9, 6.1), "LSTM1": (0.9, 3.1), "LSTM2": (0.9, 3.1)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
@@ -103,8 +105,7 @@ def BO(X_train2, X_test2, y_train2, y_test2):
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
-    #TODO
-    optimizer.maximize(init_points=10, n_iter=2, )
+    optimizer.maximize(init_points=10, n_iter=10, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
