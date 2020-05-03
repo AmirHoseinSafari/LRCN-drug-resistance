@@ -49,7 +49,7 @@ def model_run(df_train, labels):
                 del X[i2]
         svm(X, y)
         lr(X, y)
-    f = open('mlResult.txt', 'w')
+    f = open('result/mlResult.txt', 'w')
     for ele in res:
         f.write(str(ele) + '\n')
     f.close()
