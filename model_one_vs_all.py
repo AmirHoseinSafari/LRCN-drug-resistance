@@ -132,16 +132,20 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
     # model.add(TimeDistributed(Conv1D(filters=1, kernel_size=3, activation='relu', padding='same', input_shape=(FrameSize, X[0].shape[1], 1))))
     # model.add(TimeDistributed(MaxPooling1D(pool_size=3)))
     # model.add(TimeDistributed(Flatten()))
-    model.add(Dropout(0.2))
-    model.add(Conv1D(filters=5, kernel_size=3, activation='relu', padding='same'))
+    model.add(Dropout(0.1))
+    # model.add(Conv1D(filters=5, kernel_size=3, activation='relu', padding='same'))
+    model.add(Conv1D(filters=8, kernel_size=6, activation='relu', padding='same'))
     model.add(MaxPooling1D(pool_size=3))
     # model.add(TimeDistributed(Flatten()))
-    model.add(LSTM(256, return_sequences=True, recurrent_dropout=0.3))
-    model.add(SpatialDropout1D(0.2))
-    model.add(LSTM(128, return_sequences=False, recurrent_dropout=0.3))
-    model.add(Dropout(0.2))
-    model.add(Dense(64))
-    model.add(Dropout(0.2))
+    # model.add(LSTM(256, return_sequences=True, recurrent_dropout=0.3))
+    model.add(LSTM(128, return_sequences=True, recurrent_dropout=0.3))
+    model.add(SpatialDropout1D(0.1))
+    # model.add(LSTM(128, return_sequences=False, recurrent_dropout=0.3))
+    model.add(LSTM(256, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.1))
+    # model.add(Dense(64))
+    model.add(Dense(256))
+    model.add(Dropout(0.1))
     model.add(Dense(12, activation='sigmoid'))
 
     model.compile(
@@ -241,7 +245,7 @@ def run_model(df_train, labels, epoch):
 
     earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=1, verbose=1, patience=50)
 
-    Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
+    # Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
 
     # TODO Comment shuffle !!!!!!!!!!!!!!!!!!!!!!!!!
     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
