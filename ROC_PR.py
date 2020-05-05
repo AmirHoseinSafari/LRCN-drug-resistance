@@ -5,6 +5,7 @@ import numpy as np
 
 num_of_drugs = 12
 
+
 def ROC(model, X_test, y_test, name, multi=False):
     y_pred_keras_tmp = model.predict(X_test)
     y_pred_keras = []
@@ -51,6 +52,39 @@ def ROC(model, X_test, y_test, name, multi=False):
             else:
                 i = i + 1
         ROC_maker(y_test_tmp, y_pred_keras, name + " _ All", True)
+
+
+def ROC_Score(model, X_test, y_test):
+    y_pred_keras_tmp = model.predict(X_test)
+    y_pred_keras = []
+    y_test_tmp = []
+
+    for i in range(0, num_of_drugs):
+        y_test_tmp = y_test[:, i]
+        y_pred_keras = y_pred_keras_tmp[:, i]
+        i2 = 0
+        while i2 < len(y_test_tmp):
+            if y_test_tmp[i2] != 0 and y_test_tmp[i2] != 1:
+                y_test_tmp = np.delete(y_test_tmp, i2)
+                y_pred_keras = np.delete(y_pred_keras, i2)
+            else:
+                i2 = i2 + 1
+    y_test_tmp = []
+    y_pred_keras = []
+    for i in range(0, num_of_drugs):
+        y_test_tmp.extend(y_test[:, i])
+        y_pred_keras.extend(y_pred_keras_tmp[:, i])
+    i = 0
+    while i < len(y_test_tmp):
+        if y_test_tmp[i] != 0 and y_test_tmp[i] != 1:
+            y_test_tmp = np.delete(y_test_tmp, i)
+            y_pred_keras = np.delete(y_pred_keras, i)
+        else:
+            i = i + 1
+    fpr_keras, tpr_keras, _ = roc_curve(y_test_tmp, y_pred_keras)
+    auc_keras = auc(fpr_keras, tpr_keras)
+    # print(auc_keras)
+    return auc_keras
 
 
 def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True, save=True):

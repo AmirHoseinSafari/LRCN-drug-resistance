@@ -5,6 +5,7 @@ import tensorflow as tf
 from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D
 from keras import Sequential
 from functools import partial
+import ROC_PR
 
 
 NUM_CLASSES = 10
@@ -40,7 +41,7 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64, filterCNN=5, kernelCNN=3, L
 def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, LSTM2):
     # Create the model using a specified hyperparameters.
     dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
-    LSTM1 = max(int(LSTM1 * 128), 128)
+    LSTM1 = max(int(LSTM1 * 64), 64)
     LSTM2 = max(int(LSTM2 * 64), 64)
     kernelCNN = max(int(kernelCNN), 3)
     filterCNN = max(int(filterCNN), 4)
@@ -60,7 +61,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, L
     history = model.fit(
         X_train,
         y_train,
-        epochs=50,
+        epochs=75,
         batch_size=128,
         shuffle=True,
         verbose=2,
@@ -68,13 +69,15 @@ def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, L
     )
 
     # Evaluate the model with the eval dataset.
-    score = model.evaluate(X_test, y_test, steps=10, verbose=0)
-    print('Test loss:', score[0])
-    print('Test accuracy:', score[1])
+    # score = model.evaluate(X_test, y_test, steps=10, verbose=0)
+    # print('Test loss:', score[0])
+    # print('Test accuracy:', score[1])
 
     # Return the accuracy.
     # print(history.history['val_masked_accuracy'])
-    return score[1]
+    score = ROC_PR.ROC_Score(model, X_test, y_test)
+    print('area under ROC curve:', score)
+    return score
 
 
 X_train, X_test, y_train, y_test = 0, 0, 0, 0
@@ -97,7 +100,7 @@ def BO(X_train2, X_test2, y_train2, y_test2):
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 4.1), "filterCNN": (3.9, 8.1), "kernelCNN": (2.9, 6.1), "LSTM1": (0.9, 4.1), "LSTM2": (0.9, 4.1)}
+    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 8.1), "filterCNN": (3.9, 8.1), "kernelCNN": (2.9, 6.1), "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,

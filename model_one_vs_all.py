@@ -159,7 +159,7 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
         y_train,
         epochs=epoch,
         batch_size=128,
-        # shuffle=True,
+        shuffle=True,
         verbose=2,
         validation_data=(X_test, y_test),
         callbacks=[earlyStopping,
@@ -240,12 +240,12 @@ def run_model(df_train, labels, epoch):
     #     print(zero)
     #     print(nan)
     # for i in range(0, 12):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, stratify=y[:, 7:9], shuffle=True)
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, stratify=y[:, 7:9], shuffle=True)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=1, verbose=1, patience=50)
+    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=50)
 
-    # Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
+    Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
 
     # TODO Comment shuffle !!!!!!!!!!!!!!!!!!!!!!!!!
     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
