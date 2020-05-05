@@ -13,7 +13,7 @@ epochs = 200
 # without dropping
 df_train, labels = data_preprocess.process(6)
 # model.run_model(df_train, labels, epochs)
-# model_one_vs_all.run_model(df_train, labels, epochs)
+model_one_vs_all.run_model(df_train, labels, epochs)
 ML_methods.model_run(df_train, labels)
 
 
