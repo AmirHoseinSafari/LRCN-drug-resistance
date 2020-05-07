@@ -129,7 +129,9 @@ def ROC_ML(model, X_test, y_test, name, i):
 
     if i == 0 and name == "SVM":
         plt.clf()
-    plt.figure(1)
+    if i == 6 and name == "SVM":
+        plt.clf()
+    plt.figure(i)
     plt.plot([0, 1], [0, 1], 'k--')
     plt.plot(fpr_keras, tpr_keras, label=name + str(i) + ' = {:.3f}'.format(auc_keras))
     plt.xlabel('False positive rate')
@@ -139,4 +141,4 @@ def ROC_ML(model, X_test, y_test, name, i):
     fig1 = plt.gcf()
     plt.show()
     plt.draw()
-    fig1.savefig('result/ROC_' + name + '.png', dpi=100)
+    fig1.savefig('result/ROC_' + name + str(i) + '.png', dpi=100)
