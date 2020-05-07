@@ -115,3 +115,23 @@ def BO(X_train2, X_test2, y_train2, y_test2):
 
     print("resultttttttttttttt")
     print(optimizer.max)
+
+if __name__ == '__main__':
+    LSTM1 = 2.2410735219192306
+    LSTM2 = 3.3880372347099432
+    dense_1_neurons_x128 = 3.756725814460823
+    dropout2_rate = 0.3155266936013428
+    filterCNN = 5.660616960493838
+    kernelCNN = 5.09270240126963
+    dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
+    LSTM1 = max(int(LSTM1 * 64), 64)
+    LSTM2 = max(int(LSTM2 * 64), 64)
+    kernelCNN = max(int(kernelCNN), 3)
+    filterCNN = max(int(filterCNN), 4)
+
+    print(dense_1_neurons)
+    print(LSTM1)
+    print(LSTM2)
+    print(kernelCNN)
+    print(filterCNN)
+
