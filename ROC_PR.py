@@ -123,7 +123,7 @@ def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True, save=True):
 
 
 def ROC_ML(model, X_test, y_test, name, i):
-    y_pred_keras_tmp = model.predict(X_test)
+    y_pred_keras_tmp = model.decision_function(X_test)
     fpr_keras, tpr_keras, _ = roc_curve(y_test, y_pred_keras_tmp)
     auc_keras = auc(fpr_keras, tpr_keras)
 
