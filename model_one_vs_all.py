@@ -245,7 +245,7 @@ def run_model(df_train, labels, epoch):
 
     earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=50)
 
-    Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
+    # Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
 
     # TODO Comment shuffle !!!!!!!!!!!!!!!!!!!!!!!!!
     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
