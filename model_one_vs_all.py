@@ -125,27 +125,27 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, ea
     ROC_PR.ROC(model, X_test, y_test, "256_128_64_2", True)
 
 
-def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping):
+def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name, dropout2_rate, dense_1, filterCNN, kernelCNN, LSTM1, LSTM2, recurrent_dropout):
     print(X.shape)
     print(FrameSize)
     model = Sequential()
     # model.add(TimeDistributed(Conv1D(filters=1, kernel_size=3, activation='relu', padding='same', input_shape=(FrameSize, X[0].shape[1], 1))))
     # model.add(TimeDistributed(MaxPooling1D(pool_size=3)))
     # model.add(TimeDistributed(Flatten()))
-    model.add(Dropout(0.31))
+    model.add(Dropout(dropout2_rate))
     # model.add(Conv1D(filters=5, kernel_size=3, activation='relu', padding='same'))
-    model.add(Conv1D(filters=5, kernel_size=5, activation='relu', padding='same'))
+    model.add(Conv1D(filters=filterCNN, kernel_size=kernelCNN, activation='relu', padding='same'))
     model.add(MaxPooling1D(pool_size=3))
     # model.add(TimeDistributed(Flatten()))
     # model.add(LSTM(256, return_sequences=True, recurrent_dropout=0.3))
-    model.add(LSTM(143, return_sequences=True, recurrent_dropout=0.3))
-    model.add(SpatialDropout1D(0.31))
+    model.add(LSTM(LSTM1, return_sequences=True, recurrent_dropout=recurrent_dropout))
+    model.add(SpatialDropout1D(dropout2_rate))
     # model.add(LSTM(128, return_sequences=False, recurrent_dropout=0.3))
-    model.add(LSTM(216, return_sequences=False, recurrent_dropout=0.3))
-    model.add(Dropout(0.31))
+    model.add(LSTM(LSTM2, return_sequences=False, recurrent_dropout=recurrent_dropout))
+    model.add(Dropout(dropout2_rate))
     # model.add(Dense(64))
-    model.add(Dense(240))
-    model.add(Dropout(0.31))
+    model.add(Dense(dense_1))
+    model.add(Dropout(dropout2_rate))
     model.add(Dense(12, activation='sigmoid'))
 
     model.compile(
@@ -168,9 +168,9 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
 
     # plot_model(model, to_file='model_plot.png', show_shapes=True)
 
-    plot.plot(history, "CNN256_LSTM128_64_2")
+    plot.plot(history, ("LRCN" + name))
 
-    ROC_PR.ROC(model, X_test, y_test, "CNN256_LSTM128_64_2", True)
+    ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True)
 
 
 def prepareDate(features, label):
@@ -205,52 +205,24 @@ def prepareDate(features, label):
 def run_model(df_train, labels, epoch):
     X, y, FrameSize = prepareDate(df_train, labels)
 
-    # for i in range(0, 12):
-    #     print(i)
-    # zero = 0
-    # one = 0
-    # nan = 0
-    # tt = 10
-    # for i2 in range(0, 12):
-    #     zero = 0
-    #     one = 0
-    #     nan = 0
-    #     tt = 10
-    #     for i in range(0, len(y[:, 10])):
-    #         if y[i, i2] == 0:
-    #             zero += 1
-    #         elif y[i, i2] == 1:
-    #             one += 1
-    #         else:
-    #             if tt > 0 and i2 == 9:
-    #                 y[i, i2] = 1
-    #                 tt = tt - 1
-    #             nan += 1
-    #     zero = 0
-    #     one = 0
-    #     nan = 0
-    #     for i in range(0, len(y[:, 10])):
-    #         if y[i, i2] == 0:
-    #             zero += 1
-    #         elif y[i, i2] == 1:
-    #             one += 1
-    #         else:
-    #             nan += 1
-    #     print(one)
-    #     print(zero)
-    #     print(nan)
-    # for i in range(0, 12):
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, stratify=y[:, 7:9], shuffle=True)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=50)
+    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=80)
 
     # Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
+    for i in range(0, 4):
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "1_" + str(i),
+                                  0.3155266936013428, 240, 5, 5, 143, 216, 0.3)
 
-    # TODO Comment shuffle !!!!!!!!!!!!!!!!!!!!!!!!!
-    model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
-    # model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
-    # model_256_128_64_2_StateFul(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping)
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "2_" + str(i),
+                                  0.1, 240, 5, 5, 143, 216, 0.3)
+
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "3_" + str(i),
+                                  0.1, 256, 8, 6, 128, 256, 0.3)
+
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "4_" + str(i),
+                                  0.1, 256, 8, 6, 128, 256, 0.1)
 
 
 if __name__ == '__main__':
