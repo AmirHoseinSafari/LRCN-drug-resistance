@@ -63,7 +63,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, L
         y_train,
         epochs=75,
         batch_size=128,
-        shuffle=True,
+        # shuffle=True,
         verbose=2,
         validation_data=(X_test, y_test)
     )
