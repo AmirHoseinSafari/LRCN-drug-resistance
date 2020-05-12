@@ -210,21 +210,24 @@ def run_model(df_train, labels, epoch):
 
     earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=80)
 
-    Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
+    # Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
 
-    # for i in range(0, 4):
-    #     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "1_" + str(i),
-    #                               0.3155266936013428, 240, 5, 5, 143, 216, 0.3)
-    #
-    #     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "2_" + str(i),
-    #                               0.1, 240, 5, 5, 143, 216, 0.3)
-    #
-    #     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "3_" + str(i),
-    #                               0.1, 256, 8, 6, 128, 256, 0.3)
-    #
-    #     model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "4_" + str(i),
-    #                               0.1, 256, 8, 6, 128, 256, 0.1)
+    for i in range(0, 4):
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "1_" + str(i),
+                                  0.3155266936013428, 240, 5, 5, 143, 216, 0.3)
 
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "2_" + str(i),
+                                  0.1, 240, 5, 5, 143, 216, 0.3)
+
+        # model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "3_" + str(i),
+        #                           0.1, 256, 8, 6, 128, 256, 0.3)
+        #
+        # model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "4_" + str(i),
+        #                           0.1, 256, 8, 6, 128, 256, 0.1)
+
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "5_" + str(i),
+                                  dropout2_rate=0.1783805364232113, dense_1=82, filterCNN=7, kernelCNN=5, LSTM1=140,
+                                  LSTM2=509, recurrent_dropout=0.3)
 
 if __name__ == '__main__':
     df_train, labels = data_preprocess.process(6)
