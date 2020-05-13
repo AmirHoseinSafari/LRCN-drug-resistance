@@ -10,6 +10,8 @@ def ROC(model, X_test, y_test, name, multi=False):
     y_pred_keras_tmp = model.predict(X_test)
     y_pred_keras = []
     y_test_tmp = []
+    scores = []
+
     if multi == False:
         for i in range(0, len(y_pred_keras_tmp)):
             y_pred_keras.append(y_pred_keras_tmp[i][1])
@@ -30,11 +32,11 @@ def ROC(model, X_test, y_test, name, multi=False):
             try:
                 if i != 0:
                     if i < num_of_drugs - 1:
-                        ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False, False)
+                        scores.append(ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False, False))
                     else:
-                        ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False, True)
+                        scores.append(ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False, True))
                 else:
-                    ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), True, False)
+                    scores.append(ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), True, False))
 
             except():
                 print("error on " + i + " " + y_test_tmp)
@@ -52,6 +54,10 @@ def ROC(model, X_test, y_test, name, multi=False):
             else:
                 i = i + 1
         ROC_maker(y_test_tmp, y_pred_keras, name + " _ All", True)
+        # fpr_keras, tpr_keras, _ = roc_curve(y_test_tmp, y_pred_keras)
+        # auc_keras = auc(fpr_keras, tpr_keras)
+        # print(auc_keras)
+        return scores
 
 
 def ROC_Score(model, X_test, y_test):
@@ -106,6 +112,7 @@ def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True, save=True):
     plt.draw()
     if save:
         fig1.savefig('result/ROC_' + name + '.png', dpi=100)
+    return auc_keras
     # Zoom in view of the upper left corner.
     # plt.figure(2)
     # plt.xlim(0, 0.2)

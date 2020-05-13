@@ -4,6 +4,7 @@ from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, C
 import numpy as np
 from sklearn.model_selection import train_test_split
 import keras.backend as K
+from sklearn.model_selection import StratifiedKFold
 
 import Bayesian_optimizer
 import ROC_PR
@@ -170,7 +171,8 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
 
     plot.plot(history, ("LRCN" + name))
 
-    ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True)
+    score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True)
+    return score
 
 
 def prepareDate(features, label):
@@ -202,6 +204,71 @@ def prepareDate(features, label):
     return X, y, FrameSize
 
 
+def run_model_kfold(df_train, labels, epoch):
+
+    X, y, FrameSize = prepareDate(df_train, labels)
+    # kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+    # X = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16], [17, 18], [19, 20], [21, 22], [23, 24],
+    #      [25, 26]]
+    # y = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16], [17, 18], [19, 20], [21, 22], [23, 24],
+    #      [25, 26]]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
+    X = np.append(X_train, X_test, axis=0)
+    y = np.append(y_train, y_test, axis=0)
+
+    cvscores1 = []
+    cvscores2 = []
+    cvscores3 = []
+    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=80)
+
+    for i in range(0, 10):
+        length = int(len(X)/10)
+        if i == 0:
+            X_train = X[length:]
+            X_test = X[0:length]
+            y_train = y[length:]
+            y_test = y[0:length]
+        elif i != 9:
+            X_train = np.append(X[0:length*i], X[length*(i+1):], axis=0)
+            X_test = X[length*i:length*(i+1)]
+            y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+            y_test = y[length * i:length * (i + 1)]
+        else:
+            X_train = X[0:length * i]
+            X_test = X[length * i:]
+            y_train = y[0:length * i]
+            y_test = y[length * i:]
+
+        score1 = model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "1_" + str(i),
+                                  0.3155266936013428, 240, 5, 5, 143, 216, 0.3)
+
+        score2 = model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "2_" + str(i),
+                                  0.1, 240, 5, 5, 143, 216, 0.3)
+
+        score3 = model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "5_" + str(i),
+                                  dropout2_rate=0.1783805364232113, dense_1=82, filterCNN=7, kernelCNN=5, LSTM1=140,
+                                  LSTM2=509, recurrent_dropout=0.3)
+        print("Area for 1")
+        print(score1)
+        print("Area for 2")
+        print(score2)
+        print("Area for 3")
+        print(score3)
+        cvscores1.append(score1)
+        cvscores2.append(score2)
+        cvscores3.append(score3)
+    f = open('result/kfoldResult.txt', 'w')
+    for ele in cvscores1:
+        f.write(str(ele) + '\n')
+    for ele in cvscores2:
+        f.write(str(ele) + '\n')
+    for ele in cvscores3:
+        f.write(str(ele) + '\n')
+    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores1), np.std(cvscores1)))
+    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores2), np.std(cvscores2)))
+    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores3), np.std(cvscores3)))
+
+
 def run_model(df_train, labels, epoch):
     X, y, FrameSize = prepareDate(df_train, labels)
 
@@ -231,7 +298,7 @@ def run_model(df_train, labels, epoch):
 
 if __name__ == '__main__':
     df_train, labels = data_preprocess.process(6)
-    run_model(df_train, labels, 10)
+    run_model_kfold(df_train, labels, 10)
 
 
 
