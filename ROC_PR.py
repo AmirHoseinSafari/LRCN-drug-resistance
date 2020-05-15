@@ -149,3 +149,4 @@ def ROC_ML(model, X_test, y_test, name, i):
     plt.show()
     plt.draw()
     fig1.savefig('result/ROC_' + name + str(i) + '.png', dpi=100)
+    return auc_keras
