@@ -23,32 +23,122 @@ def masked_accuracy(y_true, y_pred):
     return correct / total
 
 
-def get_model(dropout2_rate=0.2, dense_1_neurons=64, filterCNN=5, kernelCNN=3, LSTM1=128, LSTM2=64):
+def get_model(dropout2_rate=0.2, dense_1_neurons=64,
+              dense_2_neurons=64, dense_3_neurons=64, dense_4_neurons=64, dense_5_neurons=64,
+              filterCNN1=5, kernelCNN1=3, poolCNN1=3,
+              filterCNN2=5, kernelCNN2=3, poolCNN2=3,
+              filterCNN3=5, kernelCNN3=3, poolCNN3=3,
+              filterCNN4=5, kernelCNN4=3, poolCNN4=3,
+              filterCNN5=5, kernelCNN5=3, poolCNN5=3,
+              LSTM1=128, LSTM2=64, LSTM3=64, LSTM4=64, LSTM5=64, i1=1, i2=2, i3=1):
+
     model = Sequential()
     model.add(Dropout(dropout2_rate))
-    model.add(Conv1D(filters=filterCNN, kernel_size=kernelCNN, activation='relu', padding='same'))
-    model.add(MaxPooling1D(pool_size=kernelCNN))
-    model.add(LSTM(LSTM1, return_sequences=True, recurrent_dropout=0.3))
-    model.add(SpatialDropout1D(dropout2_rate))
-    model.add(LSTM(LSTM2, return_sequences=False, recurrent_dropout=0.3))
-    model.add(Dropout(dropout2_rate))
-    model.add(Dense(dense_1_neurons))
-    model.add(Dropout(dropout2_rate))
+    for i in range(0, i1):
+        if i == 0:
+            model.add(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN1))
+        elif i == 1:
+            model.add(Conv1D(filters=filterCNN2, kernel_size=kernelCNN2, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN2))
+        elif i == 2:
+            model.add(Conv1D(filters=filterCNN3, kernel_size=kernelCNN3, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN3))
+        elif i == 3:
+            model.add(Conv1D(filters=filterCNN4, kernel_size=kernelCNN4, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN4))
+        elif i == 4:
+            model.add(Conv1D(filters=filterCNN5, kernel_size=kernelCNN5, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN5))
+
+    for i in range(0, i2):
+        if i == 0:
+            model.add(LSTM(LSTM1, return_sequences=True, recurrent_dropout=0.3))
+            model.add(SpatialDropout1D(dropout2_rate))
+        elif i == 1:
+            model.add(LSTM(LSTM2, return_sequences=False, recurrent_dropout=0.3))
+            model.add(Dropout(dropout2_rate))
+        elif i == 2:
+            model.add(LSTM(LSTM3, return_sequences=False, recurrent_dropout=0.3))
+            model.add(Dropout(dropout2_rate))
+        elif i == 3:
+            model.add(LSTM(LSTM4, return_sequences=False, recurrent_dropout=0.3))
+            model.add(Dropout(dropout2_rate))
+        elif i == 4:
+            model.add(LSTM(LSTM5, return_sequences=False, recurrent_dropout=0.3))
+            model.add(Dropout(dropout2_rate))
+    for i in range(0, i3):
+        if i == 0:
+            model.add(Dense(dense_1_neurons))
+            model.add(Dropout(dropout2_rate))
+        if i == 1:
+            model.add(Dense(dense_2_neurons))
+            model.add(Dropout(dropout2_rate))
+        if i == 2:
+            model.add(Dense(dense_3_neurons))
+            model.add(Dropout(dropout2_rate))
+        if i == 3:
+            model.add(Dense(dense_4_neurons))
+            model.add(Dropout(dropout2_rate))
+        if i == 4:
+            model.add(Dense(dense_5_neurons))
+            model.add(Dropout(dropout2_rate))
     model.add(Dense(12, activation='sigmoid'))
     return model
 
 
-def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, LSTM2):
+def fit_with(dropout2_rate, dense_1_neurons_x128,
+              dense_2_neurons_x128, dense_3_neurons_x128, dense_4_neurons_x128, dense_5_neurons_x128,
+              filterCNN1, kernelCNN1, poolCNN1,
+              filterCNN2, kernelCNN2, poolCNN2,
+              filterCNN3, kernelCNN3, poolCNN3,
+              filterCNN4, kernelCNN4, poolCNN4,
+              filterCNN5, kernelCNN5, poolCNN5,
+              LSTM1, LSTM2, LSTM3, LSTM4, LSTM5, i1, i2, i3):
     # Create the model using a specified hyperparameters.
+    i1 = int(i1)
+    i2 = int(i2)
+    i3 = int(i3)
     dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
+    dense_2_neurons = max(int(dense_2_neurons_x128 * 64), 64)
+    dense_3_neurons = max(int(dense_3_neurons_x128 * 64), 64)
+    dense_4_neurons = max(int(dense_4_neurons_x128 * 64), 64)
+    dense_5_neurons = max(int(dense_5_neurons_x128 * 64), 64)
     LSTM1 = max(int(LSTM1 * 64), 64)
     LSTM2 = max(int(LSTM2 * 64), 64)
-    kernelCNN = max(int(kernelCNN), 3)
-    filterCNN = max(int(filterCNN), 4)
-    if kernelCNN >= filterCNN:
-        kernelCNN = filterCNN - 1
+    LSTM3 = max(int(LSTM3 * 64), 64)
+    LSTM4 = max(int(LSTM4 * 64), 64)
+    LSTM5 = max(int(LSTM5 * 64), 64)
+    kernelCNN1 = max(int(kernelCNN1), 3)
+    filterCNN1 = max(int(filterCNN1), 4)
+    poolCNN1 = max(int(poolCNN1), 4)
 
-    model = get_model(dropout2_rate, dense_1_neurons, filterCNN, kernelCNN, LSTM1, LSTM2)
+    kernelCNN2 = max(int(kernelCNN2), 3)
+    filterCNN2 = max(int(filterCNN2), 4)
+    poolCNN2 = max(int(poolCNN2), 4)
+
+    kernelCNN3 = max(int(kernelCNN3), 3)
+    filterCNN3 = max(int(filterCNN3), 4)
+    poolCNN3 = max(int(poolCNN3), 4)
+
+    kernelCNN4 = max(int(kernelCNN4), 3)
+    filterCNN4 = max(int(filterCNN4), 4)
+    poolCNN4 = max(int(poolCNN4), 4)
+
+    kernelCNN5 = max(int(kernelCNN5), 3)
+    filterCNN5 = max(int(filterCNN5), 4)
+    poolCNN5 = max(int(poolCNN5), 4)
+    # if kernelCNN >= filterCNN:
+    #     kernelCNN = filterCNN - 1
+
+    model = get_model(dropout2_rate, dense_1_neurons,
+              dense_2_neurons, dense_3_neurons, dense_4_neurons, dense_5_neurons,
+              filterCNN1, kernelCNN1, poolCNN1,
+              filterCNN2, kernelCNN2, poolCNN2,
+              filterCNN3, kernelCNN3, poolCNN3,
+              filterCNN4, kernelCNN4, poolCNN4,
+              filterCNN5, kernelCNN5, poolCNN5,
+              LSTM1, LSTM2, LSTM3, LSTM4, LSTM5, i1, i2, i3)
 
     # Train the model for a specified number of epochs.
     model.compile(
@@ -61,7 +151,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128, filterCNN, kernelCNN, LSTM1, L
     history = model.fit(
         X_train,
         y_train,
-        epochs=75,
+        epochs=50,
         batch_size=128,
         # shuffle=True,
         verbose=2,
@@ -95,12 +185,31 @@ def BO(X_train2, X_test2, y_train2, y_test2):
 
     fit_with_partial = partial(fit_with)
 
-    fit_with_partial(dropout2_rate=0.2, dense_1_neurons_x128=1, filterCNN=5, kernelCNN=3, LSTM1=1, LSTM2=1)
+    fit_with_partial(dropout2_rate=0.2, dense_1_neurons_x128=1, dense_2_neurons_x128=1, dense_3_neurons_x128=1,
+                     dense_4_neurons_x128=1, dense_5_neurons_x128=1,
+                     filterCNN1=5, kernelCNN1=3, poolCNN1=3,
+                     filterCNN2=5, kernelCNN2=3, poolCNN2=3,
+                     filterCNN3=5, kernelCNN3=3, poolCNN3=3,
+                     filterCNN4=5, kernelCNN4=3, poolCNN4=3,
+                     filterCNN5=5, kernelCNN5=3, poolCNN5=3,
+                     LSTM1=1, LSTM2=1, LSTM3=1, LSTM4=1, LSTM5=1, i1=1, i2=2, i3=1)
 
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 8.1), "filterCNN": (3.9, 8.1), "kernelCNN": (2.9, 6.1), "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1)}
+    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 8.1),
+               "dense_2_neurons_x128": (0.9, 8.1),
+               "dense_3_neurons_x128": (0.9, 8.1),
+               "dense_4_neurons_x128": (0.9, 8.1),
+               "dense_5_neurons_x128": (0.9, 8.1),
+               "filterCNN1": (3.9, 8.1), "kernelCNN1": (2.9, 6.1), "poolCNN1": (2.9, 6.1),
+               "filterCNN2": (3.9, 8.1), "kernelCNN2": (2.9, 6.1), "poolCNN2": (2.9, 6.1),
+               "filterCNN3": (3.9, 8.1), "kernelCNN3": (2.9, 6.1), "poolCNN3": (2.9, 6.1),
+               "filterCNN4": (3.9, 8.1), "kernelCNN4": (2.9, 6.1), "poolCNN4": (2.9, 6.1),
+               "filterCNN5": (3.9, 8.1), "kernelCNN5": (2.9, 6.1), "poolCNN5": (2.9, 6.1),
+               "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1), "LSTM3": (0.9, 8.1), "LSTM4": (0.9, 8.1),"LSTM5": (0.9, 8.1),
+               "i1": (0.9, 5.1), "i2": (0.9, 5.1), "i3": (0.9, 5.1),
+               }
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
