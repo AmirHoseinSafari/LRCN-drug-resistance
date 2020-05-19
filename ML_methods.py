@@ -9,6 +9,7 @@ from sklearn.metrics import roc_curve, auc
 import ROC_PR
 from sklearn.multiclass import OneVsRestClassifier
 import numpy as np
+import Bayesian_optimizer_ML
 
 res = []
 
@@ -116,6 +117,8 @@ def model_run(df_train, labels):
             if y[i2][0] != 0.0 and y[i2][0] != 1.0:
                 del y[i2]
                 del X[i2]
+        # Bayesian_optimizer_ML.BO_SVM(X, y, i)
+        # Bayesian_optimizer_ML.BO_LR(X, y, i)
         svm(X, y, i)
         lr(X, y, i)
     f = open('result/mlResult.txt', 'w')
