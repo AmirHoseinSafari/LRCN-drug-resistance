@@ -37,33 +37,50 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64,
     for i in range(0, i1):
         if i == 0:
             model.add(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN1))
+            model.add(MaxPooling1D(pool_size=poolCNN1, padding='same'))
         elif i == 1:
             model.add(Conv1D(filters=filterCNN2, kernel_size=kernelCNN2, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN2))
+            model.add(MaxPooling1D(pool_size=poolCNN2, padding='same'))
         elif i == 2:
             model.add(Conv1D(filters=filterCNN3, kernel_size=kernelCNN3, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN3))
+            model.add(MaxPooling1D(pool_size=poolCNN3, padding='same'))
         elif i == 3:
             model.add(Conv1D(filters=filterCNN4, kernel_size=kernelCNN4, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN4))
+            model.add(MaxPooling1D(pool_size=poolCNN4, padding='same'))
         elif i == 4:
             model.add(Conv1D(filters=filterCNN5, kernel_size=kernelCNN5, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN5))
+            model.add(MaxPooling1D(pool_size=poolCNN5, padding='same'))
 
     for i in range(0, i2):
+        if i == i2 - 1:
+            if i == 0:
+                model.add(LSTM(LSTM1, return_sequences=False, recurrent_dropout=0.3))
+                model.add(Dropout(dropout2_rate))
+            elif i == 1:
+                model.add(LSTM(LSTM2, return_sequences=False, recurrent_dropout=0.3))
+                model.add(Dropout(dropout2_rate))
+            elif i == 2:
+                model.add(LSTM(LSTM3, return_sequences=False, recurrent_dropout=0.3))
+                model.add(Dropout(dropout2_rate))
+            elif i == 3:
+                model.add(LSTM(LSTM4, return_sequences=False, recurrent_dropout=0.3))
+                model.add(Dropout(dropout2_rate))
+            elif i == 4:
+                model.add(LSTM(LSTM5, return_sequences=False, recurrent_dropout=0.3))
+                model.add(Dropout(dropout2_rate))
+            break
         if i == 0:
             model.add(LSTM(LSTM1, return_sequences=True, recurrent_dropout=0.3))
             model.add(SpatialDropout1D(dropout2_rate))
         elif i == 1:
-            model.add(LSTM(LSTM2, return_sequences=False, recurrent_dropout=0.3))
-            model.add(Dropout(dropout2_rate))
+            model.add(LSTM(LSTM2, return_sequences=True, recurrent_dropout=0.3))
+            model.add(SpatialDropout1D(dropout2_rate))
         elif i == 2:
-            model.add(LSTM(LSTM3, return_sequences=False, recurrent_dropout=0.3))
-            model.add(Dropout(dropout2_rate))
+            model.add(LSTM(LSTM3, return_sequences=True, recurrent_dropout=0.3))
+            model.add(SpatialDropout1D(dropout2_rate))
         elif i == 3:
-            model.add(LSTM(LSTM4, return_sequences=False, recurrent_dropout=0.3))
-            model.add(Dropout(dropout2_rate))
+            model.add(LSTM(LSTM4, return_sequences=True, recurrent_dropout=0.3))
+            model.add(SpatialDropout1D(dropout2_rate))
         elif i == 4:
             model.add(LSTM(LSTM5, return_sequences=False, recurrent_dropout=0.3))
             model.add(Dropout(dropout2_rate))
@@ -99,35 +116,48 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
     i1 = int(i1)
     i2 = int(i2)
     i3 = int(i3)
+
     dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
     dense_2_neurons = max(int(dense_2_neurons_x128 * 64), 64)
     dense_3_neurons = max(int(dense_3_neurons_x128 * 64), 64)
     dense_4_neurons = max(int(dense_4_neurons_x128 * 64), 64)
     dense_5_neurons = max(int(dense_5_neurons_x128 * 64), 64)
+
     LSTM1 = max(int(LSTM1 * 64), 64)
     LSTM2 = max(int(LSTM2 * 64), 64)
     LSTM3 = max(int(LSTM3 * 64), 64)
     LSTM4 = max(int(LSTM4 * 64), 64)
     LSTM5 = max(int(LSTM5 * 64), 64)
+
     kernelCNN1 = max(int(kernelCNN1), 3)
     filterCNN1 = max(int(filterCNN1), 4)
     poolCNN1 = max(int(poolCNN1), 4)
+    if poolCNN1 > kernelCNN1:
+        poolCNN1 = kernelCNN1
 
     kernelCNN2 = max(int(kernelCNN2), 3)
     filterCNN2 = max(int(filterCNN2), 4)
     poolCNN2 = max(int(poolCNN2), 4)
+    if poolCNN2 > kernelCNN2:
+        poolCNN2 = kernelCNN2
 
     kernelCNN3 = max(int(kernelCNN3), 3)
     filterCNN3 = max(int(filterCNN3), 4)
     poolCNN3 = max(int(poolCNN3), 4)
+    if poolCNN3 > kernelCNN3:
+        poolCNN3 = kernelCNN3
 
     kernelCNN4 = max(int(kernelCNN4), 3)
     filterCNN4 = max(int(filterCNN4), 4)
     poolCNN4 = max(int(poolCNN4), 4)
+    if poolCNN4 > kernelCNN4:
+        poolCNN4 = kernelCNN4
 
     kernelCNN5 = max(int(kernelCNN5), 3)
     filterCNN5 = max(int(filterCNN5), 4)
     poolCNN5 = max(int(poolCNN5), 4)
+    if poolCNN5 > kernelCNN5:
+        poolCNN5 = kernelCNN5
     # if kernelCNN >= filterCNN:
     #     kernelCNN = filterCNN - 1
 
@@ -151,7 +181,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
     history = model.fit(
         X_train,
         y_train,
-        epochs=50,
+        epochs=1,
         batch_size=128,
         # shuffle=True,
         verbose=2,
@@ -208,7 +238,7 @@ def BO(X_train2, X_test2, y_train2, y_test2):
                "filterCNN4": (3.9, 8.1), "kernelCNN4": (2.9, 6.1), "poolCNN4": (2.9, 6.1),
                "filterCNN5": (3.9, 8.1), "kernelCNN5": (2.9, 6.1), "poolCNN5": (2.9, 6.1),
                "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1), "LSTM3": (0.9, 8.1), "LSTM4": (0.9, 8.1),"LSTM5": (0.9, 8.1),
-               "i1": (0.9, 5.1), "i2": (0.9, 5.1), "i3": (0.9, 5.1),
+               "i1": (1.9, 5.1), "i2": (1.9, 5.1), "i3": (1.9, 5.1),
                }
 
     optimizer = BayesianOptimization(
