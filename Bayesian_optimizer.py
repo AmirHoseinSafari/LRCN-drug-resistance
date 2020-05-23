@@ -276,20 +276,100 @@ if __name__ == '__main__':
     # print(filterCNN)
 
     # second
-    LSTM1 = 2.19096774380784
-    LSTM2 = 7.968090930682244
-    dense_1_neurons_x128 = 1.2814343371372734
-    dropout2_rate = 0.1783805364232113
-    filterCNN = 7.859897700
-    kernelCNN = 5.59569428296302
+    # LSTM1 = 2.19096774380784
+    # LSTM2 = 7.968090930682244
+    # dense_1_neurons_x128 = 1.2814343371372734
+    # dropout2_rate = 0.1783805364232113
+    # filterCNN = 7.859897700
+    # kernelCNN = 5.59569428296302
+    # dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
+    # LSTM1 = max(int(LSTM1 * 64), 64)
+    # LSTM2 = max(int(LSTM2 * 64), 64)
+    # kernelCNN = max(int(kernelCNN), 3)
+    # filterCNN = max(int(filterCNN), 4)
+    #
+    # print(dense_1_neurons)
+    # print(LSTM1)
+    # print(LSTM2)
+    # print(kernelCNN)
+    # print(filterCNN)
+    LSTM1 = 7.222626024691774
+    LSTM2 = 1.6080972035979606
+    LSTM3 = 3.931974900036375
+    LSTM4 = 7.796804617083613
+    LSTM5 = 4.738790051805723
+    dense_1_neurons_x128 = 5.881515220443408
+    dense_2_neurons_x128 = 3.171712543243653
+    dense_3_neurons_x128 = 5.842806679307402
+    dense_4_neurons_x128 = 6.909304837661085
+    dense_5_neurons_x128 = 1.031675596878181
+    dropout2_rate = 0.40005772597798706
+    filterCNN1 = 8.053216573407276
+    filterCNN2 = 7.0422957483953255
+    filterCNN3 = 5.077864766670501
+    filterCNN4 = 7.214973179496251
+    filterCNN5 = 4.333549227626096
+    i1 = 3.3332592837628963
+    i2 = 4.807505609897905
+    i3 = 2.839565274795774
+    kernelCNN1 = 3.8208810834763156
+    kernelCNN2 = 3.3160914307784886
+    kernelCNN3 = 2.9619742651849505
+    kernelCNN4 = 5.072273705407651
+    kernelCNN5 = 3.5772099712001886
+    poolCNN1 = 3.749749309991124
+    poolCNN2 = 4.473034109697082
+    poolCNN3 = 3.070760144374657
+    poolCNN4= 4.737176337574441
+    poolCNN5 = 3.3695314396985925
+    i1 = int(i1)
+    i2 = int(i2)
+    i3 = int(i3)
+
     dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
+    dense_2_neurons = max(int(dense_2_neurons_x128 * 64), 64)
+    dense_3_neurons = max(int(dense_3_neurons_x128 * 64), 64)
+    dense_4_neurons = max(int(dense_4_neurons_x128 * 64), 64)
+    dense_5_neurons = max(int(dense_5_neurons_x128 * 64), 64)
+
     LSTM1 = max(int(LSTM1 * 64), 64)
     LSTM2 = max(int(LSTM2 * 64), 64)
-    kernelCNN = max(int(kernelCNN), 3)
-    filterCNN = max(int(filterCNN), 4)
+    LSTM3 = max(int(LSTM3 * 64), 64)
+    LSTM4 = max(int(LSTM4 * 64), 64)
+    LSTM5 = max(int(LSTM5 * 64), 64)
 
-    print(dense_1_neurons)
+    kernelCNN1 = max(int(kernelCNN1), 3)
+    filterCNN1 = max(int(filterCNN1), 4)
+    poolCNN1 = max(int(poolCNN1), 4)
+    if poolCNN1 > kernelCNN1:
+        poolCNN1 = kernelCNN1
+
+    kernelCNN2 = max(int(kernelCNN2), 3)
+    filterCNN2 = max(int(filterCNN2), 4)
+    poolCNN2 = max(int(poolCNN2), 4)
+    if poolCNN2 > kernelCNN2:
+        poolCNN2 = kernelCNN2
+
+    kernelCNN3 = max(int(kernelCNN3), 3)
+    filterCNN3 = max(int(filterCNN3), 4)
+    poolCNN3 = max(int(poolCNN3), 4)
+    if poolCNN3 > kernelCNN3:
+        poolCNN3 = kernelCNN3
+
+    kernelCNN4 = max(int(kernelCNN4), 3)
+    filterCNN4 = max(int(filterCNN4), 4)
+    poolCNN4 = max(int(poolCNN4), 4)
+    if poolCNN4 > kernelCNN4:
+        poolCNN4 = kernelCNN4
+
+    kernelCNN5 = max(int(kernelCNN5), 3)
+    filterCNN5 = max(int(filterCNN5), 4)
+    poolCNN5 = max(int(poolCNN5), 4)
+    if poolCNN5 > kernelCNN5:
+        poolCNN5 = kernelCNN5
+
+    print(i2)
     print(LSTM1)
     print(LSTM2)
-    print(kernelCNN)
-    print(filterCNN)
+    print(LSTM3)
+    print(LSTM4)
