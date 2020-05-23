@@ -181,7 +181,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
     history = model.fit(
         X_train,
         y_train,
-        epochs=1,
+        epochs=80,
         batch_size=128,
         # shuffle=True,
         verbose=2,
@@ -247,7 +247,7 @@ def BO(X_train2, X_test2, y_train2, y_test2):
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
-    optimizer.maximize(init_points=10, n_iter=10, )
+    optimizer.maximize(init_points=20, n_iter=20, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
