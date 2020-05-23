@@ -43,3 +43,34 @@ def LoadLabel(path):
     dt = pd.read_csv(path + 'AllLabels' + '.csv')
     dt.set_index(dt.columns[0], inplace=True, drop=True)
     return dt
+
+
+def load_data_gene(lst, path):
+    lst = sorted(np.unique(lst))
+
+    if lst[0] == 0:
+        dt = pd.read_pickle(path + 'Isolate_Gene_Seqs_' + str(lst[0]) + '_200.pkl')
+        # print(dt.iloc[0])
+        dt.set_index(dt.columns[0])
+        # dt = pd.DataFrame(
+        #     np.row_stack([dt.columns, dt.values]),
+        #     columns=dt.iloc[0]
+        # )
+
+
+
+    for i in lst[1:]:
+        tmp = pd.read_pickle(path + 'Isolate_Gene_Seqs_' + str(lst[i]) + '_200.pkl')
+        tmp.index = dt.index
+        dt = pd.concat([dt, tmp], axis='columns', ignore_index=True)
+
+    dt.columns = list(range(0, len(dt.columns)))
+
+    print(dt.shape)
+    print(dt.head())
+    return (dt)
+
+
+if __name__ == '__main__':
+    # LoadData(list(range(1, 2)), 'Data/', 0)
+    load_data_gene(list(range(0, 1)), 'Data/')

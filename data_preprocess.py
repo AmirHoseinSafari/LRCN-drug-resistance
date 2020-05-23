@@ -1,7 +1,12 @@
 import LoadData
+import pandas as pd
 
-def process(numOfFiles, nrow=0):
-    df_train = LoadData.LoadData(list(range(1, numOfFiles)), 'Data/', nrow)
+
+def process(numOfFiles, nrow=0, gene=False):
+    if not gene:
+        df_train = LoadData.LoadData(list(range(1, numOfFiles)), 'Data/', nrow)
+    else:
+        df_train = LoadData.load_data_gene(list(range(0, numOfFiles)), 'Data/')
 
     # df_train = df_train[df_train.columns[df_train.sum() > 5]]
 
@@ -63,5 +68,43 @@ def process(numOfFiles, nrow=0):
     df_train = df_train.drop(['capreomycin'], axis=1)
     df_train = df_train.drop(['amikacin'], axis=1)
     # print(dfStreptomycin.head(10))
+    if gene:
+        df_train = one_hot_gene(df_train)
 
     return df_train, labels
+
+
+def one_hot_gene(df_train):
+    # df_train = df_train.iloc[0:50]
+    tmp = df_train.values.tolist()
+    for i in range(0, len(tmp)):
+        if i % 100 == 0:
+            print(i)
+        for j in range(0, len(tmp[0])):
+            one = []
+            for k in range(0, len(tmp[i][j])):
+                if tmp[i][j][k] == 'A':
+                    one.append(True)
+                    one.append(False)
+                    one.append(False)
+                    one.append(False)
+                elif tmp[i][j][k] == 'C':
+                    one.append(False)
+                    one.append(True)
+                    one.append(False)
+                    one.append(False)
+                elif tmp[i][j][k] == 'T':
+                    one.append(False)
+                    one.append(False)
+                    one.append(True)
+                    one.append(False)
+                elif tmp[i][j][k] == 'G':
+                    one.append(False)
+                    one.append(False)
+                    one.append(False)
+                    one.append(True)
+                else:
+                    print("Error!")
+            tmp[i][j] = one
+    # print(pd.DataFrame(tmp))
+    return pd.DataFrame(tmp)
