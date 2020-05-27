@@ -3,7 +3,7 @@ import model
 import model_one_vs_all
 import ML_methods
 
-epochs = 200
+epochs = 2
 
 # drop columns below 5 SNP
 # df_train, labels = data_preprocess.process(6, 5)
@@ -14,8 +14,8 @@ epochs = 200
 
 
 # df_train, labels = data_preprocess.process(1, gene=True)
-df_train, labels = data_preprocess.process(3)
-model_one_vs_all.run_model(df_train, labels, epochs)
+df_train, labels = data_preprocess.process(3, limited=True)
+model_one_vs_all.run_model(df_train, labels, epochs, limited=True)
 
 
 # df_train, labels = data_preprocess.process(6)

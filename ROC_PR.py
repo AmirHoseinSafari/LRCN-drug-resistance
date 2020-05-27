@@ -6,11 +6,14 @@ import numpy as np
 num_of_drugs = 12
 
 
-def ROC(model, X_test, y_test, name, multi=False):
+def ROC(model, X_test, y_test, name, multi=False, limited=False):
     y_pred_keras_tmp = model.predict(X_test)
     y_pred_keras = []
     y_test_tmp = []
     scores = []
+    global num_of_drugs
+    if limited:
+        num_of_drugs = 7
 
     if multi == False:
         for i in range(0, len(y_pred_keras_tmp)):

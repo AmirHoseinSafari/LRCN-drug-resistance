@@ -2,7 +2,7 @@ import LoadData
 import pandas as pd
 
 
-def process(numOfFiles, nrow=0, gene=False):
+def process(numOfFiles, nrow=0, gene=False, limited=False):
     if not gene:
         df_train = LoadData.LoadData(list(range(1, numOfFiles)), 'Data/', nrow)
     else:
@@ -11,6 +11,14 @@ def process(numOfFiles, nrow=0, gene=False):
     # df_train = df_train[df_train.columns[df_train.sum() > 5]]
 
     df_label = LoadData.LoadLabel('Data/')
+
+    if limited:
+        df_label = df_label.drop(['ciprofloxacin'], axis=1)
+        df_label = df_label.drop(['capreomycin'], axis=1)
+        df_label = df_label.drop(['amikacin'], axis=1)
+        df_label = df_label.drop(['ethionamide'], axis=1)
+        df_label = df_label.drop(['moxifloxacin'], axis=1)
+
 
     print('label set: {0}'.format(df_label.shape))
 
@@ -31,8 +39,9 @@ def process(numOfFiles, nrow=0, gene=False):
     dfOfloxacin = df_train[['ofloxacin']]
     labels.append(dfOfloxacin)
 
-    dfMoxifloxacin = df_train[['moxifloxacin']]
-    labels.append(dfMoxifloxacin)
+    if not limited:
+        dfMoxifloxacin = df_train[['moxifloxacin']]
+        labels.append(dfMoxifloxacin)
 
     dfKanamycin = df_train[['kanamycin']]
     labels.append(dfKanamycin)
@@ -40,33 +49,38 @@ def process(numOfFiles, nrow=0, gene=False):
     dfIsoniazid = df_train[['isoniazid']]
     labels.append(dfIsoniazid)
 
-    dfEthionamide = df_train[['ethionamide']]
-    labels.append(dfEthionamide)
+    if not limited:
+        dfEthionamide = df_train[['ethionamide']]
+        labels.append(dfEthionamide)
 
     dfEthambutol = df_train[['ethambutol']]
     labels.append(dfEthambutol)
 
-    dfCiprofloxacin = df_train[['ciprofloxacin']]
-    labels.append(dfCiprofloxacin)
+    if not limited:
+        dfCiprofloxacin = df_train[['ciprofloxacin']]
+        labels.append(dfCiprofloxacin)
 
-    dfCapreomycin = df_train[['capreomycin']]
-    labels.append(dfCapreomycin)
+        dfCapreomycin = df_train[['capreomycin']]
+        labels.append(dfCapreomycin)
 
-    dfAmikacin = df_train[['amikacin']]
-    labels.append(dfAmikacin)
+        dfAmikacin = df_train[['amikacin']]
+        labels.append(dfAmikacin)
 
     df_train = df_train.drop(['streptomycin'], axis=1)
     df_train = df_train.drop(['rifampicin'], axis=1)
     df_train = df_train.drop(['pyrazinamide'], axis=1)
     df_train = df_train.drop(['ofloxacin'], axis=1)
-    df_train = df_train.drop(['moxifloxacin'], axis=1)
+    if not limited:
+        df_train = df_train.drop(['moxifloxacin'], axis=1)
     df_train = df_train.drop(['kanamycin'], axis=1)
     df_train = df_train.drop(['isoniazid'], axis=1)
-    df_train = df_train.drop(['ethionamide'], axis=1)
+    if not limited:
+        df_train = df_train.drop(['ethionamide'], axis=1)
     df_train = df_train.drop(['ethambutol'], axis=1)
-    df_train = df_train.drop(['ciprofloxacin'], axis=1)
-    df_train = df_train.drop(['capreomycin'], axis=1)
-    df_train = df_train.drop(['amikacin'], axis=1)
+    if not limited:
+        df_train = df_train.drop(['ciprofloxacin'], axis=1)
+        df_train = df_train.drop(['capreomycin'], axis=1)
+        df_train = df_train.drop(['amikacin'], axis=1)
     # print(dfStreptomycin.head(10))
     if gene:
         df_train = one_hot_gene(df_train)

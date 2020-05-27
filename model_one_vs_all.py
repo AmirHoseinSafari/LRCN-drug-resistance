@@ -126,7 +126,7 @@ def model_256_128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, ea
     ROC_PR.ROC(model, X_test, y_test, "256_128_64_2", True)
 
 
-def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name, dropout2_rate, dense_1, filterCNN, kernelCNN, LSTM1, LSTM2, recurrent_dropout):
+def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name, dropout2_rate, dense_1, filterCNN, kernelCNN, LSTM1, LSTM2, recurrent_dropout, limited=False):
     print(X.shape)
     print(FrameSize)
     model = Sequential()
@@ -147,7 +147,11 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
     # model.add(Dense(64))
     model.add(Dense(dense_1))
     model.add(Dropout(dropout2_rate))
-    model.add(Dense(12, activation='sigmoid'))
+    if limited:
+        model.add(Dense(7, activation='sigmoid'))
+    else:
+        model.add(Dense(12, activation='sigmoid'))
+
 
     model.compile(
         loss=masked_loss_function,
@@ -171,7 +175,7 @@ def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, ep
 
     plot.plot(history, ("LRCN" + name))
 
-    score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True)
+    score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True, limited=limited)
     return score
 
 
@@ -323,7 +327,7 @@ def run_model_kfold(df_train, labels, epoch):
     print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores3), np.std(cvscores3)))
 
 
-def run_model(df_train, labels, epoch):
+def run_model(df_train, labels, epoch, limited=False):
     print("here")
     X, y, FrameSize = prepareDate(df_train, labels)
     print("here")
@@ -334,12 +338,12 @@ def run_model(df_train, labels, epoch):
 
     # Bayesian_optimizer.BO(X_train, X_test, y_train, y_test)
     print("here")
-    for i in range(0, 4):
+    for i in range(0, 2):
         # model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "1_" + str(i),
         #                           0.3155266936013428, 240, 5, 5, 143, 216, 0.3)
         #
-        # model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "2_" + str(i),
-        #                           0.1, 240, 5, 5, 143, 216, 0.3)
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "2_" + str(i),
+                                  0.1, 240, 5, 5, 143, 216, 0.3, limited)
 
         # model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "3_" + str(i),
         #                           0.1, 256, 8, 6, 128, 256, 0.3)
@@ -351,7 +355,12 @@ def run_model(df_train, labels, epoch):
         #                           dropout2_rate=0.1783805364232113, dense_1=82, filterCNN=7, kernelCNN=5, LSTM1=140,
         #                           LSTM2=509, recurrent_dropout=0.3)
 
-        model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "6_" + str(i))
+        # model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "6_" + str(i))
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, shuffle=True)
+    for i in range(0, 2):
+        model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "20_" + str(i),
+                                  0.1, 240, 5, 5, 143, 216, 0.3, limited)
+
 
 if __name__ == '__main__':
     df_train, labels = data_preprocess.process(6)
