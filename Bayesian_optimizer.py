@@ -100,7 +100,10 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64,
         if i == 4:
             model.add(Dense(dense_5_neurons))
             model.add(Dropout(dropout2_rate))
-    model.add(Dense(12, activation='sigmoid'))
+    if limited :
+        model.add(Dense(7, activation='sigmoid'))
+    else:
+        model.add(Dense(12, activation='sigmoid'))
     return model
 
 
@@ -195,15 +198,16 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
 
     # Return the accuracy.
     # print(history.history['val_masked_accuracy'])
-    score = ROC_PR.ROC_Score(model, X_test, y_test)
+    score = ROC_PR.ROC_Score(model, X_test, y_test, limited=limited)
     print('area under ROC curve:', score)
     return score
 
 
 X_train, X_test, y_train, y_test = 0, 0, 0, 0
+limited = False
 
 
-def BO(X_train2, X_test2, y_train2, y_test2):
+def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
     global X_train
     X_train = X_train2
     global X_test
@@ -212,6 +216,8 @@ def BO(X_train2, X_test2, y_train2, y_test2):
     y_train = y_train2
     global y_test
     y_test = y_test2
+    global limited
+    limited = limited2
 
     fit_with_partial = partial(fit_with)
 
@@ -247,13 +253,27 @@ def BO(X_train2, X_test2, y_train2, y_test2):
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
-    optimizer.maximize(init_points=20, n_iter=20, )
+    optimizer.maximize(init_points=30, n_iter=30, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
 
     print("resultttttttttttttt")
     print(optimizer.max)
+
+    import json
+
+    with open('BO_result.txt', 'ab') as f:
+        if limited:
+            f.write("True \n".encode())
+        elif not limited:
+            f.write("False \n".encode())
+        if portion == 0.2:
+            f.write("0.2 \n".encode())
+        elif portion == 0.1:
+            f.write("0.1 \n".encode())
+        f.write(json.dumps(optimizer.max).encode())
+        f.write("\n".encode())
 
 
 if __name__ == '__main__':

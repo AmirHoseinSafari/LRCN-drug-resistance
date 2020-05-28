@@ -63,7 +63,10 @@ def ROC(model, X_test, y_test, name, multi=False, limited=False):
         return scores
 
 
-def ROC_Score(model, X_test, y_test):
+def ROC_Score(model, X_test, y_test, limited=False):
+    global num_of_drugs
+    if limited:
+        num_of_drugs = 7
     y_pred_keras_tmp = model.predict(X_test)
     y_pred_keras = []
     y_test_tmp = []

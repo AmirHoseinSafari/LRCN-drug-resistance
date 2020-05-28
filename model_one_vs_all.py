@@ -4,13 +4,11 @@ from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, C
 import numpy as np
 from sklearn.model_selection import train_test_split
 import keras.backend as K
-from sklearn.model_selection import StratifiedKFold
 
 import Bayesian_optimizer
 import ROC_PR
 import plot
 import data_preprocess
-# from keras.utils.vis_utils import plot_model
 
 import tensorflow as tf
 
@@ -360,6 +358,13 @@ def run_model(df_train, labels, epoch, limited=False):
     for i in range(0, 2):
         model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "20_" + str(i),
                                   0.1, 240, 5, 5, 143, 216, 0.3, limited)
+
+def run_bayesian(df_train, labels, epoch, limited=False, portion=0.1):
+    X, y, FrameSize = prepareDate(df_train, labels)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=portion, random_state=1, shuffle=True)
+    Bayesian_optimizer.BO(X_train, X_test, y_train, y_test, limited, portion=portion)
+
+
 
 
 if __name__ == '__main__':
