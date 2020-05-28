@@ -5,7 +5,7 @@ import ML_methods
 import multiprocessing
 
 
-epochs = 2
+epochs = 200
 
 # drop columns below 5 SNP
 # df_train, labels = data_preprocess.process(6, 5)
