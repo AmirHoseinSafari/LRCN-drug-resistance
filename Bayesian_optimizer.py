@@ -313,35 +313,167 @@ if __name__ == '__main__':
     # print(LSTM2)
     # print(kernelCNN)
     # print(filterCNN)
-    LSTM1 = 7.222626024691774
-    LSTM2 = 1.6080972035979606
-    LSTM3 = 3.931974900036375
-    LSTM4 = 7.796804617083613
-    LSTM5 = 4.738790051805723
-    dense_1_neurons_x128 = 5.881515220443408
-    dense_2_neurons_x128 = 3.171712543243653
-    dense_3_neurons_x128 = 5.842806679307402
-    dense_4_neurons_x128 = 6.909304837661085
-    dense_5_neurons_x128 = 1.031675596878181
-    dropout2_rate = 0.40005772597798706
-    filterCNN1 = 8.053216573407276
-    filterCNN2 = 7.0422957483953255
-    filterCNN3 = 5.077864766670501
-    filterCNN4 = 7.214973179496251
-    filterCNN5 = 4.333549227626096
-    i1 = 3.3332592837628963
-    i2 = 4.807505609897905
-    i3 = 2.839565274795774
-    kernelCNN1 = 3.8208810834763156
-    kernelCNN2 = 3.3160914307784886
-    kernelCNN3 = 2.9619742651849505
-    kernelCNN4 = 5.072273705407651
-    kernelCNN5 = 3.5772099712001886
-    poolCNN1 = 3.749749309991124
-    poolCNN2 = 4.473034109697082
-    poolCNN3 = 3.070760144374657
-    poolCNN4= 4.737176337574441
-    poolCNN5 = 3.3695314396985925
+    ##########################
+    # LSTM1 = 7.222626024691774
+    # LSTM2 = 1.6080972035979606
+    # LSTM3 = 3.931974900036375
+    # LSTM4 = 7.796804617083613
+    # LSTM5 = 4.738790051805723
+    # dense_1_neurons_x128 = 5.881515220443408
+    # dense_2_neurons_x128 = 3.171712543243653
+    # dense_3_neurons_x128 = 5.842806679307402
+    # dense_4_neurons_x128 = 6.909304837661085
+    # dense_5_neurons_x128 = 1.031675596878181
+    # dropout2_rate = 0.40005772597798706
+    # filterCNN1 = 8.053216573407276
+    # filterCNN2 = 7.0422957483953255
+    # filterCNN3 = 5.077864766670501
+    # filterCNN4 = 7.214973179496251
+    # filterCNN5 = 4.333549227626096
+    # i1 = 3.3332592837628963
+    # i2 = 4.807505609897905
+    # i3 = 2.839565274795774
+    # kernelCNN1 = 3.8208810834763156
+    # kernelCNN2 = 3.3160914307784886
+    # kernelCNN3 = 2.9619742651849505
+    # kernelCNN4 = 5.072273705407651
+    # kernelCNN5 = 3.5772099712001886
+    # poolCNN1 = 3.749749309991124
+    # poolCNN2 = 4.473034109697082
+    # poolCNN3 = 3.070760144374657
+    # poolCNN4= 4.737176337574441
+    # poolCNN5 = 3.3695314396985925
+    # i1 = int(i1)
+    # i2 = int(i2)
+    # i3 = int(i3)
+    #
+    # dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
+    # dense_2_neurons = max(int(dense_2_neurons_x128 * 64), 64)
+    # dense_3_neurons = max(int(dense_3_neurons_x128 * 64), 64)
+    # dense_4_neurons = max(int(dense_4_neurons_x128 * 64), 64)
+    # dense_5_neurons = max(int(dense_5_neurons_x128 * 64), 64)
+    #
+    # LSTM1 = max(int(LSTM1 * 64), 64)
+    # LSTM2 = max(int(LSTM2 * 64), 64)
+    # LSTM3 = max(int(LSTM3 * 64), 64)
+    # LSTM4 = max(int(LSTM4 * 64), 64)
+    # LSTM5 = max(int(LSTM5 * 64), 64)
+    #
+    # kernelCNN1 = max(int(kernelCNN1), 3)
+    # filterCNN1 = max(int(filterCNN1), 4)
+    # poolCNN1 = max(int(poolCNN1), 4)
+    # if poolCNN1 > kernelCNN1:
+    #     poolCNN1 = kernelCNN1
+    #
+    # kernelCNN2 = max(int(kernelCNN2), 3)
+    # filterCNN2 = max(int(filterCNN2), 4)
+    # poolCNN2 = max(int(poolCNN2), 4)
+    # if poolCNN2 > kernelCNN2:
+    #     poolCNN2 = kernelCNN2
+    #
+    # kernelCNN3 = max(int(kernelCNN3), 3)
+    # filterCNN3 = max(int(filterCNN3), 4)
+    # poolCNN3 = max(int(poolCNN3), 4)
+    # if poolCNN3 > kernelCNN3:
+    #     poolCNN3 = kernelCNN3
+    #
+    # kernelCNN4 = max(int(kernelCNN4), 3)
+    # filterCNN4 = max(int(filterCNN4), 4)
+    # poolCNN4 = max(int(poolCNN4), 4)
+    # if poolCNN4 > kernelCNN4:
+    #     poolCNN4 = kernelCNN4
+    #
+    # kernelCNN5 = max(int(kernelCNN5), 3)
+    # filterCNN5 = max(int(filterCNN5), 4)
+    # poolCNN5 = max(int(poolCNN5), 4)
+    # if poolCNN5 > kernelCNN5:
+    #     poolCNN5 = kernelCNN5
+    #
+    # print(i2)
+    # print(LSTM1)
+    # print(LSTM2)
+    # print(LSTM3)
+    # print(LSTM4)
+    ########################
+
+    # out - 42885575.
+    # May 28
+    # no limit, 0.1
+    # resultttttttttttttt
+    # {'target': 0.9301840042004165,
+    #  'params = {'LSTM1 = 7.222626024691774\n LSTM2 = 1.6080972035979606/n LSTM3 = 3.931974900036375,
+    #             'LSTM4 = 7.796804617083613//n LSTM5 = 4.738790051805723 dense_1_neurons_x128 = 5.881515220443408,
+    #             'dense_2_neurons_x128 = 3.171712543243653 dense_3_neurons_x128 = 5.842806679307402,
+    #             'dense_4_neurons_x128 = 6.909304837661085 dense_5_neurons_x128 = 1.031675596878181,
+    #             'dropout2_rate = 0.40005772597798706 filterCNN1 = 8.053216573407276 filterCNN2 = 7.0422957483953255,
+    #             'filterCNN3 = 5.077864766670501 filterCNN4 = 7.214973179496251 filterCNN5 = 4.333549227626096,
+    #             'i1 = 3.3332592837628963 i2 = 4.807505609897905 i3 = 2.839565274795774,
+    #             'kernelCNN1 = 3.8208810834763156 kernelCNN2 = 3.3160914307784886 kernelCNN3 = 2.9619742651849505,
+    #             'kernelCNN4 = 5.072273705407651 kernelCNN5 = 3.5772099712001886 poolCNN1 = 3.749749309991124,
+    #             'poolCNN2 = 4.473034109697082 poolCNN3 = 3.070760144374657 poolCNN4 = 4.737176337574441,
+    #             'poolCNN5 = 3.3695314396985925}}
+
+
+
+    # first run, no limit, 0.1
+    # 13 June
+    # {'target = 0.928148336056918,
+    #  'params = {'LSTM1 = 7.06196424422828 LSTM2 = 2.3042698992626924 LSTM3 = 6.280709834389847,
+    #             'LSTM4 = 2.985139772545517 LSTM5 = 6.471354868158111 dense_1_neurons_x128 = 3.9797087712197485,
+    #             'dense_2_neurons_x128 = 6.715428545607908 dense_3_neurons_x128 = 3.4454510112095305,
+    #             'dense_4_neurons_x128 = 2.438591310932984 dense_5_neurons_x128 = 6.424448460636719,
+    #             'dropout2_rate = 0.22345677905226047 filterCNN1 = 6.979629284450995 filterCNN2 = 7.026787242926474,
+    #             'filterCNN3 = 4.829866143814444 filterCNN4 = 4.799270974646723 filterCNN5 = 4.7355812783936795,
+    #             'i1 = 2.356058680850703 i2 = 3.106664317463469 i3 = 1.9852092310131886,
+    #             'kernelCNN1 = 3.2549451809095697 kernelCNN2 = 5.058604876042914 kernelCNN3 = 5.459284918071636,
+    #             'kernelCNN4 = 3.1576944868108345 kernelCNN5 = 3.641447393554534 poolCNN1 = 3.5644021177722056,
+    #             'poolCNN2 = 5.835467401861218 poolCNN3 = 5.1762064580367575 poolCNN4 = 4.672430755364525,
+    #             'poolCNN5 = 3.8744575613459844}}
+
+    # Third run, limit, 0.1
+    # 14 June
+    # {'target = 0.9404044018363488,
+    #  'params = {'LSTM1 = 6.222775762313878 LSTM2 = 1.6679769249718495 LSTM3 = 7.432809526425034,
+    #             'LSTM4 = 4.129349772672659 LSTM5 = 7.296327224664441 dense_1_neurons_x128 = 5.508703069163429,
+    #             'dense_2_neurons_x128 = 5.912649965701209 dense_3_neurons_x128 = 3.5709770005266606,
+    #             'dense_4_neurons_x128 = 5.344687894046625 dense_5_neurons_x128 = 7.126574894033522,
+    #             'dropout2_rate = 0.43369355853937297 filterCNN1 = 5.839768897056432 filterCNN2 = 7.203637104557576,
+    #             'filterCNN3 = 5.0526585360408784 filterCNN4 = 5.24220234023808 filterCNN5 = 6.558239117341969,
+    #             'i1 = 2.6017664815079016 i2 = 4.626566817095913 i3 = 2.018877147623796,
+    #             'kernelCNN1 = 4.016571188677377 kernelCNN2 = 4.581395969156278 kernelCNN3 = 5.944186720087927,
+    #             'kernelCNN4 = 3.642934120437684 kernelCNN5 = 4.001393933658716 poolCNN1 = 4.507134496841905,
+    #             'poolCNN2 = 4.220916148606445 poolCNN3 = 5.648968546118207 poolCNN4 = 4.111476205132963,
+    #             'poolCNN5 = 4.624578852167564}}
+    LSTM1 = 6.222775762313878
+    LSTM2 = 1.6679769249718495
+    LSTM3 = 7.432809526425034
+    LSTM4 = 4.129349772672659
+    LSTM5 = 7.296327224664441
+    dense_1_neurons_x128 = 5.508703069163429
+    dense_2_neurons_x128 = 5.912649965701209
+    dense_3_neurons_x128 = 3.5709770005266606
+    dense_4_neurons_x128 = 5.344687894046625
+    dense_5_neurons_x128 = 7.126574894033522
+    dropout2_rate = 0.43369355853937297
+    filterCNN1 = 5.839768897056432
+    filterCNN2 = 7.203637104557576
+    filterCNN3 = 5.0526585360408784
+    filterCNN4 = 5.24220234023808
+    filterCNN5 = 6.558239117341969
+    i1 = 2.6017664815079016
+    i2 = 4.626566817095913
+    i3 = 2.018877147623796
+    kernelCNN1 = 4.016571188677377
+    kernelCNN2 = 4.581395969156278
+    kernelCNN3 = 5.944186720087927
+    kernelCNN4 = 3.642934120437684
+    kernelCNN5 = 4.001393933658716
+    poolCNN1 = 4.507134496841905
+    poolCNN2 = 4.220916148606445
+    poolCNN3 = 5.648968546118207
+    poolCNN4 = 4.111476205132963
+    poolCNN5 = 4.624578852167564
+
     i1 = int(i1)
     i2 = int(i2)
     i3 = int(i3)
@@ -388,26 +520,7 @@ if __name__ == '__main__':
     if poolCNN5 > kernelCNN5:
         poolCNN5 = kernelCNN5
 
-    print(i2)
-    print(LSTM1)
-    print(LSTM2)
+    print(dropout2_rate)
+    print(dense_2_neurons)
     print(LSTM3)
     print(LSTM4)
-
-    # out - 42885575.
-    # May 28
-    # no limit, 0.1
-    # resultttttttttttttt
-    # {'target': 0.9301840042004165,
-    #  'params': {'LSTM1': 7.222626024691774, 'LSTM2': 1.6080972035979606, 'LSTM3': 3.931974900036375,
-    #             'LSTM4': 7.796804617083613, 'LSTM5': 4.738790051805723, 'dense_1_neurons_x128': 5.881515220443408,
-    #             'dense_2_neurons_x128': 3.171712543243653, 'dense_3_neurons_x128': 5.842806679307402,
-    #             'dense_4_neurons_x128': 6.909304837661085, 'dense_5_neurons_x128': 1.031675596878181,
-    #             'dropout2_rate': 0.40005772597798706, 'filterCNN1': 8.053216573407276, 'filterCNN2': 7.0422957483953255,
-    #             'filterCNN3': 5.077864766670501, 'filterCNN4': 7.214973179496251, 'filterCNN5': 4.333549227626096,
-    #             'i1': 3.3332592837628963, 'i2': 4.807505609897905, 'i3': 2.839565274795774,
-    #             'kernelCNN1': 3.8208810834763156, 'kernelCNN2': 3.3160914307784886, 'kernelCNN3': 2.9619742651849505,
-    #             'kernelCNN4': 5.072273705407651, 'kernelCNN5': 3.5772099712001886, 'poolCNN1': 3.749749309991124,
-    #             'poolCNN2': 4.473034109697082, 'poolCNN3': 3.070760144374657, 'poolCNN4': 4.737176337574441,
-    #             'poolCNN5': 3.3695314396985925}}
-
