@@ -8,10 +8,10 @@ Created on Tue Mar 10 18:23:59 2020
 @author: nafiseh
 """
 
-num = 200
+num = 20
 
 
-def LoadData(lst, path, nrow=0):
+def load_data(lst, path, nrow=0):
     lst = sorted(np.unique(lst))
     dtypes = dict(zip(list(range(0, 20000)), [np.int8] * 20000))
 
@@ -39,7 +39,7 @@ def LoadData(lst, path, nrow=0):
     return (dt)
 
 
-def LoadLabel(path):
+def load_label(path):
     dt = pd.read_csv(path + 'AllLabels' + '.csv')
     dt.set_index(dt.columns[0], inplace=True, drop=True)
     return dt
@@ -69,6 +69,12 @@ def load_data_gene(lst, path):
     print(dt.shape)
     print(dt.head())
     return (dt)
+
+
+def load_data_gene_dataset(path):
+    dt = pd.read_csv(path + 'gene_data.csv', header=None)
+    dt.set_index(dt.columns[0], inplace=True, drop=True)
+    return dt
 
 
 if __name__ == '__main__':

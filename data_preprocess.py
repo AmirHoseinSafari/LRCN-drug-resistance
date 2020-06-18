@@ -1,17 +1,19 @@
-import LoadData
+import load_data
 import pandas as pd
 
 
-def process(numOfFiles, nrow=0, gene=False, limited=False):
+def process(num_of_files, nrow=0, gene=False, limited=False, gene_dataset=False):
     # ../../../../ project / compbio - lab / Drug - resistance - TB /
-    if not gene:
-        df_train = LoadData.LoadData(list(range(1, numOfFiles)), 'Data/', nrow)
+    if gene:
+        df_train = load_data.load_data_gene(list(range(0, num_of_files)), 'Data/')
+    elif gene_dataset:
+        df_train = load_data.load_data_gene_dataset('Data/')
     else:
-        df_train = LoadData.load_data_gene(list(range(0, numOfFiles)), 'Data/')
+        df_train = load_data.load_data(list(range(1, num_of_files)), 'Data/', nrow)
 
     # df_train = df_train[df_train.columns[df_train.sum() > 5]]
 
-    df_label = LoadData.LoadLabel('Data/')
+    df_label = load_data.load_label('Data/')
 
     if limited:
         df_label = df_label.drop(['ciprofloxacin'], axis=1)
