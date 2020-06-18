@@ -3,6 +3,7 @@ import pandas as pd
 
 
 def process(numOfFiles, nrow=0, gene=False, limited=False):
+    # ../../../../ project / compbio - lab / Drug - resistance - TB /
     if not gene:
         df_train = LoadData.LoadData(list(range(1, numOfFiles)), 'Data/', nrow)
     else:
