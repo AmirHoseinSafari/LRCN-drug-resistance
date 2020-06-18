@@ -28,13 +28,16 @@ def load_snps():
 
     indexNamesArr = dt.index.values
     listOfRowIndexLabels = list(indexNamesArr)
-    return snp_positions, listOfRowIndexLabels
+    return snp_positions
 
 
-def table_creator(start, stop, snps, isolates):
+def table_creator(start, stop, snps):
     snp_index = 0
 
     df_train = data_loader.process(2)
+
+    isolates = df_train.index.values
+    isolates = list(isolates)
 
     arr = df_train.values.tolist()
 
@@ -42,7 +45,7 @@ def table_creator(start, stop, snps, isolates):
     result = []
     for i in range(0, len(isolates)):
         result.append([isolates[i]])
-
+    print(result)
     state = 0
     for i in range(0, len(start)):
         for j in range(snp_index, len(snps)):
@@ -55,10 +58,10 @@ def table_creator(start, stop, snps, isolates):
                     for k in range(0, len(result)):
                         sum1 = 0
                         for l in range(snp_index, j):
-                            print(k)
-                            print(l)
-                            print(len(arr))
-                            print(len(arr[k]))
+                            # print(k)
+                            # print(l)
+                            # print(len(arr))
+                            # print(len(arr[k]))
                             sum1 += arr[k][l]
                         result[k].append(sum1)
                     snp_index = j
@@ -77,5 +80,5 @@ def table_creator(start, stop, snps, isolates):
 
 if __name__ == '__main__':
     start, stop = load_gene_positions()
-    snps, isolates = load_snps()
-    table_creator(start, stop, snps, isolates)
+    snps = load_snps()
+    table_creator(start, stop, snps)
