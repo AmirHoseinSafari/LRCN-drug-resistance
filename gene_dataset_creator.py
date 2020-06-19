@@ -2,14 +2,14 @@ import pandas as pd
 import data_loader
 
 def load_gene_positions():
-    dt = pd.read_csv('../Data/EPFL_Data/Mycobacterium_tuberculosis_H37Rv_allGenes.csv')
+    dt = pd.read_csv('Data/EPFL_Data/Mycobacterium_tuberculosis_H37Rv_allGenes.csv')
     dt.set_index(dt.columns[0], inplace=True, drop=True)
 
     start = sum(dt[['Start']].values.tolist(),[])
     stop = sum(dt[['Stop']].values.tolist(), [])
     start = start[0:3981]
     stop = stop[0:3981]
-    dt = pd.read_csv('../Data/EPFL_Data/Mycobacterium_tuberculosis_H37Rv_genes_v3.csv')
+    dt = pd.read_csv('Data/EPFL_Data/Mycobacterium_tuberculosis_H37Rv_genes_v3.csv')
     dt.set_index(dt.columns[0], inplace=True, drop=True)
 
     start.extend(sum(dt[['Start']].values.tolist(), []))
@@ -18,7 +18,7 @@ def load_gene_positions():
 
 
 def load_snps():
-    dt = pd.read_csv('../Data/sparse_matrix/rows.csv')
+    dt = pd.read_csv('Data/rows.csv')
     dt.set_index(dt.columns[0], inplace=True, drop=True)
 
     snp_positions = []
@@ -34,35 +34,45 @@ def load_snps():
 def table_creator(start, stop, snps):
     snp_index = 0
 
-    df_train = data_loader.process(2)
+    #TODO
+    df_train = data_loader.process(38)
 
     isolates = df_train.index.values
     isolates = list(isolates)
 
     arr = df_train.values.tolist()
 
-
+    print(len(start))
     result = []
     for i in range(0, len(isolates)):
         result.append([isolates[i]])
-    print(result)
+
     state = 0
     for i in range(0, len(start)):
         for j in range(snp_index, len(snps)):
+            print(str(i) + "___" + str(j))
+            # curr_start = start[i]
+            # curr_stop = stop[i]
+            # curr_snp = snps[j]
             if state == 0:
-                if start[i] <= int(snps[j]):
+                if start[i] <= int(snps[j]) and stop[i] > int(snps[j]):
                     snp_index = j
                     state = 1
-            elif state == 1:
+                elif stop[i] < int(snps[j]):
+                    break
+            if state == 1:
                 if stop[i] < int(snps[j]):
                     for k in range(0, len(result)):
                         sum1 = 0
-                        for l in range(snp_index, j):
-                            # print(k)
-                            # print(l)
-                            # print(len(arr))
-                            # print(len(arr[k]))
-                            sum1 += arr[k][l]
+                        if snp_index == j:
+                            sum1 = arr[k][j]
+                        else:
+                            for l in range(snp_index, j):
+                                # print(k)
+                                # print(l)
+                                # print(len(arr))
+                                # print(len(arr[k]))
+                                sum1 += arr[k][l]
                         result[k].append(sum1)
                     snp_index = j
                     state = 0
