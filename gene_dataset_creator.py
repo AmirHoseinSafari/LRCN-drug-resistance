@@ -18,7 +18,7 @@ def load_gene_positions():
 
 
 def load_snps():
-    dt = pd.read_csv('Data/rows.csv')
+    dt = pd.read_csv('Data/sparse_matrix/rows.csv')
     dt.set_index(dt.columns[0], inplace=True, drop=True)
 
     snp_positions = []
@@ -47,10 +47,11 @@ def table_creator(start, stop, snps):
     for i in range(0, len(isolates)):
         result.append([isolates[i]])
 
+    debug = 0
     state = 0
     for i in range(0, len(start)):
         for j in range(snp_index, len(snps)):
-            print(str(i) + "___" + str(j))
+            # print(str(i) + "___" + str(j))
             # curr_start = start[i]
             # curr_stop = stop[i]
             # curr_snp = snps[j]
@@ -62,22 +63,19 @@ def table_creator(start, stop, snps):
                     break
             if state == 1:
                 if stop[i] < int(snps[j]):
+                    debug = debug + 1
                     for k in range(0, len(result)):
                         sum1 = 0
                         if snp_index == j:
                             sum1 = arr[k][j]
                         else:
                             for l in range(snp_index, j):
-                                # print(k)
-                                # print(l)
-                                # print(len(arr))
-                                # print(len(arr[k]))
                                 sum1 += arr[k][l]
                         result[k].append(sum1)
                     snp_index = j
                     state = 0
                     break
-
+    print(debug)
     f = open('gene_data.csv', 'w')
     for item in result:
         for i in range(len(item)):
@@ -92,3 +90,22 @@ if __name__ == '__main__':
     start, stop = load_gene_positions()
     snps = load_snps()
     table_creator(start, stop, snps)
+
+    ## debug usage
+    # count = 0
+    # index = 0
+    # arr = []
+    # arr.append(-1)
+    # print(len(start))
+    # for i in range(0, len(snps)):
+    #     if int(snps[i]) >= start[index] and  int(snps[i]) < stop[index]:
+    #         if arr[len(arr) - 1] != index:
+    #             arr.append(index)
+    #         count = count + 1
+    #     elif int(snps[i]) < start[index]:
+    #         continue
+    #     elif int(snps[i]) > stop[index]:
+    #         index = index + 1
+    #         i = i -1
+    # print(count)
+    # print(len(arr))
