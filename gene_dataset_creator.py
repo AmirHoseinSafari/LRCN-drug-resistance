@@ -18,7 +18,7 @@ def load_gene_positions():
 
 
 def load_snps():
-    dt = pd.read_csv('Data/sparse_matrix/rows.csv')
+    dt = pd.read_csv('Data/sparse_matrix/rows_complete.csv')
     dt.set_index(dt.columns[0], inplace=True, drop=True)
 
     snp_positions = []
@@ -67,10 +67,18 @@ def table_creator(start, stop, snps):
                     for k in range(0, len(result)):
                         sum1 = 0
                         if snp_index == j:
-                            sum1 = arr[k][j]
+                            try:
+                                sum1 = arr[k][j]
+                            except:
+                                print("errorrrrrrrrrrrrrrrrrrr")
+                                continue
                         else:
                             for l in range(snp_index, j):
-                                sum1 += arr[k][l]
+                                try:
+                                    sum1 += arr[k][l]
+                                except:
+                                    print("errorrrrrrrrrrrrrrrrrrr")
+                                    continue
                         result[k].append(sum1)
                     snp_index = j
                     state = 0
@@ -89,23 +97,30 @@ def table_creator(start, stop, snps):
 if __name__ == '__main__':
     start, stop = load_gene_positions()
     snps = load_snps()
-    table_creator(start, stop, snps)
+    # table_creator(start, stop, snps)
 
     ## debug usage
-    # count = 0
-    # index = 0
-    # arr = []
-    # arr.append(-1)
-    # print(len(start))
-    # for i in range(0, len(snps)):
-    #     if int(snps[i]) >= start[index] and  int(snps[i]) < stop[index]:
-    #         if arr[len(arr) - 1] != index:
-    #             arr.append(index)
-    #         count = count + 1
-    #     elif int(snps[i]) < start[index]:
-    #         continue
-    #     elif int(snps[i]) > stop[index]:
-    #         index = index + 1
-    #         i = i -1
-    # print(count)
-    # print(len(arr))
+    count = 0
+    index = 0
+    miss = 0
+    arr = []
+    arr.append(-1)
+    print(len(snps))
+    print(len(start))
+    for i in range(0, len(snps)):
+        a = int(snps[i])
+        a1 = start[index]
+        a2 = stop[index]
+        if int(snps[i]) >= start[index] and  int(snps[i]) < stop[index]:
+            if arr[len(arr) - 1] != index:
+                arr.append(index)
+            count = count + 1
+        elif int(snps[i]) < start[index]:
+            miss = miss + 1
+            continue
+        elif int(snps[i]) > stop[index]:
+            index = index + 1
+            i = i - 1
+    print(count)
+    print(len(arr))
+    print(miss)

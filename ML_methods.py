@@ -13,7 +13,7 @@ import Bayesian_optimizer_ML
 
 res = []
 
-def svm(X, y, i):
+def svm_kfold(X, y, i):
     global res
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
 
@@ -57,7 +57,24 @@ def svm(X, y, i):
     # training a linear SVM classifier
 
 
-def lr(X, y, i):
+def svm(X, y, i):
+    global res
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
+    cvscores1 = []
+
+    from sklearn.svm import SVC
+    svm_model_linear = SVC(kernel='linear', C=1).fit(X_train, y_train)
+    score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", i)
+    accuracy = svm_model_linear.score(X_test, y_test)
+    print(accuracy)
+    print(score1)
+    print("_______________________________")
+    res.append(accuracy)
+
+    return score1
+
+
+def lr_kfold(X, y, i):
     global res
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
 
@@ -100,6 +117,21 @@ def lr(X, y, i):
         f.write(str(ele) + '\n')
 
 
+def lr(X, y, i):
+    global res
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
+    cvscores1 = []
+
+    from sklearn.linear_model import LogisticRegression
+    lr_model_linear = LogisticRegression(C=1).fit(X_train, y_train)
+    score1 = ROC_PR.ROC_ML(lr_model_linear, X_test, y_test, "LR", i)
+    accuracy = lr_model_linear.score(X_test, y_test)
+    print(accuracy)
+    print(score1)
+    print("_______________________________")
+    res.append(accuracy)
+
+    return score1
 
 
 def model_run(df_train, labels):
