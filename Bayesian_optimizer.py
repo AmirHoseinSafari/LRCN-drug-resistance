@@ -209,8 +209,14 @@ def run_one_fold(model):
 
 def run_k_fold(model):
     global X_train, X_test, y_train, y_test
-    X = np.append(X_train, X_test, axis=0)
-    y = np.append(y_train, y_test, axis=0)
+    global X, y
+    if X == 0:
+        X = np.append(X_train, X_test, axis=0)
+        y = np.append(y_train, y_test, axis=0)
+        X_train = 0
+        X_test = 0
+        y_train = 0
+        y_test = 0
 
     cvscores = []
 
@@ -257,7 +263,7 @@ def run_k_fold(model):
 
 X_train, X_test, y_train, y_test = 0, 0, 0, 0
 limited = False
-
+X, y = 0, 0
 
 def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
     global X_train
