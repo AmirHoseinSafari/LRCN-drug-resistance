@@ -254,7 +254,7 @@ def run_k_fold(model):
             validation_data=(X_test_tmp, y_test_tmp)
         )
 
-        score = ROC_PR.ROC_Score(model, X_test, y_test, limited=limited)
+        score = ROC_PR.ROC_Score(model, X_train_tmp, y_train_tmp, limited=limited)
         print('area under ROC curve:', score)
         cvscores.append(score)
     print(np.mean(cvscores))
