@@ -209,8 +209,9 @@ def run_one_fold(model):
 
 def run_k_fold(model):
     global X_train, X_test, y_train, y_test
-    global X, y
-    if X == 0:
+    global X, y, check
+    if check == 0:
+        check = 1
         X = np.append(X_train, X_test, axis=0)
         y = np.append(y_train, y_test, axis=0)
         X_train = 0
@@ -264,6 +265,7 @@ def run_k_fold(model):
 X_train, X_test, y_train, y_test = 0, 0, 0, 0
 limited = False
 X, y = 0, 0
+check = 0
 
 def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
     global X_train
@@ -335,36 +337,67 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
 
 
 if __name__ == '__main__':
-    LSTM1 = 6.222775762313878
-    LSTM2 = 1.6679769249718495
-    LSTM3 = 7.432809526425034
-    LSTM4 = 4.129349772672659
-    LSTM5 = 7.296327224664441
-    dense_1_neurons_x128 = 5.508703069163429
-    dense_2_neurons_x128 = 5.912649965701209
-    dense_3_neurons_x128 = 3.5709770005266606
-    dense_4_neurons_x128 = 5.344687894046625
-    dense_5_neurons_x128 = 7.126574894033522
-    dropout2_rate = 0.43369355853937297
-    filterCNN1 = 5.839768897056432
-    filterCNN2 = 7.203637104557576
-    filterCNN3 = 5.0526585360408784
-    filterCNN4 = 5.24220234023808
-    filterCNN5 = 6.558239117341969
-    i1 = 2.6017664815079016
-    i2 = 4.626566817095913
-    i3 = 2.018877147623796
-    kernelCNN1 = 4.016571188677377
-    kernelCNN2 = 4.581395969156278
-    kernelCNN3 = 5.944186720087927
-    kernelCNN4 = 3.642934120437684
-    kernelCNN5 = 4.001393933658716
-    poolCNN1 = 4.507134496841905
-    poolCNN2 = 4.220916148606445
-    poolCNN3 = 5.648968546118207
-    poolCNN4 = 4.111476205132963
-    poolCNN5 = 4.624578852167564
+    # LSTM1 = 6.222775762313878
+    # LSTM2 = 1.6679769249718495
+    # LSTM3 = 7.432809526425034
+    # LSTM4 = 4.129349772672659
+    # LSTM5 = 7.296327224664441
+    # dense_1_neurons_x128 = 5.508703069163429
+    # dense_2_neurons_x128 = 5.912649965701209
+    # dense_3_neurons_x128 = 3.5709770005266606
+    # dense_4_neurons_x128 = 5.344687894046625
+    # dense_5_neurons_x128 = 7.126574894033522
+    # dropout2_rate = 0.43369355853937297
+    # filterCNN1 = 5.839768897056432
+    # filterCNN2 = 7.203637104557576
+    # filterCNN3 = 5.0526585360408784
+    # filterCNN4 = 5.24220234023808
+    # filterCNN5 = 6.558239117341969
+    # i1 = 2.6017664815079016
+    # i2 = 4.626566817095913
+    # i3 = 2.018877147623796
+    # kernelCNN1 = 4.016571188677377
+    # kernelCNN2 = 4.581395969156278
+    # kernelCNN3 = 5.944186720087927
+    # kernelCNN4 = 3.642934120437684
+    # kernelCNN5 = 4.001393933658716
+    # poolCNN1 = 4.507134496841905
+    # poolCNN2 = 4.220916148606445
+    # poolCNN3 = 5.648968546118207
+    # poolCNN4 = 4.111476205132963
+    # poolCNN5 = 4.624578852167564
 
+
+    # gene based model Jun 24
+    LSTM1 = 8.1
+    LSTM2 = 0.9
+    LSTM3 = 0.9
+    LSTM4 = 8.1
+    LSTM5 = 0.9
+    dense_1_neurons_x128 = 0.9
+    dense_2_neurons_x128 = 8.1
+    dense_3_neurons_x128 = 8.1
+    dense_4_neurons_x128 = 0.9
+    dense_5_neurons_x128 = 0.9
+    dropout2_rate = 0.1
+    filterCNN1 = 8.1
+    filterCNN2 = 3.9
+    filterCNN3 = 3.9
+    filterCNN4 = 8.1
+    filterCNN5 = 8.1
+    i1 = 1.9
+    i2 = 1.9
+    i3 = 1.9
+    kernelCNN1 = 2.9
+    kernelCNN2 = 6.1
+    kernelCNN3 = 6.1
+    kernelCNN4 = 6.1
+    kernelCNN5 = 2.9
+    poolCNN1 = 6.1
+    poolCNN2 = 2.9
+    poolCNN3 = 6.1
+    poolCNN4 = 2.9
+    poolCNN5 = 6.1
     i1 = int(i1)
     i2 = int(i2)
     i3 = int(i3)
@@ -411,7 +444,9 @@ if __name__ == '__main__':
     if poolCNN5 > kernelCNN5:
         poolCNN5 = kernelCNN5
 
-    print(dropout2_rate)
-    print(dense_2_neurons)
-    print(LSTM3)
+    print(dense_1_neurons)
+    print(filterCNN1)
+    print(poolCNN1)
     print(LSTM4)
+
+

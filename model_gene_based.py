@@ -152,27 +152,15 @@ def model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyS
     print(X.shape)
     print(FrameSize)
     model = Sequential()
-    model.add(Dropout(0.40005772597798706))
+    model.add(Dropout(0.1))
     model.add(Conv1D(filters=8, kernel_size=3, activation='relu', padding='same'))
     model.add(MaxPooling1D(pool_size=3, padding='same'))
-    model.add(Conv1D(filters=7, kernel_size=3, activation='relu', padding='same'))
-    model.add(MaxPooling1D(pool_size=3, padding='same'))
-    model.add(Conv1D(filters=5, kernel_size=3, activation='relu', padding='same'))
-    model.add(MaxPooling1D(pool_size=3, padding='same'))
 
-    model.add(LSTM(462, return_sequences=True, recurrent_dropout=0.3))
-    model.add(SpatialDropout1D(0.40005772597798706))
-    model.add(LSTM(102, return_sequences=True, recurrent_dropout=0.3))
-    model.add(SpatialDropout1D(0.40005772597798706))
-    model.add(LSTM(251, return_sequences=True, recurrent_dropout=0.3))
-    model.add(SpatialDropout1D(0.40005772597798706))
-    model.add(LSTM(498, return_sequences=False, recurrent_dropout=0.3))
-    model.add(Dropout(0.40005772597798706))
+    model.add(LSTM(518, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.1))
 
-    model.add(Dense(376))
-    model.add(Dropout(0.4005772597798706))
-    model.add(Dense(202))
-    model.add(Dropout(0.40005772597798706))
+    model.add(Dense(64))
+    model.add(Dropout(0.1))
 
     model.add(Dense(12, activation='sigmoid'))
 
@@ -196,7 +184,7 @@ def model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyS
     plot.plot(history, ("LRCN" + name))
 
     score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True)
-    return score
+    return score, ROC_PR.ROC_Score(model, X_train, y_train, limited=False)
 
 
 def prepareDate(features, label):
@@ -236,9 +224,8 @@ def run_model_kfold(df_train, labels, epoch):
     y = np.append(y_train, y_test, axis=0)
 
     cvscores1 = []
-    cvscores2 = []
-    cvscores3 = []
-    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=80)
+    cvscores_all = []
+    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=60)
 
     for i in range(0, 10):
         length = int(len(X)/10)
@@ -258,34 +245,23 @@ def run_model_kfold(df_train, labels, epoch):
             y_train = y[0:length * i]
             y_test = y[length * i:]
 
-        score1 = model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "1_" + str(i),
-                                  0.3155266936013428, 240, 5, 5, 143, 216, 0.3)
+        score1, score_all = model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "24J_" + str(i))
 
-        score2 = model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "2_" + str(i),
-                                  0.1, 240, 5, 5, 143, 216, 0.3)
-
-        score3 = model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "5_" + str(i),
-                                  dropout2_rate=0.1783805364232113, dense_1=82, filterCNN=7, kernelCNN=5, LSTM1=140,
-                                  LSTM2=509, recurrent_dropout=0.3)
         print("Area for 1")
         print(score1)
-        print("Area for 2")
-        print(score2)
-        print("Area for 3")
-        print(score3)
+        print("________________________")
+        print(score_all)
         cvscores1.append(score1)
-        cvscores2.append(score2)
-        cvscores3.append(score3)
+        cvscores_all.append(score_all)
     f = open('result/kfoldResult.txt', 'w')
     for ele in cvscores1:
         f.write(str(ele) + '\n')
-    for ele in cvscores2:
+    for ele in cvscores_all:
         f.write(str(ele) + '\n')
-    for ele in cvscores3:
-        f.write(str(ele) + '\n')
+    print(cvscores_all)
     print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores1), np.std(cvscores1)))
-    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores2), np.std(cvscores2)))
-    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores3), np.std(cvscores3)))
+    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores_all), np.std(cvscores_all)))
+
 
 
 def run_model(df_train, labels, epoch, limited=False):
