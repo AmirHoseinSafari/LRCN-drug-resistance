@@ -1,6 +1,6 @@
 from keras import Sequential
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D
+from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, GRU
 import numpy as np
 from sklearn.model_selection import train_test_split
 import keras.backend as K
@@ -26,19 +26,99 @@ def masked_accuracy(y_true, y_pred):
     return correct / total
 
 
-def model_CNN256_LSTM128_64_2(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name, dropout2_rate, dense_1, filterCNN, kernelCNN, LSTM1, LSTM2, recurrent_dropout, limited=False):
+def model_lrcn_simple(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name, limited=False):
     print(X.shape)
     print(FrameSize)
     model = Sequential()
-    model.add(Dropout(dropout2_rate))
-    model.add(Conv1D(filters=filterCNN, kernel_size=kernelCNN, activation='relu', padding='same'))
+    model.add(Dropout(0.2))
+    model.add(Conv1D(filters=5, kernel_size=5, activation='relu', padding='same'))
     model.add(MaxPooling1D(pool_size=3, padding='same'))
-    model.add(LSTM(LSTM1, return_sequences=True, recurrent_dropout=recurrent_dropout))
-    model.add(SpatialDropout1D(dropout2_rate))
-    model.add(LSTM(LSTM2, return_sequences=False, recurrent_dropout=recurrent_dropout))
-    model.add(Dropout(dropout2_rate))
-    model.add(Dense(dense_1))
-    model.add(Dropout(dropout2_rate))
+    model.add(LSTM(256, return_sequences=True, recurrent_dropout=0.3))
+    model.add(SpatialDropout1D(0.2))
+    model.add(LSTM(128, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.2))
+    model.add(Dense(128))
+    model.add(Dropout(0.2))
+    if limited:
+        model.add(Dense(7, activation='sigmoid'))
+    else:
+        model.add(Dense(12, activation='sigmoid'))
+
+
+    model.compile(
+        loss=masked_loss_function,
+        optimizer='Adam',
+        metrics=[masked_accuracy]
+    )
+
+    history = model.fit(
+        X_train,
+        y_train,
+        epochs=epoch,
+        batch_size=128,
+        verbose=2,
+        validation_data=(X_test, y_test),
+        callbacks=[earlyStopping,
+                   ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
+    )
+
+    plot.plot(history, ("LRCN" + name))
+
+    score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True, limited=limited)
+    return score
+
+
+def model_lstm_simple(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name, limited=False):
+    print(X.shape)
+    print(FrameSize)
+    model = Sequential()
+    model.add(Dropout(0.2))
+    model.add(LSTM(256, return_sequences=True, recurrent_dropout=0.3))
+    model.add(SpatialDropout1D(0.2))
+    model.add(LSTM(128, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.2))
+    model.add(Dense(128))
+    model.add(Dropout(0.2))
+    if limited:
+        model.add(Dense(7, activation='sigmoid'))
+    else:
+        model.add(Dense(12, activation='sigmoid'))
+
+
+    model.compile(
+        loss=masked_loss_function,
+        optimizer='Adam',
+        metrics=[masked_accuracy]
+    )
+
+    history = model.fit(
+        X_train,
+        y_train,
+        epochs=epoch,
+        batch_size=128,
+        verbose=2,
+        validation_data=(X_test, y_test),
+        callbacks=[earlyStopping,
+                   ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
+    )
+
+    plot.plot(history, ("LRCN" + name))
+
+    score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True, limited=limited)
+    return score
+
+
+def model_gru_simple(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name, limited=False):
+    print(X.shape)
+    print(FrameSize)
+    model = Sequential()
+    model.add(Dropout(0.2))
+    model.add(GRU(256, return_sequences=True, recurrent_dropout=0.3))
+    model.add(SpatialDropout1D(0.2))
+    model.add(GRU(128, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.2))
+    model.add(Dense(128))
+    model.add(Dropout(0.2))
     if limited:
         model.add(Dense(7, activation='sigmoid'))
     else:
@@ -228,7 +308,19 @@ def run_bayesian(df_train, labels, limited=False, portion=0.1):
     Bayesian_optimizer.BO(X_train, X_test, y_train, y_test, limited, portion=portion)
 
 
+def run_all(df_train, labels, epoch):
+    X, y, FrameSize = prepareDate(df_train, labels)
+    # X = to_categorical(X, dtype=np.int8)
+    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=80)
 
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1, shuffle=True)
+    res = []
+    for i in range(0, 5):
+        res.append(i)
+        res.append(model_lrcn_simple(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "lrcn_gene_" + str(i)))
+        res.append(model_lstm_simple(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "lstm_gene_" + str(i)))
+        res.append(model_gru_simple(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "gru_gene_" + str(i)))
+    print(res)
 
 if __name__ == '__main__':
     df_train, labels = data_preprocess.process(6)
