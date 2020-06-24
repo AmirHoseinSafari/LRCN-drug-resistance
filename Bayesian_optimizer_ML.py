@@ -11,7 +11,6 @@ import ROC_PR
 
 def get_model_SVM(kernel=0, degree=1, C=1):
     from sklearn.svm import SVC
-    print("asd")
     print(C)
     print(int(C))
     C = 10 ** (int(C))
@@ -104,10 +103,28 @@ def BO_LR(X, y, i):
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
-    optimizer.maximize(init_points=10, n_iter=10, )
+    optimizer.maximize(init_points=5, n_iter=5, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
 
     print("resultttttttttttttt" + str(i))
     print(optimizer.max)
+
+
+if __name__ == '__main__':
+    # | iter | target | C | degree | kernel |
+    # | 1 | 0.8609 | -1.66 | 3.853 | 0.9001 |
+    C = -1.66
+    degree = 3.853
+    kernel = 0.9001
+    C = 10 ** (int(C))
+    degree = int(degree)
+    kernel = int(kernel)
+    # if kernel == 0:
+    #     svm_model_linear = SVC(kernel='linear', C=C).fit(X_train, y_train)
+    # else:
+    #     svm_model_linear = SVC(kernel='poly', C=C, degree=degree).fit(X_train, y_train)
+    print(C)
+    print(degree)
+    print(kernel)

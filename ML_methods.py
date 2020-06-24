@@ -41,7 +41,7 @@ def svm_kfold(X, y, i):
             y_test = y[length * i2:]
 
         from sklearn.svm import SVC
-        svm_model_linear = SVC(kernel='linear', C=1).fit(X_train, y_train)
+        svm_model_linear = SVC(kernel='linear', C=0.1).fit(X_train, y_train)
         score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", i2)
         accuracy = svm_model_linear.score(X_test, y_test)
         print(accuracy)
@@ -63,7 +63,7 @@ def svm(X, y, i):
     cvscores1 = []
 
     from sklearn.svm import SVC
-    svm_model_linear = SVC(kernel='linear', C=1).fit(X_train, y_train)
+    svm_model_linear = SVC(kernel='linear', C=0.1).fit(X_train, y_train)
     score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", i)
     accuracy = svm_model_linear.score(X_test, y_test)
     print(accuracy)
@@ -102,7 +102,7 @@ def lr_kfold(X, y, i):
             y_test = y[length * i2:]
 
         from sklearn.linear_model import LogisticRegression
-        lr_model_linear = LogisticRegression(C=1).fit(X_train, y_train)
+        lr_model_linear = LogisticRegression(C=0.1).fit(X_train, y_train)
         score1 = ROC_PR.ROC_ML(lr_model_linear, X_test, y_test, "LR", i)
 
         accuracy = lr_model_linear.score(X_test, y_test)
@@ -123,7 +123,7 @@ def lr(X, y, i):
     cvscores1 = []
 
     from sklearn.linear_model import LogisticRegression
-    lr_model_linear = LogisticRegression(C=1).fit(X_train, y_train)
+    lr_model_linear = LogisticRegression(C=0.1).fit(X_train, y_train)
     score1 = ROC_PR.ROC_ML(lr_model_linear, X_test, y_test, "LR", i)
     accuracy = lr_model_linear.score(X_test, y_test)
     print(accuracy)
@@ -149,10 +149,10 @@ def model_run(df_train, labels):
             if y[i2][0] != 0.0 and y[i2][0] != 1.0:
                 del y[i2]
                 del X[i2]
-        Bayesian_optimizer_ML.BO_SVM(X, y, i)
-        Bayesian_optimizer_ML.BO_LR(X, y, i)
-        # svm(X, y, i)
-        # lr(X, y, i)
+        # Bayesian_optimizer_ML.BO_SVM(X, y, i)
+        # Bayesian_optimizer_ML.BO_LR(X, y, i)
+        svm_kfold(X, y, i)
+        lr_kfold(X, y, i)
     f = open('result/mlResult.txt', 'w')
     for ele in res:
         f.write(str(ele) + '\n')
