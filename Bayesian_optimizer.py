@@ -258,7 +258,9 @@ def run_k_fold(model):
         score = ROC_PR.ROC_Score(model, X_train_tmp, y_train_tmp, limited=limited)
         print('area under ROC curve:', score)
         cvscores.append(score)
+        scores_each_drug.append(ROC_PR.ROC(model, X_test_tmp, y_test_tmp, ("LRCN" + "BO_delete" + str(i)), True))
     print(np.mean(cvscores))
+    print(scores_each_drug)
     return np.mean(cvscores)
 
 
