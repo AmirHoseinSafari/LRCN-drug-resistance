@@ -266,7 +266,7 @@ def run_model_kfold(df_train, labels, epoch):
 
 def run_model(df_train, labels, epoch, limited=False):
     X, y, FrameSize = prepareDate(df_train, labels)
-    X = to_categorical(X, dtype=np.int8)
+    # X = to_categorical(X, dtype=np.int8)
     earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=80)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1, shuffle=True)
@@ -279,7 +279,7 @@ def run_model(df_train, labels, epoch, limited=False):
 
 def run_bayesian(df_train, labels, limited=False, portion=0.1):
     X, y, FrameSize = prepareDate(df_train, labels)
-    X = to_categorical(X, dtype=np.int8)
+    # X = to_categorical(X, dtype=np.int8)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=portion, random_state=1, shuffle=True)
     Bayesian_optimizer.BO(X_train, X_test, y_train, y_test, limited, portion=portion)
 

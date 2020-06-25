@@ -220,7 +220,7 @@ def run_k_fold(model):
         y_test = 0
 
     cvscores = []
-
+    scores_each_drug = []
     for i in range(0, 10):
         print("fold:" + str(i))
         length = int(len(X) / 10)
