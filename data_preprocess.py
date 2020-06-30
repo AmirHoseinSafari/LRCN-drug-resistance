@@ -8,13 +8,8 @@ def process(num_of_files, nrow=0, gene=False, limited=False, gene_dataset=False,
         df_train = load_data.load_data_gene(list(range(0, num_of_files)), 'Data/')
     elif gene_dataset:
         df_train = load_data.load_data_gene_dataset('Data/')
-        if shuffle_index:
-            import random
-            print(df_train.head())
-            cols = df_train.columns.tolist()
-            random.shuffle(cols)
-            df_train = df_train[cols]
-            print(df_train.head())
+    elif shuffle_index:
+        df_train = load_data.load_data_shuffle_dataset('Data/')
     elif random_data:
         df_train = load_data.load_data_random_dataset('Data/')
     else:
