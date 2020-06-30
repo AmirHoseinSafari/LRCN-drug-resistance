@@ -365,7 +365,7 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
-        pbounds=pbounds_LSTM,
+        pbounds=pbounds,
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
@@ -374,39 +374,7 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
 
-    print("resultttttttttttttt + LSTM")
-    print(optimizer.max)
-
-
-
-    optimizer = BayesianOptimization(
-        f=fit_with_partial,
-        pbounds=pbounds_CNN,
-        verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
-        random_state=1,
-    )
-    optimizer.maximize(init_points=10, n_iter=10, )
-
-    for i, res in enumerate(optimizer.res):
-        print("Iteration {}: \n\t{}".format(i, res))
-
-    print("resultttttttttttttt + CNN")
-    print(optimizer.max)
-
-
-
-    optimizer = BayesianOptimization(
-        f=fit_with_partial,
-        pbounds=pbounds_dense,
-        verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
-        random_state=1,
-    )
-    optimizer.maximize(init_points=10, n_iter=10, )
-
-    for i, res in enumerate(optimizer.res):
-        print("Iteration {}: \n\t{}".format(i, res))
-
-    print("resultttttttttttttt + dense")
+    print("resultttttttttttttt + random")
     print(optimizer.max)
 
     import json
