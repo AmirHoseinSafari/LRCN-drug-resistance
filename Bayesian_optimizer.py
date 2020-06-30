@@ -2,9 +2,12 @@ import numpy as np
 import keras
 import keras.backend as K
 import tensorflow as tf
-from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D
+from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, Flatten
 from keras import Sequential
 from functools import partial
+
+from keras.utils import plot_model
+
 import ROC_PR
 
 
@@ -50,6 +53,9 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64,
         elif i == 4:
             model.add(Conv1D(filters=filterCNN5, kernel_size=kernelCNN5, activation='relu', padding='same'))
             model.add(MaxPooling1D(pool_size=poolCNN5, padding='same'))
+
+    if i2 == 0:
+        model.add(Flatten())
 
     for i in range(0, i2):
         if i == i2 - 1:
@@ -245,6 +251,9 @@ def run_k_fold(model):
             optimizer='Adam',
             metrics=[masked_accuracy]
         )
+
+        # plot_model(model, to_file='model_plot.png', show_shapes=True)
+
         history = model.fit(
             X_train_tmp,
             y_train_tmp,
@@ -295,6 +304,51 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
+    pbounds_LSTM = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 8.1),
+               "dense_2_neurons_x128": (0.9, 8.1),
+               "dense_3_neurons_x128": (0.9, 8.1),
+               "dense_4_neurons_x128": (0.9, 8.1),
+               "dense_5_neurons_x128": (0.9, 8.1),
+               "filterCNN1": (3.9, 8.1), "kernelCNN1": (2.9, 6.1), "poolCNN1": (2.9, 6.1),
+               "filterCNN2": (3.9, 8.1), "kernelCNN2": (2.9, 6.1), "poolCNN2": (2.9, 6.1),
+               "filterCNN3": (3.9, 8.1), "kernelCNN3": (2.9, 6.1), "poolCNN3": (2.9, 6.1),
+               "filterCNN4": (3.9, 8.1), "kernelCNN4": (2.9, 6.1), "poolCNN4": (2.9, 6.1),
+               "filterCNN5": (3.9, 8.1), "kernelCNN5": (2.9, 6.1), "poolCNN5": (2.9, 6.1),
+               "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1), "LSTM3": (0.9, 8.1), "LSTM4": (0.9, 8.1), "LSTM5": (0.9, 8.1),
+               "i1": (0, 0), "i2": (1.9, 5.1), "i3": (1.9, 5.1),
+               }
+
+    pbounds_CNN = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 8.1),
+                    "dense_2_neurons_x128": (0.9, 8.1),
+                    "dense_3_neurons_x128": (0.9, 8.1),
+                    "dense_4_neurons_x128": (0.9, 8.1),
+                    "dense_5_neurons_x128": (0.9, 8.1),
+                    "filterCNN1": (3.9, 8.1), "kernelCNN1": (2.9, 6.1), "poolCNN1": (2.9, 6.1),
+                    "filterCNN2": (3.9, 8.1), "kernelCNN2": (2.9, 6.1), "poolCNN2": (2.9, 6.1),
+                    "filterCNN3": (3.9, 8.1), "kernelCNN3": (2.9, 6.1), "poolCNN3": (2.9, 6.1),
+                    "filterCNN4": (3.9, 8.1), "kernelCNN4": (2.9, 6.1), "poolCNN4": (2.9, 6.1),
+                    "filterCNN5": (3.9, 8.1), "kernelCNN5": (2.9, 6.1), "poolCNN5": (2.9, 6.1),
+                    "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1), "LSTM3": (0.9, 8.1), "LSTM4": (0.9, 8.1),
+                    "LSTM5": (0.9, 8.1),
+                    "i1": (1.9, 5.1), "i2": (0, 0), "i3": (1.9, 5.1),
+                    }
+
+    pbounds_dense = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 8.1),
+                    "dense_2_neurons_x128": (0.9, 8.1),
+                    "dense_3_neurons_x128": (0.9, 8.1),
+                    "dense_4_neurons_x128": (0.9, 8.1),
+                    "dense_5_neurons_x128": (0.9, 8.1),
+                    "filterCNN1": (3.9, 8.1), "kernelCNN1": (2.9, 6.1), "poolCNN1": (2.9, 6.1),
+                    "filterCNN2": (3.9, 8.1), "kernelCNN2": (2.9, 6.1), "poolCNN2": (2.9, 6.1),
+                    "filterCNN3": (3.9, 8.1), "kernelCNN3": (2.9, 6.1), "poolCNN3": (2.9, 6.1),
+                    "filterCNN4": (3.9, 8.1), "kernelCNN4": (2.9, 6.1), "poolCNN4": (2.9, 6.1),
+                    "filterCNN5": (3.9, 8.1), "kernelCNN5": (2.9, 6.1), "poolCNN5": (2.9, 6.1),
+                    "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1), "LSTM3": (0.9, 8.1), "LSTM4": (0.9, 8.1),
+                    "LSTM5": (0.9, 8.1),
+                    "i1": (1.9, 5.1), "i2": (1.9, 5.1), "i3": (0, 0),
+                    }
+
+
     pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 8.1),
                "dense_2_neurons_x128": (0.9, 8.1),
                "dense_3_neurons_x128": (0.9, 8.1),
@@ -305,13 +359,13 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
                "filterCNN3": (3.9, 8.1), "kernelCNN3": (2.9, 6.1), "poolCNN3": (2.9, 6.1),
                "filterCNN4": (3.9, 8.1), "kernelCNN4": (2.9, 6.1), "poolCNN4": (2.9, 6.1),
                "filterCNN5": (3.9, 8.1), "kernelCNN5": (2.9, 6.1), "poolCNN5": (2.9, 6.1),
-               "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1), "LSTM3": (0.9, 8.1), "LSTM4": (0.9, 8.1),"LSTM5": (0.9, 8.1),
+               "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1), "LSTM3": (0.9, 8.1), "LSTM4": (0.9, 8.1), "LSTM5": (0.9, 8.1),
                "i1": (1.9, 5.1), "i2": (1.9, 5.1), "i3": (1.9, 5.1),
                }
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
-        pbounds=pbounds,
+        pbounds=pbounds_LSTM,
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
@@ -320,7 +374,39 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
 
-    print("resultttttttttttttt")
+    print("resultttttttttttttt + LSTM")
+    print(optimizer.max)
+
+
+
+    optimizer = BayesianOptimization(
+        f=fit_with_partial,
+        pbounds=pbounds_CNN,
+        verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
+        random_state=1,
+    )
+    optimizer.maximize(init_points=10, n_iter=10, )
+
+    for i, res in enumerate(optimizer.res):
+        print("Iteration {}: \n\t{}".format(i, res))
+
+    print("resultttttttttttttt + CNN")
+    print(optimizer.max)
+
+
+
+    optimizer = BayesianOptimization(
+        f=fit_with_partial,
+        pbounds=pbounds_dense,
+        verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
+        random_state=1,
+    )
+    optimizer.maximize(init_points=10, n_iter=10, )
+
+    for i, res in enumerate(optimizer.res):
+        print("Iteration {}: \n\t{}".format(i, res))
+
+    print("resultttttttttttttt + dense")
     print(optimizer.max)
 
     import json
