@@ -237,6 +237,60 @@ def model_CNN_LSTM_shuffled_index(FrameSize, X, X_train, X_test, y_train, y_test
     return score, ROC_PR.ROC_Score(model, X_train, y_train, limited=False)
 
 
+def model_CNN_LSTM_random_data(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name):
+    print(X.shape)
+    print(FrameSize)
+    model = Sequential()
+
+    model.add(Dropout(0.3311428861138142))
+    model.add(Conv1D(filters=4, kernel_size=6, activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=4, padding='same'))
+    model.add(Dropout(0.3311428861138142))
+    model.add(Conv1D(filters=7, kernel_size=4, activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=4, padding='same'))
+    model.add(Dropout(0.3311428861138142))
+    model.add(Conv1D(filters=6, kernel_size=6, activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=4, padding='same'))
+    model.add(Dropout(0.3311428861138142))
+    model.add(Conv1D(filters=4, kernel_size=4, activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=4, padding='same'))
+
+    model.add(LSTM(425, return_sequences=True, recurrent_dropout=0.3))
+    model.add(Dropout(0.3311428861138142))
+    model.add(LSTM(189, return_sequences=True, recurrent_dropout=0.3))
+    model.add(Dropout(0.3311428861138142))
+    model.add(LSTM(283, return_sequences=True, recurrent_dropout=0.3))
+    model.add(Dropout(0.3311428861138142))
+    model.add(LSTM(333, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.3311428861138142))
+
+    model.add(Dense(331))
+    model.add(Dropout(0.3311428861138142))
+    model.add(Dense(12, activation='sigmoid'))
+
+    model.compile(
+        loss=masked_loss_function,
+        optimizer='Adam',
+        metrics=[masked_accuracy]
+    )
+
+    history = model.fit(
+        X_train,
+        y_train,
+        epochs=epoch,
+        batch_size=128,
+        verbose=2,
+        validation_data=(X_test, y_test),
+        callbacks=[earlyStopping,
+                   ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
+    )
+
+    plot.plot(history, ("LRCN" + name))
+
+    score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True)
+    return score, ROC_PR.ROC_Score(model, X_train, y_train, limited=False)
+
+
 def prepareDate(features, label):
     FrameSize = 200
 
@@ -295,7 +349,7 @@ def run_model_kfold(df_train, labels, epoch):
             y_train = y[0:length * i]
             y_test = y[length * i:]
 
-        score1, score_all = model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "24J_" + str(i))
+        score1, score_all = model_CNN_LSTM_shuffled_index(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "24J_" + str(i))
 
         print("Area for 1")
         print(score1)
@@ -303,15 +357,63 @@ def run_model_kfold(df_train, labels, epoch):
         print(score_all)
         cvscores1.append(score1)
         cvscores_all.append(score_all)
-    f = open('result/kfoldResult.txt', 'w')
+    f = open('result/kfoldResult_shuffle.txt', 'w')
     for ele in cvscores1:
         f.write(str(ele) + '\n')
     for ele in cvscores_all:
         f.write(str(ele) + '\n')
+    print(cvscores1)
     print(cvscores_all)
     print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores1), np.std(cvscores1)))
     print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores_all), np.std(cvscores_all)))
 
+
+def run_model_kfold_tmp(df_train, labels, epoch):
+
+    X, y, FrameSize = prepareDate(df_train, labels)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
+    X = np.append(X_train, X_test, axis=0)
+    y = np.append(y_train, y_test, axis=0)
+
+    cvscores1 = []
+    cvscores_all = []
+    earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=60)
+
+    for i in range(0, 10):
+        length = int(len(X)/10)
+        if i == 0:
+            X_train = X[length:]
+            X_test = X[0:length]
+            y_train = y[length:]
+            y_test = y[0:length]
+        elif i != 9:
+            X_train = np.append(X[0:length*i], X[length*(i+1):], axis=0)
+            X_test = X[length*i:length*(i+1)]
+            y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+            y_test = y[length * i:length * (i + 1)]
+        else:
+            X_train = X[0:length * i]
+            X_test = X[length * i:]
+            y_train = y[0:length * i]
+            y_test = y[length * i:]
+
+        score1, score_all = model_CNN_LSTM_random_data(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "24J_" + str(i))
+
+        print("Area for 1")
+        print(score1)
+        print("________________________")
+        print(score_all)
+        cvscores1.append(score1)
+        cvscores_all.append(score_all)
+    f = open('result/kfoldResult_random.txt', 'w')
+    for ele in cvscores1:
+        f.write(str(ele) + '\n')
+    for ele in cvscores_all:
+        f.write(str(ele) + '\n')
+    print(cvscores1)
+    print(cvscores_all)
+    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores1), np.std(cvscores1)))
+    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores_all), np.std(cvscores_all)))
 
 
 def run_model(df_train, labels, epoch, limited=False):
