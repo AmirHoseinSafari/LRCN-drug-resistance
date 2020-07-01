@@ -148,7 +148,7 @@ def model_gru_simple(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earl
     return score
 
 
-def model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name):
+def model_CNN_LSTM_best(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name):
     print(X.shape)
     print(FrameSize)
     model = Sequential()
@@ -161,6 +161,56 @@ def model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyS
 
     model.add(Dense(64))
     model.add(Dropout(0.1))
+
+    model.add(Dense(12, activation='sigmoid'))
+
+    model.compile(
+        loss=masked_loss_function,
+        optimizer='Adam',
+        metrics=[masked_accuracy]
+    )
+
+    history = model.fit(
+        X_train,
+        y_train,
+        epochs=epoch,
+        batch_size=128,
+        verbose=2,
+        validation_data=(X_test, y_test),
+        callbacks=[earlyStopping,
+                   ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
+    )
+
+    plot.plot(history, ("LRCN" + name))
+
+    score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True)
+    return score, ROC_PR.ROC_Score(model, X_train, y_train, limited=False)
+
+
+def model_CNN_LSTM_shuffled_index(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name):
+    print(X.shape)
+    print(FrameSize)
+    model = Sequential()
+    model.add(Dropout(0.20412603943141638))
+    model.add(Conv1D(filters=7, kernel_size=5, activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=4, padding='same'))
+    model.add(Dropout(0.20412603943141638))
+    model.add(Conv1D(filters=4, kernel_size=5, activation='relu', padding='same'))
+    model.add(MaxPooling1D(pool_size=5, padding='same'))
+
+    model.add(LSTM(311, return_sequences=True, recurrent_dropout=0.3))
+    model.add(Dropout(0.20412603943141638))
+    model.add(LSTM(401, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.20412603943141638))
+
+    model.add(Dense(228))
+    model.add(Dropout(0.20412603943141638))
+    model.add(Dense(347))
+    model.add(Dropout(0.20412603943141638))
+    model.add(Dense(154))
+    model.add(Dropout(0.20412603943141638))
+    model.add(Dense(404))
+    model.add(Dropout(0.20412603943141638))
 
     model.add(Dense(12, activation='sigmoid'))
 
