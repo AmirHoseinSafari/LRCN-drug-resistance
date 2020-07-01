@@ -365,7 +365,7 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
-        pbounds=pbounds,
+        pbounds=pbounds_LSTM,
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
@@ -374,7 +374,7 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
 
-    print("resultttttttttttttt + random")
+    print("resultttttttttttttt + LSTM")
     print(optimizer.max)
 
     import json
