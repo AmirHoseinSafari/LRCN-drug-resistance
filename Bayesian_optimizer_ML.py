@@ -23,19 +23,22 @@ def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
     else:
         svm_model_linear = SVC(kernel='rbf', C=C, gamma=gamma).fit(X_train, y_train)
 
-    score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", 0)
-    # accuracy = svm_model_linear.score(X_test, y_test)
+    try:
+        score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", 0)
+    except:
+        score1 = svm_model_linear.score(X_test, y_test)
     print(score1)
     return score1
 
 
-def get_model_LR(C=1, penalty=1, solver=1):
+def get_model_LR(C=1, penalty=1, solver=1, l1_ratio=1):
     C = 1 ** (int(C))
     penalty = int(penalty)
     solver = int(solver)
+    l1_ratio = l1_ratio/10
     from sklearn.linear_model import LogisticRegression
     if penalty == 0:
-        lr_model_linear = LogisticRegression(C=C, penalty='l1').fit(X_train, y_train)
+        lr_model_linear = LogisticRegression(C=C, penalty='l1', solver='liblinear').fit(X_train, y_train)
     elif penalty == 1:
         if solver == 0:
             lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='newton-cg').fit(X_train, y_train)
@@ -44,7 +47,7 @@ def get_model_LR(C=1, penalty=1, solver=1):
         else:
             lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='lbfgs').fit(X_train, y_train)
     elif penalty == 2:
-        lr_model_linear = LogisticRegression(C=C, penalty='elasticnet', solver='saga').fit(X_train, y_train)
+        lr_model_linear = LogisticRegression(C=C, penalty='elasticnet', solver='saga', l1_ratio=l1_ratio).fit(X_train, y_train)
     else:
         lr_model_linear = LogisticRegression(C=C, penalty='none').fit(X_train, y_train)
 
@@ -106,12 +109,12 @@ def BO_LR(X, y, i):
 
     fit_with_partial = partial(get_model_LR)
 
-    fit_with_partial(C=1, penalty=1, solver=1)
+    fit_with_partial(C=1, penalty=1, solver=1, l1_ratio=1)
 
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'C': (-10, 10), 'penalty': (0.9, 4.1), 'solver': (0.9, 3.1)}
+    pbounds = {'C': (-10, 10), 'penalty': (0.9, 4.1), 'solver': (0.9, 3.1), 'l1_ratio': (0, 10)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
