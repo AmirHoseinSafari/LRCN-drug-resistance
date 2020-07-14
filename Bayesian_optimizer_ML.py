@@ -27,7 +27,7 @@ def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
         score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", 0)
     except:
         score1 = svm_model_linear.score(X_test, y_test)
-    print(score1)
+    print(score1, flush=True)
     return score1
 
 
@@ -53,7 +53,7 @@ def get_model_LR(C=1, penalty=1, solver=1, l1_ratio=1):
 
     score1 = ROC_PR.ROC_ML(lr_model_linear, X_test, y_test, "LR", 0)
     # accuracy = svm_model_linear.score(X_test, y_test)
-    print(score1)
+    print(score1, flush=True)
     return score1
 
 
