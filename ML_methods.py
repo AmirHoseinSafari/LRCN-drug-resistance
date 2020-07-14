@@ -137,6 +137,8 @@ def lr(X, y, i):
 def model_run(df_train, labels):
     # dividing X, y into train and test data
     global res
+    Bayesian_optimizer_ML.BO_SVM(df_train, labels)
+    Bayesian_optimizer_ML.BO_LR(df_train, labels)
     # TODO check before run
     for i in range(0, len(labels)):
         print(i)
@@ -149,8 +151,6 @@ def model_run(df_train, labels):
             if y[i2][0] != 0.0 and y[i2][0] != 1.0:
                 del y[i2]
                 del X[i2]
-        Bayesian_optimizer_ML.BO_SVM(X, y, i)
-        Bayesian_optimizer_ML.BO_LR(X, y, i)
         # svm_kfold(X, y, i)
         # lr_kfold(X, y, i)
     f = open('result/mlResult.txt', 'w')
