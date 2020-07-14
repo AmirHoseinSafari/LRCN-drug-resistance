@@ -13,6 +13,11 @@ import ROC_PR
 def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
     from sklearn.svm import SVC
     all_scores = 0
+    C = 10 ** (int(C))
+    gamma = 10 ** (int(gamma))
+    degree = int(degree)
+    kernel = int(kernel)
+
     for i in range(0, len(labels)):
         dfCurrentDrug = labels[i]
         X = df_train.values.tolist()
@@ -23,10 +28,7 @@ def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
                 del X[i2]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42,
                                                             shuffle=True)
-        C = 10 ** (int(C))
-        gamma = 10 ** (int(gamma))
-        degree = int(degree)
-        kernel = int(kernel)
+
         if kernel == 0:
             svm_model_linear = SVC(kernel='linear', C=C).fit(X_train, y_train)
         elif kernel == 1:
@@ -46,9 +48,15 @@ def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
     return all_scores/len(labels)
 
 
-def get_model_LR(C=1, penalty=1, solver=1, l1_ratio=1):
+def get_model_LR(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2):
     from sklearn.linear_model import LogisticRegression
     all_scores = 0
+    C = 1 ** (int(C))
+    penalty = int(penalty)
+    solver = int(solver)
+    l1_ratio = l1_ratio / 10
+    max_iter = 10 ** max_iter
+    print(max_iter)
     for i in range(0, len(labels)):
         dfCurrentDrug = labels[i]
         X = df_train.values.tolist()
@@ -59,23 +67,19 @@ def get_model_LR(C=1, penalty=1, solver=1, l1_ratio=1):
                 del X[i2]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42,
                                                             shuffle=True)
-        C = 1 ** (int(C))
-        penalty = int(penalty)
-        solver = int(solver)
-        l1_ratio = l1_ratio/10
         if penalty == 0:
-            lr_model_linear = LogisticRegression(C=C, penalty='l1', solver='liblinear').fit(X_train, y_train)
+            lr_model_linear = LogisticRegression(C=C, penalty='l1', solver='liblinear', max_iter=max_iter).fit(X_train, y_train)
         elif penalty == 1:
             if solver == 0:
-                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='newton-cg').fit(X_train, y_train)
+                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='newton-cg', max_iter=max_iter).fit(X_train, y_train)
             elif solver == 1:
-                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='sag').fit(X_train, y_train)
+                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='sag', max_iter=max_iter).fit(X_train, y_train)
             else:
-                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='lbfgs').fit(X_train, y_train)
+                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='lbfgs', max_iter=max_iter).fit(X_train, y_train)
         elif penalty == 2:
-            lr_model_linear = LogisticRegression(C=C, penalty='elasticnet', solver='saga', l1_ratio=l1_ratio).fit(X_train, y_train)
+            lr_model_linear = LogisticRegression(C=C, penalty='elasticnet', solver='saga', max_iter=max_iter, l1_ratio=l1_ratio).fit(X_train, y_train)
         else:
-            lr_model_linear = LogisticRegression(C=C, penalty='none').fit(X_train, y_train)
+            lr_model_linear = LogisticRegression(C=C, penalty='none', max_iter=max_iter).fit(X_train, y_train)
 
         score1 = ROC_PR.ROC_ML(lr_model_linear, X_test, y_test, "LR", 0)
         # accuracy = svm_model_linear.score(X_test, y_test)
@@ -122,12 +126,12 @@ def BO_SVM(X, y):
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
-    optimizer.maximize(init_points=10, n_iter=10, )
+    optimizer.maximize(init_points=15, n_iter=15, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res), flush=True)
 
-    print("resultttttttttttttt" + str(i), flush=True)
+    print("resultttttttttttttt SVM" + str(i), flush=True)
     print(optimizer.max, flush=True)
 
 def BO_LR(X, y):
@@ -149,12 +153,12 @@ def BO_LR(X, y):
 
     fit_with_partial = partial(get_model_LR)
 
-    fit_with_partial(C=1, penalty=1, solver=1, l1_ratio=1)
+    fit_with_partial(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2)
 
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'C': (-10, 10), 'penalty': (0.9, 4.1), 'solver': (0.9, 3.1), 'l1_ratio': (0, 10)}
+    pbounds = {'C': (-10, 10), 'penalty': (0.9, 3.1), 'solver': (0.9, 2.1), 'l1_ratio': (0, 10), 'max_iter': (1.9, 4.1)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
@@ -162,28 +166,37 @@ def BO_LR(X, y):
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
-    optimizer.maximize(init_points=5, n_iter=5, )
+    optimizer.maximize(init_points=15, n_iter=15, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res), flush=True)
 
-    print("resultttttttttttttt" + str(i), flush=True)
+    print("resultttttttttttttt LR" + str(i), flush=True)
     print(optimizer.max, flush=True)
 
 
 if __name__ == '__main__':
     # | iter | target | C | degree | kernel |
     # | 1 | 0.8609 | -1.66 | 3.853 | 0.9001 |
-    C = -1.66
-    degree = 3.853
-    kernel = 0.9001
-    C = 10 ** (int(C))
-    degree = int(degree)
-    kernel = int(kernel)
+    # C = -1.66
+    # degree = 3.853
+    # kernel = 0.9001
+    # C = 10 ** (int(C))
+    # degree = int(degree)
+    # kernel = int(kernel)
     # if kernel == 0:
     #     svm_model_linear = SVC(kernel='linear', C=C).fit(X_train, y_train)
     # else:
     #     svm_model_linear = SVC(kernel='poly', C=C, degree=degree).fit(X_train, y_train)
+    C = 3.199179213636848
+    l1_ratio = 10.0
+    penalty = 4.1
+    solver = 0.9
+    C = 1 ** (int(C))
+    penalty = int(penalty)
+    solver = int(solver)
+    l1_ratio = l1_ratio / 10
     print(C)
-    print(degree)
-    print(kernel)
+    print(l1_ratio)
+    print(penalty)
+    print(solver)
