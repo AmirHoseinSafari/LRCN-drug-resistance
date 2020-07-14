@@ -1,0 +1,11 @@
+/Data
+BO_result.txt
+kfoldResult.txt
+pkl_test.py
+result
+mlResult.txt
+*.csv
+.DS_Store
+.idea
+*.pyc
+*.xlsx
