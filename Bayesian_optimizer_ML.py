@@ -9,30 +9,46 @@ from sklearn.model_selection import train_test_split
 
 import ROC_PR
 
-def get_model_SVM(kernel=0, degree=1, C=1):
+
+def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
     from sklearn.svm import SVC
-    print(C)
-    print(int(C))
     C = 10 ** (int(C))
+    gamma = 10 ** (int(gamma))
     degree = int(degree)
     kernel = int(kernel)
-    print(C)
     if kernel == 0:
         svm_model_linear = SVC(kernel='linear', C=C).fit(X_train, y_train)
-    else:
+    elif kernel == 1:
         svm_model_linear = SVC(kernel='poly', C=C, degree=degree).fit(X_train, y_train)
+    else:
+        svm_model_linear = SVC(kernel='rbf', C=C, gamma=gamma).fit(X_train, y_train)
 
     score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", 0)
     # accuracy = svm_model_linear.score(X_test, y_test)
     print(score1)
     return score1
 
-def get_model_LR(C=1):
-    from sklearn.svm import SVC
+
+def get_model_LR(C=1, penalty=1, solver=1):
     C = 1 ** (int(C))
+    penalty = int(penalty)
+    solver = int(solver)
     from sklearn.linear_model import LogisticRegression
-    svm_model_linear = LogisticRegression(C=C).fit(X_train, y_train)
-    score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", 0)
+    if penalty == 0:
+        lr_model_linear = LogisticRegression(C=C, penalty='l1').fit(X_train, y_train)
+    elif penalty == 1:
+        if solver == 0:
+            lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='newton-cg').fit(X_train, y_train)
+        elif solver == 1:
+            lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='sag').fit(X_train, y_train)
+        else:
+            lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='lbfgs').fit(X_train, y_train)
+    elif penalty == 2:
+        lr_model_linear = LogisticRegression(C=C, penalty='elasticnet', solver='saga').fit(X_train, y_train)
+    else:
+        lr_model_linear = LogisticRegression(C=C, penalty='none').fit(X_train, y_train)
+
+    score1 = ROC_PR.ROC_ML(lr_model_linear, X_test, y_test, "LR", 0)
     # accuracy = svm_model_linear.score(X_test, y_test)
     print(score1)
     return score1
@@ -55,12 +71,12 @@ def BO_SVM(X, y, i):
 
     fit_with_partial = partial(get_model_SVM)
 
-    fit_with_partial(kernel=0, degree=1, C=1)
+    fit_with_partial(kernel=0, degree=1, C=1, gamma=1)
 
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'C': (-10, 10), "degree": (0.9, 5), "kernel": (0.9, 2.1)}
+    pbounds = {'C': (-10, 10), "degree": (0.9, 100), "kernel": (0.9, 3.1), 'gamma': (-5, 5)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
@@ -90,12 +106,12 @@ def BO_LR(X, y, i):
 
     fit_with_partial = partial(get_model_LR)
 
-    fit_with_partial(C=1)
+    fit_with_partial(C=1, penalty=1, solver=1)
 
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'C': (-10, 10)}
+    pbounds = {'C': (-10, 10), 'penalty': (0.9, 4.1), 'solver': (0.9, 3.1)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
