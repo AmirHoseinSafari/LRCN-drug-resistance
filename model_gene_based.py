@@ -1,6 +1,6 @@
 from keras import Sequential
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, GRU
+from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, GRU, TimeDistributed, Flatten
 import numpy as np
 from sklearn.model_selection import train_test_split
 import keras.backend as K
@@ -148,13 +148,63 @@ def model_gru_simple(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earl
     return score
 
 
-def model_CNN_LSTM_best(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name):
+def model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name):
     print(X.shape)
     print(FrameSize)
     model = Sequential()
     model.add(Dropout(0.1))
     model.add(Conv1D(filters=8, kernel_size=3, activation='relu', padding='same'))
     model.add(MaxPooling1D(pool_size=3, padding='same'))
+
+    model.add(LSTM(518, return_sequences=False, recurrent_dropout=0.3))
+    model.add(Dropout(0.1))
+
+    model.add(Dense(64))
+    model.add(Dropout(0.1))
+
+    model.add(Dense(12, activation='sigmoid'))
+
+    model.compile(
+        loss=masked_loss_function,
+        optimizer='Adam',
+        metrics=[masked_accuracy]
+    )
+
+    history = model.fit(
+        X_train,
+        y_train,
+        epochs=epoch,
+        batch_size=128,
+        verbose=2,
+        validation_data=(X_test, y_test),
+        callbacks=[earlyStopping,
+                   ModelCheckpoint('result/CNN256_LSTM128_64_2.h5', monitor='val_masked_accuracy', mode='max', save_best_only=True)]
+    )
+
+    plot.plot(history, ("LRCN" + name))
+
+    score = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + name), True)
+    return score, ROC_PR.ROC_Score(model, X_train, y_train, limited=False)
+
+
+def model_CNN_LSTM_time(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, name):
+    print(X.shape)
+    print(X_train.shape)
+    print(X_test.shape)
+    print(FrameSize)
+    print(y_train.shape)
+    print(y_test.shape)
+    X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], X_train.shape[2], 1)
+    X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], X_test.shape[2], 1)
+    # y_train = y_train.reshape(7060, 12, 1)
+    # y_test = y_test.reshape(785, 12, 1)
+    model = Sequential()
+    model.add(Dropout(0.1))
+    model.add(TimeDistributed(Conv1D(filters=8, kernel_size=3, activation='relu', padding='same')))
+    model.add(TimeDistributed(MaxPooling1D(pool_size=3, padding='same')))
+    model.add(TimeDistributed(Conv1D(filters=8, kernel_size=3, activation='relu', padding='same')))
+    model.add(TimeDistributed(MaxPooling1D(pool_size=3, padding='same')))
+    model.add(TimeDistributed(Flatten()))
 
     model.add(LSTM(518, return_sequences=False, recurrent_dropout=0.3))
     model.add(Dropout(0.1))
@@ -423,7 +473,7 @@ def run_model(df_train, labels, epoch, limited=False):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1, shuffle=True)
     for i in range(0, 2):
-        model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "gene_10_" + str(i))
+        model_CNN_LSTM_time(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "gene_10_" + str(i))
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, shuffle=True)
     for i in range(0, 2):
@@ -433,6 +483,10 @@ def run_bayesian(df_train, labels, limited=False, portion=0.1):
     X, y, FrameSize = prepareDate(df_train, labels)
     # X = to_categorical(X, dtype=np.int8)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=portion, random_state=1, shuffle=True)
+
+    X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], X_train.shape[2], 1)
+    X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], X_test.shape[2], 1)
+
     Bayesian_optimizer.BO(X_train, X_test, y_train, y_test, limited, portion=portion)
 
 
@@ -452,6 +506,6 @@ def run_all(df_train, labels, epoch):
 
 if __name__ == '__main__':
     df_train, labels = data_preprocess.process(6)
-    run_model_kfold(df_train, labels, 10)
+    run_model(df_train, labels, 10)
 
 

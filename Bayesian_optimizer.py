@@ -2,7 +2,7 @@ import numpy as np
 import keras
 import keras.backend as K
 import tensorflow as tf
-from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, Flatten
+from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, Flatten, TimeDistributed
 from keras import Sequential
 from functools import partial
 
@@ -39,20 +39,22 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64,
     model.add(Dropout(dropout2_rate))
     for i in range(0, i1):
         if i == 0:
-            model.add(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN1, padding='same'))
+            model.add(TimeDistributed(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same')))
+            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN1, padding='same')))
         elif i == 1:
-            model.add(Conv1D(filters=filterCNN2, kernel_size=kernelCNN2, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN2, padding='same'))
+            model.add(TimeDistributed(Conv1D(filters=filterCNN2, kernel_size=kernelCNN2, activation='relu', padding='same')))
+            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN2, padding='same')))
         elif i == 2:
-            model.add(Conv1D(filters=filterCNN3, kernel_size=kernelCNN3, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN3, padding='same'))
+            model.add(TimeDistributed(Conv1D(filters=filterCNN3, kernel_size=kernelCNN3, activation='relu', padding='same')))
+            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN3, padding='same')))
         elif i == 3:
-            model.add(Conv1D(filters=filterCNN4, kernel_size=kernelCNN4, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN4, padding='same'))
+            model.add(TimeDistributed(Conv1D(filters=filterCNN4, kernel_size=kernelCNN4, activation='relu', padding='same')))
+            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN4, padding='same')))
         elif i == 4:
-            model.add(Conv1D(filters=filterCNN5, kernel_size=kernelCNN5, activation='relu', padding='same'))
-            model.add(MaxPooling1D(pool_size=poolCNN5, padding='same'))
+            model.add(TimeDistributed(Conv1D(filters=filterCNN5, kernel_size=kernelCNN5, activation='relu', padding='same')))
+            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN5, padding='same')))
+
+    model.add(TimeDistributed(Flatten()))
 
     if i2 == 0:
         model.add(Flatten())
@@ -179,7 +181,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
               filterCNN5, kernelCNN5, poolCNN5,
               LSTM1, LSTM2, LSTM3, LSTM4, LSTM5, i1, i2, i3)
 
-    return run_one_fold(model)
+    return run_k_fold(model)
 
 
 def run_one_fold(model):
@@ -365,7 +367,7 @@ def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
-        pbounds=pbounds_LSTM,
+        pbounds=pbounds,
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
