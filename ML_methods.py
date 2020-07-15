@@ -138,7 +138,7 @@ def model_run(df_train, labels):
     # dividing X, y into train and test data
     global res
     Bayesian_optimizer_ML.BO_LR(df_train, labels)
-    Bayesian_optimizer_ML.BO_SVM(df_train, labels)
+    # Bayesian_optimizer_ML.BO_SVM(df_train, labels)
     # TODO check before run
     for i in range(0, len(labels)):
         print(i)
@@ -152,7 +152,7 @@ def model_run(df_train, labels):
                 del y[i2]
                 del X[i2]
         # svm_kfold(X, y, i)
-        lr_kfold(X, y, i)
+        # lr_kfold(X, y, i)
     f = open('result/mlResult.txt', 'w')
     for ele in res:
         f.write(str(ele) + '\n')

@@ -51,7 +51,7 @@ def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
 def get_model_LR(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2):
     from sklearn.linear_model import LogisticRegression
     all_scores = 0
-    C = 1 ** (int(C))
+    C = 10 ** (int(C))
     penalty = int(penalty)
     solver = int(solver)
     l1_ratio = l1_ratio / 10
@@ -193,11 +193,14 @@ if __name__ == '__main__':
     # {'target': 0.8636191441305866,
     #  'params': {'C': -7.953311423443483, 'l1_ratio': 4.140559878195683, 'max_iter': 3.427680347001039,
     #             'penalty': 1.811194392959186, 'solver': 0.9599441507353046}}
-    C = -7.953311423443483
-    l1_ratio = 4.140559878195683
-    max_iter = 3.427680347001039
-    penalty = 1.811194392959186
-    solver = 0.9599441507353046
+
+    # {'target': 0.8601012372054825,
+    #  'params': {'C': 7.023950121643671, 'l1_ratio': 2.8797628407599776, 'max_iter': 4.1, 'penalty': 0.9, 'solver': 0.9}}
+    C = 7.023950121643671
+    l1_ratio = 2.8797628407599776
+    max_iter = 4.1
+    penalty = 0.9
+    solver = 0.9
     max_iter = 10 ** max_iter
     C = 1 ** (int(C))
     penalty = int(penalty)
