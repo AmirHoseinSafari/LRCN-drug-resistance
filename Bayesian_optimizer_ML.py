@@ -188,10 +188,17 @@ if __name__ == '__main__':
     #     svm_model_linear = SVC(kernel='linear', C=C).fit(X_train, y_train)
     # else:
     #     svm_model_linear = SVC(kernel='poly', C=C, degree=degree).fit(X_train, y_train)
-    C = 3.199179213636848
-    l1_ratio = 10.0
-    penalty = 4.1
-    solver = 0.9
+    # resultttttttttttttt
+    # LR29
+    # {'target': 0.8636191441305866,
+    #  'params': {'C': -7.953311423443483, 'l1_ratio': 4.140559878195683, 'max_iter': 3.427680347001039,
+    #             'penalty': 1.811194392959186, 'solver': 0.9599441507353046}}
+    C = -7.953311423443483
+    l1_ratio = 4.140559878195683
+    max_iter = 3.427680347001039
+    penalty = 1.811194392959186
+    solver = 0.9599441507353046
+    max_iter = 10 ** max_iter
     C = 1 ** (int(C))
     penalty = int(penalty)
     solver = int(solver)
@@ -200,3 +207,4 @@ if __name__ == '__main__':
     print(l1_ratio)
     print(penalty)
     print(solver)
+    print(max_iter)
