@@ -77,8 +77,8 @@ def load_data_gene_dataset(path):
     return dt
 
 
-def load_data_shuffle_dataset(path):
-    dt = pd.read_csv(path + 'shuffled_index.csv', header=None)
+def load_data_shuffle_dataset(path, index_file):
+    dt = pd.read_csv(path + "shuffled_index_" + str(index_file) + ".csv", header=None)
     dt.set_index(dt.columns[0], inplace=True, drop=True)
     return dt
 
