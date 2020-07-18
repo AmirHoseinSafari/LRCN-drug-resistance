@@ -158,7 +158,7 @@ def BO_LR(X, y):
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'C': (-10, 10), 'penalty': (0.9, 3.1), 'solver': (0.9, 2.1), 'l1_ratio': (0, 10), 'max_iter': (1.9, 4.1)}
+    pbounds = {'C': (-2, 2), 'penalty': (0.9, 3.1), 'solver': (0.9, 2.1), 'l1_ratio': (0, 10), 'max_iter': (1.9, 3.0)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,

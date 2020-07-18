@@ -17,13 +17,13 @@ def train():
 
 def train_shuffle():
     df_train, labels = data_preprocess.process(38, shuffle_index=True, index_file=0)
-    model_gene_based.run_bayesian(df_train, labels)
+    model_gene_based.run_model_kfold(df_train, labels, epochs, index=0)
     df_train, labels = data_preprocess.process(38, shuffle_index=True, index_file=1)
-    model_gene_based.run_bayesian(df_train, labels)
+    model_gene_based.run_model_kfold(df_train, labels, epochs, index=1)
     df_train, labels = data_preprocess.process(38, shuffle_index=True, index_file=2)
-    model_gene_based.run_bayesian(df_train, labels)
+    model_gene_based.run_model_kfold(df_train, labels, epochs, index=2)
     df_train, labels = data_preprocess.process(38, shuffle_index=True, index_file=3)
-    model_gene_based.run_bayesian(df_train, labels)
+    model_gene_based.run_model_kfold(df_train, labels, epochs, index=3)
 
 
 if __name__ == '__main__':
