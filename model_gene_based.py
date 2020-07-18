@@ -345,9 +345,9 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
     print(X.shape)
     print(FrameSize)
 
-    if index == 0:
-        model = Sequential()
+    model = Sequential()
 
+    if index == 0:
         model.add(Dropout(0.3975303416300372))
         model.add(Conv1D(filters=4, kernel_size=3, activation='relu', padding='same'))
         model.add(MaxPooling1D(pool_size=3, padding='same'))
@@ -362,7 +362,7 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
         model.add(Dropout(0.3975303416300372))
         model.add(LSTM(161, return_sequences=True, recurrent_dropout=0.3))
         model.add(Dropout(0.3975303416300372))
-        model.add(LSTM(386, return_sequences=True, recurrent_dropout=0.3))
+        model.add(LSTM(386, return_sequences=False, recurrent_dropout=0.3))
         model.add(Dropout(0.3975303416300372))
 
         model.add(Dense(90))
@@ -376,8 +376,6 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
 
         model.add(Dense(12, activation='sigmoid'))
     elif index == 1:
-        model = Sequential()
-
         model.add(Dropout(0.1135579744586698))
         model.add(Conv1D(filters=4, kernel_size=5, activation='relu', padding='same'))
         model.add(MaxPooling1D(pool_size=4, padding='same'))
@@ -386,7 +384,7 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
         model.add(Dropout(0.1135579744586698))
         model.add(LSTM(67, return_sequences=True, recurrent_dropout=0.3))
         model.add(Dropout(0.1135579744586698))
-        model.add(LSTM(231, return_sequences=True, recurrent_dropout=0.3))
+        model.add(LSTM(231, return_sequences=False, recurrent_dropout=0.3))
         model.add(Dropout(0.1135579744586698))
 
         model.add(Dense(112))
@@ -396,8 +394,6 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
 
         model.add(Dense(12, activation='sigmoid'))
     elif index == 2:
-        model = Sequential()
-
         model.add(Dropout(0.3211287914743064))
         model.add(Conv1D(filters=7, kernel_size=3, activation='relu', padding='same'))
         model.add(MaxPooling1D(pool_size=3, padding='same'))
@@ -408,7 +404,7 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
         model.add(Conv1D(filters=5, kernel_size=4, activation='relu', padding='same'))
         model.add(MaxPooling1D(pool_size=4, padding='same'))
 
-        model.add(LSTM(404, return_sequences=True, recurrent_dropout=0.3))
+        model.add(LSTM(404, return_sequences=False, recurrent_dropout=0.3))
         model.add(Dropout(0.3211287914743064))
 
         model.add(Dense(69))
@@ -422,7 +418,6 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
 
         model.add(Dense(12, activation='sigmoid'))
     elif index == 3:
-        model = Sequential()
 
         model.add(Dropout(0.3584182599371434))
         model.add(Conv1D(filters=8, kernel_size=5, activation='relu', padding='same'))
@@ -433,7 +428,7 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
 
         model.add(LSTM(438, return_sequences=True, recurrent_dropout=0.3))
         model.add(Dropout(0.3584182599371434))
-        model.add(LSTM(500, return_sequences=True, recurrent_dropout=0.3))
+        model.add(LSTM(500, return_sequences=False, recurrent_dropout=0.3))
         model.add(Dropout(0.3584182599371434))
 
         model.add(Dense(81))
