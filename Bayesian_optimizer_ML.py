@@ -95,6 +95,42 @@ X_train, X_test, y_train, y_test = 0, 0, 0, 0
 df_train, labels = 0, 0
 
 
+def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0):
+    from sklearn.ensemble import RandomForestClassifier
+    all_scores = 0
+    n_estimators = 10 * int(n_estimators)
+    min_samples_split = int(min_samples_split)
+    if bootstrap < 0:
+        bootstrap = False
+    else:
+        bootstrap = True
+    if max_depth > 15:
+        max_depth = None
+    else:
+        max_depth = 10 * int(max_depth)
+
+    for i in range(0, len(labels)):
+        dfCurrentDrug = labels[i]
+        X = df_train.values.tolist()
+        y = dfCurrentDrug.values.tolist()
+        for i2 in range(len(y) - 1, -1, -1):
+            if y[i2][0] != 0.0 and y[i2][0] != 1.0:
+                del y[i2]
+                del X[i2]
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42,
+                                                            shuffle=True)
+        rf_model = RandomForestClassifier(n_estimators=n_estimators, min_samples_split=min_samples_split,
+                                          bootstrap=bootstrap, max_depth=max_depth).fit(X_train, y_train)
+
+        score1 = ROC_PR.ROC_ML(rf_model, X_test, y_test, "LR", 0, rf=True)
+        print(i, flush=True)
+        print(score1, flush=True)
+        all_scores = all_scores + score1
+
+    print(all_scores / len(labels), flush=True)
+    return all_scores / len(labels)
+
+
 def BO_SVM(X, y):
     global df_train
     df_train = X
@@ -172,6 +208,36 @@ def BO_LR(X, y):
         print("Iteration {}: \n\t{}".format(i, res), flush=True)
 
     print("resultttttttttttttt LR" + str(i), flush=True)
+    print(optimizer.max, flush=True)
+
+
+def BO_RF(X, y):
+    global df_train
+    df_train = X
+    global labels
+    labels = y
+
+    fit_with_partial = partial(get_model_RF)
+
+    fit_with_partial(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
+
+    from bayes_opt import BayesianOptimization
+
+    # Bounded region of parameter space
+    pbounds = {'n_estimators': (5, 15), 'min_samples_split': (2, 5), 'max_depth': (5, 20), 'bootstrap': (-1, 3)}
+
+    optimizer = BayesianOptimization(
+        f=fit_with_partial,
+        pbounds=pbounds,
+        verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
+        random_state=1,
+    )
+    optimizer.maximize(init_points=15, n_iter=15, )
+
+    for i, res in enumerate(optimizer.res):
+        print("Iteration {}: \n\t{}".format(i, res), flush=True)
+
+    print("resultttttttttttttt RF" + str(i), flush=True)
     print(optimizer.max, flush=True)
 
 

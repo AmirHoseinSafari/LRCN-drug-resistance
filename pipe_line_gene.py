@@ -27,5 +27,5 @@ def train_shuffle():
 
 
 if __name__ == '__main__':
-    # train()
-    train_shuffle()
+    train()
+    # train_shuffle()

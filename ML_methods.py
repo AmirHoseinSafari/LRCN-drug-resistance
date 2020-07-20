@@ -134,11 +134,55 @@ def lr(X, y, i):
     return score1
 
 
+def rf_kfold(X, y, i):
+    global res
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
+
+    X = np.append(X_train, X_test, axis=0)
+    y = np.append(y_train, y_test, axis=0)
+
+    cvscores1 = []
+
+    for i2 in range(0, 10):
+        length = int(len(X) / 10)
+        if i2 == 0:
+            X_train = X[length:]
+            X_test = X[0:length]
+            y_train = y[length:]
+            y_test = y[0:length]
+        elif i2 != 9:
+            X_train = np.append(X[0:length * i2], X[length * (i2 + 1):], axis=0)
+            X_test = X[length * i2:length * (i2 + 1)]
+            y_train = np.append(y[0:length * i2], y[length * (i2 + 1):], axis=0)
+            y_test = y[length * i2:length * (i2 + 1)]
+        else:
+            X_train = X[0:length * i2]
+            X_test = X[length * i2:]
+            y_train = y[0:length * i2]
+            y_test = y[length * i2:]
+
+        from sklearn.ensemble import RandomForestClassifier
+        rf_model_linear = RandomForestClassifier().fit(X_train, y_train)
+        score1 = ROC_PR.ROC_ML(rf_model_linear, X_test, y_test, "LR", i, rf=True)
+
+        accuracy = rf_model_linear.score(X_test, y_test)
+        print(accuracy)
+        res.append(accuracy)
+
+        print("Area for 1")
+        cvscores1.append(score1)
+
+    f = open('result/RFResult' + str(i) + '.txt', 'w')
+    for ele in cvscores1:
+        f.write(str(ele) + '\n')
+
+
 def model_run(df_train, labels):
     # dividing X, y into train and test data
     global res
-    Bayesian_optimizer_ML.BO_LR(df_train, labels)
-    # Bayesian_optimizer_ML.BO_SVM(df_train, labels)
+    # Bayesian_optimizer_ML.BO_LR(df_train, labels)
+    # Bayesian_optimizer_ML.BO_LR(df_train, labels)
+    Bayesian_optimizer_ML.BO_RF(df_train, labels)
     # TODO check before run
     for i in range(0, len(labels)):
         print(i)
@@ -153,6 +197,7 @@ def model_run(df_train, labels):
                 del X[i2]
         # svm_kfold(X, y, i)
         # lr_kfold(X, y, i)
+        # rf_kfold(X, y, i)
     f = open('result/mlResult.txt', 'w')
     for ele in res:
         f.write(str(ele) + '\n')
