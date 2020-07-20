@@ -123,7 +123,7 @@ def lr(X, y, i):
     cvscores1 = []
 
     from sklearn.linear_model import LogisticRegression
-    lr_model_linear = LogisticRegression(C=1, penalty='l2', solver='newton-cg', max_iter=2677).fit(X_train, y_train)
+    lr_model_linear = LogisticRegression(C=0.1, penalty='l2', solver='newton-cg').fit(X_train, y_train)
     score1 = ROC_PR.ROC_ML(lr_model_linear, X_test, y_test, "LR", i)
     accuracy = lr_model_linear.score(X_test, y_test)
     print(accuracy)
