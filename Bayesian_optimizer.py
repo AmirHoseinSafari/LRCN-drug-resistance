@@ -39,22 +39,31 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64,
     model.add(Dropout(dropout2_rate))
     for i in range(0, i1):
         if i == 0:
-            model.add(TimeDistributed(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same')))
-            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN1, padding='same')))
+            # model.add(TimeDistributed(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same')))
+            # model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN1, padding='same')))
+            model.add(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN1, padding='same'))
         elif i == 1:
-            model.add(TimeDistributed(Conv1D(filters=filterCNN2, kernel_size=kernelCNN2, activation='relu', padding='same')))
-            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN2, padding='same')))
+            # model.add(TimeDistributed(Conv1D(filters=filterCNN2, kernel_size=kernelCNN2, activation='relu', padding='same')))
+            # model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN2, padding='same')))
+            model.add(Conv1D(filters=filterCNN2, kernel_size=kernelCNN2, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN2, padding='same'))
         elif i == 2:
-            model.add(TimeDistributed(Conv1D(filters=filterCNN3, kernel_size=kernelCNN3, activation='relu', padding='same')))
-            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN3, padding='same')))
+            model.add(Conv1D(filters=filterCNN3, kernel_size=kernelCNN3, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN3, padding='same'))
         elif i == 3:
-            model.add(TimeDistributed(Conv1D(filters=filterCNN4, kernel_size=kernelCNN4, activation='relu', padding='same')))
-            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN4, padding='same')))
+            # model.add(TimeDistributed(Conv1D(filters=filterCNN4, kernel_size=kernelCNN4, activation='relu', padding='same')))
+            # model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN4, padding='same')))
+            model.add(Conv1D(filters=filterCNN4, kernel_size=kernelCNN4, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN4, padding='same'))
         elif i == 4:
-            model.add(TimeDistributed(Conv1D(filters=filterCNN5, kernel_size=kernelCNN5, activation='relu', padding='same')))
-            model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN5, padding='same')))
+            # model.add(TimeDistributed(Conv1D(filters=filterCNN5, kernel_size=kernelCNN5, activation='relu', padding='same')))
+            # model.add(TimeDistributed(MaxPooling1D(pool_size=poolCNN5, padding='same')))
+            model.add(Conv1D(filters=filterCNN5, kernel_size=kernelCNN5, activation='relu', padding='same'))
+            model.add(MaxPooling1D(pool_size=poolCNN5, padding='same'))
 
-    model.add(TimeDistributed(Flatten()))
+
+    # model.add(TimeDistributed(Flatten()))
 
     if i2 == 0:
         model.add(Flatten())
