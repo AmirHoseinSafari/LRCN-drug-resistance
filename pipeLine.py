@@ -1,9 +1,5 @@
-import data_preprocess
-import model
-import model_one_vs_all
-import ML_methods
-import multiprocessing
-
+from loading_data import data_preprocess
+from models import ML_methods
 
 epochs = 200
 

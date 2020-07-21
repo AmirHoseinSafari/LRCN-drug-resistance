@@ -5,13 +5,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import keras.backend as K
 
-import Bayesian_optimizer
-import ROC_PR
-import plot
-import data_preprocess
-from keras.utils import to_categorical
-
-import tensorflow as tf
+from models import Bayesian_optimizer
+from evaluations import plot, ROC_PR
+from loading_data import data_preprocess
 
 
 def masked_loss_function(y_true, y_pred):

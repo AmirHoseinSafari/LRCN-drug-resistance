@@ -1,5 +1,6 @@
 import pandas as pd
-import data_loader
+from loading_data import data_loader
+
 
 def load_gene_positions():
     dt = pd.read_csv('Data/EPFL_Data/Mycobacterium_tuberculosis_H37Rv_allGenes.csv')

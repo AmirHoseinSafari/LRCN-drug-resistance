@@ -1,4 +1,4 @@
-import load_data
+from loading_data import load_data
 import pandas as pd
 
 

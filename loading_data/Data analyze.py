@@ -1,6 +1,6 @@
 import pandas as pd
 
-import data_preprocess
+from loading_data import data_preprocess
 
 
 def LoadLabel(path):

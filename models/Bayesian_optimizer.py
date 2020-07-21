@@ -1,15 +1,10 @@
 import numpy as np
-import keras
 import keras.backend as K
-import tensorflow as tf
-from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, Flatten, TimeDistributed
+from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, Flatten
 from keras import Sequential
 from functools import partial
 
-from keras.utils import plot_model
-
-import ROC_PR
-
+from evaluations import ROC_PR
 
 NUM_CLASSES = 12
 epochs = 60

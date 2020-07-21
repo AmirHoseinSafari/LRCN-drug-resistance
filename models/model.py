@@ -1,13 +1,13 @@
 from keras import Sequential
 from keras.callbacks import ModelCheckpoint
-from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, TimeDistributed, Conv1D, MaxPooling1D
+from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, Conv1D, MaxPooling1D
 from keras.utils import to_categorical
 import numpy as np
-from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
-import ROC_PR
-import plot
-import data_preprocess
+from evaluations import plot, ROC_PR
+from loading_data import data_preprocess
+
+
 # from keras.utils.vis_utils import plot_model
 
 

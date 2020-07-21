@@ -1,4 +1,4 @@
-import load_data
+from loading_data import load_data
 
 
 def process(numOfFiles, nrow=0):

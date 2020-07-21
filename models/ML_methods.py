@@ -1,15 +1,7 @@
 # importing necessary libraries
-from sklearn import datasets
-from sklearn.metrics import confusion_matrix
-import matplotlib.pyplot as plt
-from sklearn import svm
-from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_curve, auc
-import ROC_PR
-from sklearn.multiclass import OneVsRestClassifier
+from evaluations import ROC_PR
 import numpy as np
-import Bayesian_optimizer_ML
 
 res = []
 

@@ -1,5 +1,3 @@
-import data_loader
-import data_preprocess
 import pandas as pd
 
 l = []

@@ -1,7 +1,5 @@
-import data_preprocess
-import model_gene_based
-import ML_methods
-
+from loading_data import data_preprocess
+from models import model_gene_based
 
 epochs = 200
 

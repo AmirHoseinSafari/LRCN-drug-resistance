@@ -1,8 +1,7 @@
 import random
-import data_loader
 import csv
 
-import data_preprocess
+from loading_data import data_preprocess, data_loader
 
 
 def random_dataset():
