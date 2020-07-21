@@ -268,6 +268,12 @@ if __name__ == '__main__':
     # {'target': 0.8787893887726396,
     #  'params': {'C': -1.5906622846886966, 'l1_ratio': 4.140559878195683, 'max_iter': 1.9694400157727745,
     #             'penalty': 1.811194392959186, 'solver': 0.9599441507353046}}
+
+    # RF
+    # {'target': 0.9053981940680434,
+    #  'params': {'bootstrap': -0.922544907560638, 'max_depth': 5.847050981700784, 'min_samples_split': 4.994497043033141,
+    #             'n_estimators': 14.815287020046105}}
+
     C = -1.5906622846886966
     l1_ratio = 4.140559878195683
     max_iter = 1.9694400157727745
@@ -283,3 +289,26 @@ if __name__ == '__main__':
     print(penalty)
     print(solver)
     print(max_iter)
+
+    print("___")
+
+    bootstrap = -0.922544907560638
+    max_depth = 5.847050981700784
+    min_samples_split = 4.994497043033141
+    n_estimators = 14.815287020046105
+
+    n_estimators = 10 * int(n_estimators)
+    min_samples_split = int(min_samples_split)
+    if bootstrap < 0:
+        bootstrap = False
+    else:
+        bootstrap = True
+    if max_depth > 15:
+        max_depth = None
+    else:
+        max_depth = 10 * int(max_depth)
+
+    print(bootstrap)
+    print(max_depth)
+    print(min_samples_split)
+    print(n_estimators)

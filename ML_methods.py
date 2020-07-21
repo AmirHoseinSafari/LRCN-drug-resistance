@@ -162,7 +162,8 @@ def rf_kfold(X, y, i):
             y_test = y[length * i2:]
 
         from sklearn.ensemble import RandomForestClassifier
-        rf_model_linear = RandomForestClassifier().fit(X_train, y_train)
+        rf_model_linear = RandomForestClassifier(n_estimators=140, min_samples_split=4,
+                                          bootstrap=False, max_depth=50).fit(X_train, y_train)
         score1 = ROC_PR.ROC_ML(rf_model_linear, X_test, y_test, "LR", i, rf=True)
 
         accuracy = rf_model_linear.score(X_test, y_test)
@@ -182,7 +183,7 @@ def model_run(df_train, labels):
     global res
     # Bayesian_optimizer_ML.BO_LR(df_train, labels)
     # Bayesian_optimizer_ML.BO_LR(df_train, labels)
-    Bayesian_optimizer_ML.BO_RF(df_train, labels)
+    # Bayesian_optimizer_ML.BO_RF(df_train, labels)
     # TODO check before run
     for i in range(0, len(labels)):
         print(i)
@@ -197,7 +198,7 @@ def model_run(df_train, labels):
                 del X[i2]
         # svm_kfold(X, y, i)
         # lr_kfold(X, y, i)
-        # rf_kfold(X, y, i)
+        rf_kfold(X, y, i)
     f = open('result/mlResult.txt', 'w')
     for ele in res:
         f.write(str(ele) + '\n')
