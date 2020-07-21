@@ -40,7 +40,7 @@ def table_creator(start, stop, snps):
     isolates = df_train.index.values
     isolates = list(isolates)
 
-    arr = df_train.values.tolist()
+    snp_dataset = df_train.values.tolist()
 
     print(len(start))
     result = []
@@ -68,14 +68,14 @@ def table_creator(start, stop, snps):
                         sum1 = 0
                         if snp_index == j:
                             try:
-                                sum1 = arr[k][j]
+                                sum1 = snp_dataset[k][j]
                             except:
                                 print("errorrrrrrrrrrrrrrrrrrr")
                                 continue
                         else:
                             for l in range(snp_index, j):
                                 try:
-                                    sum1 += arr[k][l]
+                                    sum1 += snp_dataset[k][l]
                                 except:
                                     print("errorrrrrrrrrrrrrrrrrrr")
                                     continue
@@ -122,5 +122,6 @@ if __name__ == '__main__':
             index = index + 1
             i = i - 1
     print(count)
+    print(arr)
     print(len(arr))
     print(miss)
