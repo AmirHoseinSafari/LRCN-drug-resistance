@@ -190,7 +190,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
               filterCNN5, kernelCNN5, poolCNN5,
               LSTM1, LSTM2, LSTM3, LSTM4, LSTM5, i1, i2, i3)
 
-    return run_one_fold(model)
+    return run_k_fold(model)
 
 
 def run_one_fold(model):

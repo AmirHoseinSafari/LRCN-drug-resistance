@@ -89,6 +89,12 @@ def load_data_random_dataset(path):
     return dt
 
 
+def load_data_operon_dataset(path):
+    dt = pd.read_csv(path + 'shuffled_operon.csv', header=None)
+    dt.set_index(dt.columns[0], inplace=True, drop=True)
+    return dt
+
+
 if __name__ == '__main__':
     # LoadData(list(range(1, 2)), 'Data/', 0)
     load_data_gene(list(range(0, 1)), 'Data/')

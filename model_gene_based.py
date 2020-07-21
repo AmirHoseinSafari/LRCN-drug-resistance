@@ -560,8 +560,8 @@ def run_bayesian(df_train, labels, limited=False, portion=0.1):
     # X = to_categorical(X, dtype=np.int8)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=portion, random_state=1, shuffle=True)
 
-    X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], X_train.shape[2], 1)
-    X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], X_test.shape[2], 1)
+    # X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], X_train.shape[2], 1)
+    # X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], X_test.shape[2], 1)
 
     Bayesian_optimizer.BO(X_train, X_test, y_train, y_test, limited, portion=portion)
 

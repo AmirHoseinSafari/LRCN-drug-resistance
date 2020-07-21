@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def process(num_of_files, nrow=0, gene=False, limited=False, gene_dataset=False, shuffle_index=False, random_data=False,
-            index_file=0):
+            shuffle_operon=False, index_file=0):
     # ../../../../ project / compbio - lab / Drug - resistance - TB /
     if gene:
         df_train = load_data.load_data_gene(list(range(0, num_of_files)), 'Data/')
@@ -13,6 +13,8 @@ def process(num_of_files, nrow=0, gene=False, limited=False, gene_dataset=False,
         df_train = load_data.load_data_shuffle_dataset('Data/', index_file)
     elif random_data:
         df_train = load_data.load_data_random_dataset('Data/')
+    elif shuffle_operon:
+        df_train = load_data.load_data_operon_dataset('Data/')
     else:
         df_train = load_data.load_data(list(range(1, num_of_files)), 'Data/', nrow)
 
