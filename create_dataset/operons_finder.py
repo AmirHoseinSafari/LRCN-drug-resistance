@@ -43,7 +43,7 @@ def find_operons_index(names):
             if len(list) > 1:
                 index.append(list)
                 names_op.append(list_names)
-                op_index.extend(list)
+                op_index.append(list)
                 print(list_names)
                 print(list)
             # print(names[i])

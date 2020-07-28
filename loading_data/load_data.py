@@ -95,6 +95,18 @@ def load_data_operon_dataset(path):
     return dt
 
 
+def load_data_operon_locally_dataset(path):
+    dt = pd.read_csv(path + 'shuffled_operon_locally.csv', header=None)
+    dt.set_index(dt.columns[0], inplace=True, drop=True)
+    return dt
+
+
+def load_data_operon_group_dataset(path):
+    dt = pd.read_csv(path + 'shuffled_operon_group.csv', header=None)
+    dt.set_index(dt.columns[0], inplace=True, drop=True)
+    return dt
+
+
 if __name__ == '__main__':
     # LoadData(list(range(1, 2)), 'Data/', 0)
     load_data_gene(list(range(0, 1)), 'Data/')
