@@ -185,7 +185,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
               filterCNN5, kernelCNN5, poolCNN5,
               LSTM1, LSTM2, LSTM3, LSTM4, LSTM5, i1, i2, i3)
 
-    return run_k_fold(model)
+    return run_one_fold(model)
 
 
 def run_one_fold(model):
@@ -214,8 +214,14 @@ def run_one_fold(model):
 
     # Return the accuracy.
     # print(history.history['val_masked_accuracy'])
-    score = ROC_PR.ROC_Score(model, X_test, y_test, limited=limited)
-    print('area under ROC curve:', score)
+    score = ROC_PR.ROC_Score(model, X_val, y_val)
+    score_test = ROC_PR.ROC_Score(model, X_test, y_test)
+    score_for_each_drug = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + "BO_delete"), True)
+
+    print('area under ROC curve for val:', score)
+    print('area under ROC curve for test:', score_test)
+    print(score_for_each_drug)
+
     return score
 
 
@@ -275,24 +281,31 @@ def run_k_fold(model):
         cvscores.append(score)
         scores_each_drug.append(ROC_PR.ROC(model, X_test_tmp, y_test_tmp, ("LRCN" + "BO_delete" + str(i)), True))
     print(np.mean(cvscores))
+    if np.mean(cvscores) > 0.97:
+        model.save()
     print(scores_each_drug)
     return np.mean(cvscores)
 
 
-X_train, X_test, y_train, y_test = 0, 0, 0, 0
+X_train, X_test, X_val, y_train, y_test, y_val = 0, 0, 0, 0, 0, 0
 limited = False
 X, y = 0, 0
 check = 0
 
-def BO(X_train2, X_test2, y_train2, y_test2, limited2, portion):
+
+def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion):
     global X_train
     X_train = X_train2
     global X_test
     X_test = X_test2
+    global X_val
+    X_val = X_val2
     global y_train
     y_train = y_train2
     global y_test
     y_test = y_test2
+    global y_val
+    y_val = y_val2
     global limited
     limited = limited2
 
@@ -431,35 +444,35 @@ if __name__ == '__main__':
 
 
     # gene based model Jun 24
-    # LSTM1 = 8.1
-    # LSTM2 = 0.9
-    # LSTM3 = 0.9
-    # LSTM4 = 8.1
-    # LSTM5 = 0.9
-    # dense_1_neurons_x128 = 0.9
-    # dense_2_neurons_x128 = 8.1
-    # dense_3_neurons_x128 = 8.1
-    # dense_4_neurons_x128 = 0.9
-    # dense_5_neurons_x128 = 0.9
-    # dropout2_rate = 0.1
-    # filterCNN1 = 8.1
-    # filterCNN2 = 3.9
-    # filterCNN3 = 3.9
-    # filterCNN4 = 8.1
-    # filterCNN5 = 8.1
-    # i1 = 1.9
-    # i2 = 1.9
-    # i3 = 1.9
-    # kernelCNN1 = 2.9
-    # kernelCNN2 = 6.1
-    # kernelCNN3 = 6.1
-    # kernelCNN4 = 6.1
-    # kernelCNN5 = 2.9
-    # poolCNN1 = 6.1
-    # poolCNN2 = 2.9
-    # poolCNN3 = 6.1
-    # poolCNN4 = 2.9
-    # poolCNN5 = 6.1
+    LSTM1 = 8.1
+    LSTM2 = 0.9
+    LSTM3 = 0.9
+    LSTM4 = 8.1
+    LSTM5 = 0.9
+    dense_1_neurons_x128 = 0.9
+    dense_2_neurons_x128 = 8.1
+    dense_3_neurons_x128 = 8.1
+    dense_4_neurons_x128 = 0.9
+    dense_5_neurons_x128 = 0.9
+    dropout2_rate = 0.1
+    filterCNN1 = 8.1
+    filterCNN2 = 3.9
+    filterCNN3 = 3.9
+    filterCNN4 = 8.1
+    filterCNN5 = 8.1
+    i1 = 1.9
+    i2 = 1.9
+    i3 = 1.9
+    kernelCNN1 = 2.9
+    kernelCNN2 = 6.1
+    kernelCNN3 = 6.1
+    kernelCNN4 = 6.1
+    kernelCNN5 = 2.9
+    poolCNN1 = 6.1
+    poolCNN2 = 2.9
+    poolCNN3 = 6.1
+    poolCNN4 = 2.9
+    poolCNN5 = 6.1
 
     # random index
     # LSTM1 = 4.866827177648857
@@ -648,36 +661,142 @@ if __name__ == '__main__':
     #             'poolCNN2': 5.60315022525511, 'poolCNN3': 5.797255419867677, 'poolCNN4': 4.371616850613782,
     #             'poolCNN5': 4.648309811265194}}
     # shuffle 3
-    LSTM1 = 6.857932101285899
-    LSTM2 = 7.8247565029282535
-    LSTM3 = 7.93855364364796
-    LSTM4 = 1.0370375040103659
-    LSTM5 = 5.222751913097705
-    dense_1_neurons_x128 = 1.269912297670297
-    dense_2_neurons_x128 = 4.180379847343162
-    dense_3_neurons_x128 = 6.0659390964767335
-    dense_4_neurons_x128 = 1.3230654491114158
-    dense_5_neurons_x128 = 2.852582606327128
-    dropout2_rate = 0.3584182599371434
-    filterCNN1 = 8.082383676023122
-    filterCNN2 = 7.43790273178718
-    filterCNN3 = 6.6151243767460155
-    filterCNN4 = 6.960156939837497
-    filterCNN5 = 4.7347663171361765
-    i1 = 2.0618254495008244
-    i2 = 2.7148722021526126
-    i3 = 3.2193678012456752
-    kernelCNN1 = 5.5634203327727
-    kernelCNN2 = 5.842728005722684
-    kernelCNN3 = 3.6940066126250337
-    kernelCNN4 = 5.545767440087675
-    kernelCNN5 = 5.548638745871845
-    poolCNN1 = 5.788653578553341
-    poolCNN2 = 5.9175930951933955
-    poolCNN3 = 4.538686028476428
-    poolCNN4 = 5.927841920999326
-    poolCNN5 = 5.0119463100374215
+    # LSTM1 = 6.857932101285899
+    # LSTM2 = 7.8247565029282535
+    # LSTM3 = 7.93855364364796
+    # LSTM4 = 1.0370375040103659
+    # LSTM5 = 5.222751913097705
+    # dense_1_neurons_x128 = 1.269912297670297
+    # dense_2_neurons_x128 = 4.180379847343162
+    # dense_3_neurons_x128 = 6.0659390964767335
+    # dense_4_neurons_x128 = 1.3230654491114158
+    # dense_5_neurons_x128 = 2.852582606327128
+    # dropout2_rate = 0.3584182599371434
+    # filterCNN1 = 8.082383676023122
+    # filterCNN2 = 7.43790273178718
+    # filterCNN3 = 6.6151243767460155
+    # filterCNN4 = 6.960156939837497
+    # filterCNN5 = 4.7347663171361765
+    # i1 = 2.0618254495008244
+    # i2 = 2.7148722021526126
+    # i3 = 3.2193678012456752
+    # kernelCNN1 = 5.5634203327727
+    # kernelCNN2 = 5.842728005722684
+    # kernelCNN3 = 3.6940066126250337
+    # kernelCNN4 = 5.545767440087675
+    # kernelCNN5 = 5.548638745871845
+    # poolCNN1 = 5.788653578553341
+    # poolCNN2 = 5.9175930951933955
+    # poolCNN3 = 4.538686028476428
+    # poolCNN4 = 5.927841920999326
+    # poolCNN5 = 5.0119463100374215
 
+    # LSTM1 = 5.318803550972627
+    # LSTM2 = 5.092327267789626
+    # LSTM3 = 5.074300778715073
+    # LSTM4 = 5.154371285013191
+    # LSTM5 = 3.922872356885941
+    # dense_1_neurons_x128 = 7.227699918599786
+    # dense_2_neurons_x128 = 4.095306036812141
+    # dense_3_neurons_x128 = 3.7199829472200494
+    # dense_4_neurons_x128 = 3.977630850973221
+    # dense_5_neurons_x128 = 4.825030405910773
+    # dropout2_rate = 0.1410763101705484
+    # filterCNN1 = 6.562086491737755
+    # filterCNN2 = 5.438153788692958
+    # filterCNN3 = 6.915774801695678
+    # filterCNN4 = 7.988122814241818
+    # filterCNN5 = 4.1966508672770075
+    # i1 = 3.8420122980426488
+    # i2 = 2.6054389339552078
+    # i3 = 2.801688290718926
+    # kernelCNN1 = 4.577781536806731
+    # kernelCNN2 = 4.7988255077194335
+    # kernelCNN3 = 5.158934408220259
+    # kernelCNN4 = 2.950089012124746
+    # kernelCNN5 = 4.292786152234941
+    # poolCNN1 = 3.995376607628528
+    # poolCNN2 = 5.230000391550719
+    # poolCNN3 = 5.397837232287488
+    # poolCNN4 = 4.796942756340975
+    # poolCNN5 = 4.984760406804859
+
+    # LSTM1 =  5.51927670441363
+    #     # LSTM2 =  3.7080555418169725
+    #     # LSTM3 =  4.39913280309775
+    #     # LSTM4 =  5.251035477023807
+    #     # LSTM5 =  4.8567450348616505
+    #     # dense_1_neurons_x128 =  7.5685062722864656
+    #     # dense_2_neurons_x128 =  7.514880736561963
+    #     # dense_3_neurons_x128 =  3.7431044130495947
+    #     # dense_4_neurons_x128 =  7.835490204773125
+    #     # dense_5_neurons_x128 =  2.1524808000993434
+    #     # dropout2_rate =  0.15053180777585495
+    #     # filterCNN1 =  4.4673324637962715
+    #     # filterCNN2 =  6.023781095842965
+    #     # filterCNN3 =  3.9904041821516314
+    #     # filterCNN4 =  7.881474887114259
+    #     # filterCNN5 =  7.373884978917076
+    #     # i1 =  1.9480607383747914
+    #     # i2 =  2.463828017840177
+    #     # i3 =  2.962603437973878
+    #     # kernelCNN1 =  3.3191899033949337
+    #     # kernelCNN2 =  5.490370214805063
+    #     # kernelCNN3 =  4.003157288586539
+    #     # kernelCNN4 =  5.908343943466774
+    #     # kernelCNN5 =  4.762445375830656
+    #     # poolCNN1 =  5.712262350117901
+    #     # poolCNN2 =  5.60315022525511
+    #     # poolCNN3 =  5.797255419867677
+    #     # poolCNN4 =  4.371616850613782
+    #     # poolCNN5 =  4.648309811265194
+
+    # LSTM1 =  8.1
+    # LSTM2 =  0.9
+    # LSTM3 =  0.9
+    # LSTM4 =  6.9983173772440965
+    # LSTM5 =  0.9
+    # dense_1_neurons_x128 =  8.1
+    # dense_2_neurons_x128 =  8.1
+    # dense_3_neurons_x128 =  0.9
+    # dense_4_neurons_x128 =  0.9
+    # dense_5_neurons_x128 =  0.9
+    # dropout2_rate =  0.1
+    # filterCNN1 =  3.9
+    # filterCNN2 =  3.9
+    # filterCNN3 =  8.1
+    # filterCNN4 =  3.9
+    # filterCNN5 =  8.1
+    # i1 =  1.9
+    # i2 =  1.9
+    # i3 =  1.9
+    # kernelCNN1 =  6.1
+    # kernelCNN2 =  6.1
+    # kernelCNN3 =  6.1
+    # kernelCNN4 =  6.1
+    # kernelCNN5 =  6.1
+    # poolCNN1 =  6.1
+    # poolCNN2 =  2.9
+    # poolCNN3 =  2.9
+    # poolCNN4 =  2.9
+    # poolCNN5 =  6.1
+
+
+    # pure LSTM
+    LSTM1 = 5.559974417023026
+    LSTM2 = 7.082064653671237
+    LSTM3 = 5.372471089054764
+    LSTM4 = 6.802611752726484
+    LSTM5 = 1.7695998006449467
+    dense_1_neurons_x128 = 5.6152943552398895
+    dense_2_neurons_x128 = 3.4373195170534263
+    dense_3_neurons_x128 = 3.59536032165431
+    dense_4_neurons_x128 = 2.300509984026279
+    dense_5_neurons_x128 = 3.8161670087956545
+    dropout2_rate = 0.18725148040207906
+    i1 = 0.0
+    i2 = 2.417719456185797
+    i3 = 4.1624599809776335
 
     i1 = int(i1)
     i2 = int(i2)

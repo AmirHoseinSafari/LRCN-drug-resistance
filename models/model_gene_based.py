@@ -461,7 +461,7 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
     return score, ROC_PR.ROC_Score(model, X_train, y_train, limited=False)
 
 
-def prepareDate(features, label):
+def prepare_data(features, label):
     FrameSize = 200
 
     y = []
@@ -492,7 +492,7 @@ def prepareDate(features, label):
 
 def run_model_kfold(df_train, labels, epoch, index=-1):
 
-    X, y, FrameSize = prepareDate(df_train, labels)
+    X, y, FrameSize = prepare_data(df_train, labels)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
     X = np.append(X_train, X_test, axis=0)
     y = np.append(y_train, y_test, axis=0)
@@ -539,7 +539,7 @@ def run_model_kfold(df_train, labels, epoch, index=-1):
 
 
 def run_model(df_train, labels, epoch, limited=False):
-    X, y, FrameSize = prepareDate(df_train, labels)
+    X, y, FrameSize = prepare_data(df_train, labels)
     # X = to_categorical(X, dtype=np.int8)
     earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=80)
 
@@ -551,19 +551,39 @@ def run_model(df_train, labels, epoch, limited=False):
     for i in range(0, 2):
         model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "gene_20_" + str(i))
 
+
 def run_bayesian(df_train, labels, limited=False, portion=0.1):
-    X, y, FrameSize = prepareDate(df_train, labels)
-    # X = to_categorical(X, dtype=np.int8)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=portion, random_state=1, shuffle=True)
+    X, y, FrameSize = prepare_data(df_train, labels)
 
-    # X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], X_train.shape[2], 1)
-    # X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], X_test.shape[2], 1)
+    np.random.shuffle(X)
+    np.random.shuffle(y)
 
-    Bayesian_optimizer.BO(X_train, X_test, y_train, y_test, limited, portion=portion)
+    for i in range(0, 10):
+        print("fold: " + str(i))
+        length = int(len(X) / 10)
+        if i == 0:
+            X_train = X[length:]
+            X_test = X[0:length]
+            y_train = y[length:]
+            y_test = y[0:length]
+        elif i != 9:
+            X_train = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
+            X_test = X[length * i:length * (i + 1)]
+            y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+            y_test = y[length * i:length * (i + 1)]
+        else:
+            X_train = X[0:length * i]
+            X_test = X[length * i:]
+            y_train = y[0:length * i]
+            y_test = y[length * i:]
+
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1, shuffle=False)
+
+        Bayesian_optimizer.BO(X_train, X_test, X_val, y_train, y_test, y_val, limited, portion)
 
 
 def run_all(df_train, labels, epoch):
-    X, y, FrameSize = prepareDate(df_train, labels)
+    X, y, FrameSize = prepare_data(df_train, labels)
     # X = to_categorical(X, dtype=np.int8)
     earlyStopping = EarlyStopping(monitor='val_masked_accuracy', mode='max', min_delta=0.1, verbose=1, patience=80)
 
