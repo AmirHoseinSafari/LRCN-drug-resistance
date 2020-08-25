@@ -1,5 +1,5 @@
 from loading_data import data_preprocess
-from models import model_gene_based
+from models import model_gene_based, wide_n_deep
 
 epochs = 200
 
@@ -9,6 +9,7 @@ def train():
     # df_train, labels = data_preprocess.process(38, shuffle_operon_group=True)
     # ML_methods.model_run(df_train, labels)
     # model_gene_based.run_model(df_train, labels, epochs)
+    # wide_n_deep.run_bayesian(df_train, labels)
     model_gene_based.run_bayesian(df_train, labels)
     # model_gene_based.run_all(df_train, labels, epochs)
     # model_gene_based.run_model_kfold(df_train,labels,epochs)
