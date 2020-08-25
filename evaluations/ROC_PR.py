@@ -116,8 +116,8 @@ def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True, save=True):
     fig1 = plt.gcf()
     plt.show()
     plt.draw()
-    if save:
-        fig1.savefig('result/ROC_' + name + '.png', dpi=100)
+    # if save:
+    #     fig1.savefig('result/ROC_' + name + '.png', dpi=100)
     return auc_keras
     # Zoom in view of the upper left corner.
     # plt.figure(2)
