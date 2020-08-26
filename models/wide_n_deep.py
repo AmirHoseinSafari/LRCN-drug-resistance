@@ -166,7 +166,7 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2):
         verbose=2,
         random_state=1,
     )
-    optimizer.maximize(init_points=10, n_iter=10, )
+    optimizer.maximize(init_points=15, n_iter=15, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))

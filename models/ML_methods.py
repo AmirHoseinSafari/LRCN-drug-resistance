@@ -3,6 +3,8 @@ from sklearn.model_selection import train_test_split
 from evaluations import ROC_PR
 import numpy as np
 
+from models import Bayesian_optimizer_ML
+
 res = []
 
 def svm_kfold(X, y, i):
@@ -173,7 +175,7 @@ def rf_kfold(X, y, i):
 def model_run(df_train, labels):
     # dividing X, y into train and test data
     global res
-    # Bayesian_optimizer_ML.BO_LR(df_train, labels)
+    Bayesian_optimizer_ML.run_bayesian(df_train, labels)
     # Bayesian_optimizer_ML.BO_LR(df_train, labels)
     # Bayesian_optimizer_ML.BO_RF(df_train, labels)
     # TODO check before run
@@ -190,7 +192,7 @@ def model_run(df_train, labels):
                 del X[i2]
         # svm_kfold(X, y, i)
         # lr_kfold(X, y, i)
-        rf_kfold(X, y, i)
+        # rf_kfold(X, y, i)
     f = open('result/mlResult.txt', 'w')
     for ele in res:
         f.write(str(ele) + '\n')

@@ -238,7 +238,7 @@ def ROC_ML(model, X_test, y_test, name, i, rf=False):
         ax = plt.gca()
         score = plot_roc_curve(model, X_test, y_test, ax=ax, alpha=0.8)
         plt.show()
-        return score.roc_auc
+        return score.roc_auc, SR_maker(y_test, model.predict(X_test))
     else:
         y_pred_keras_tmp = model.decision_function(X_test)
         fpr_keras, tpr_keras, _ = roc_curve(y_test, y_pred_keras_tmp)
