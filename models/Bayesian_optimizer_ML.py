@@ -307,6 +307,9 @@ def run_bayesian(df_train, labels):
     global y_test
     global y_val
 
+    X = X.sample(frac=1)
+    np.random.shuffle(y)
+
     for i in range(0, 10):
         print("fold: " + str(i))
         length = int(len(X) / 10)
