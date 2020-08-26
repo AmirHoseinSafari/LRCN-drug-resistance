@@ -113,10 +113,12 @@ def run_one_fold(model):
     score = ROC_PR.ROC_Score(model, X_val, y_val)
     score_test = ROC_PR.ROC_Score(model, X_test, y_test)
     score_for_each_drug = ROC_PR.ROC(model, X_test, y_test, ("wide-n-deep" + "BO_delete"), True)
+    spec_recall = ROC_PR.PR(model, X_test, y_test)
 
     print('area under ROC curve for val:', score)
     print('area under ROC curve for test:', score_test)
     print(score_for_each_drug)
+    print("recall at 95 spec: ", spec_recall)
 
     return score
 
@@ -181,11 +183,6 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2):
 
 def run_bayesian(df_train, labels):
     X, y, FrameSize = prepare_date(df_train, labels)
-
-    print(y)
-    X = X.sample(frac=1)
-    np.random.shuffle(y)
-    print(y)
 
     for i in range(0, 10):
         print("fold: " + str(i))

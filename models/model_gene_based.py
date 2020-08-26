@@ -555,9 +555,6 @@ def run_model(df_train, labels, epoch, limited=False):
 def run_bayesian(df_train, labels, limited=False, portion=0.1):
     X, y, FrameSize = prepare_data(df_train, labels)
 
-    # np.random.shuffle(X)
-    # np.random.shuffle(y)
-
     for i in range(0, 10):
         print("fold: " + str(i))
         length = int(len(X) / 10)
