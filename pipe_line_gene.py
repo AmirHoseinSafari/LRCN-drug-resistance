@@ -1,5 +1,5 @@
 from loading_data import data_preprocess
-from models import model_gene_based, wide_n_deep
+from models import model_gene_based, wide_n_deep, ML_methods
 
 epochs = 200
 

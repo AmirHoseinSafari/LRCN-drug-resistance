@@ -2,8 +2,71 @@ from sklearn.metrics import roc_curve, plot_roc_curve
 from sklearn.metrics import auc
 from matplotlib import pyplot as plt
 import numpy as np
+from sklearn.metrics._ranking import _binary_clf_curve
 
 num_of_drugs = 12
+
+
+def specificity_recall_calculator(y_true, probas_pred, pos_label=None,
+                                  sample_weight=None):
+    fps, tps, thresholds = _binary_clf_curve(y_true, probas_pred,
+                                             pos_label=pos_label,
+                                             sample_weight=sample_weight)
+
+    specificity = (fps[-1] - fps) / fps[-1]
+    specificity[np.isnan(specificity)] = 0
+    recall = tps / tps[-1]
+
+    # stop when full recall attained
+    # and reverse the outputs so recall is decreasing
+    last_ind = tps.searchsorted(tps[-1])
+    sl = slice(last_ind, None, -1)
+    return np.r_[specificity[sl], 1], np.r_[recall[sl], 0], thresholds[sl]
+
+
+def PR(model, X_test, y_test):
+    y_pred_keras_tmp = model.predict(X_test)
+    y_pred_keras = []
+    y_test_tmp = []
+    scores = []
+    global num_of_drugs
+
+    for i in range(0, num_of_drugs):  # len(y_test[0])):
+        y_test_tmp = y_test[:, i]
+        y_pred_keras = y_pred_keras_tmp[:, i]
+        i2 = 0
+        while i2 < len(y_test_tmp):
+            if y_test_tmp[i2] != 0 and y_test_tmp[i2] != 1:
+                y_test_tmp = np.delete(y_test_tmp, i2)
+                y_pred_keras = np.delete(y_pred_keras, i2)
+            else:
+                i2 = i2 + 1
+        try:
+            if i != 0:
+                if i < num_of_drugs - 1:
+                    scores.append(SR_maker(y_test_tmp, y_pred_keras))
+                else:
+                    scores.append(SR_maker(y_test_tmp, y_pred_keras))
+            else:
+                scores.append(SR_maker(y_test_tmp, y_pred_keras))
+
+        except():
+            print("error on " + i + " " + y_test_tmp)
+    y_test_tmp = []
+    y_pred_keras = []
+    for i in range(0, num_of_drugs):  # len(y_test[0])):
+        y_test_tmp.extend(y_test[:, i])
+        # print(y_test_tmp)
+        y_pred_keras.extend(y_pred_keras_tmp[:, i])
+    i = 0
+    while i < len(y_test_tmp):
+        if y_test_tmp[i] != 0 and y_test_tmp[i] != 1:
+            y_test_tmp = np.delete(y_test_tmp, i)
+            y_pred_keras = np.delete(y_pred_keras, i)
+        else:
+            i = i + 1
+    SR_maker(y_test_tmp, y_pred_keras)
+    return scores
 
 
 def ROC(model, X_test, y_test, name, multi=False, limited=False):
@@ -94,9 +157,44 @@ def ROC_Score(model, X_test, y_test, limited=False):
         else:
             i = i + 1
     fpr_keras, tpr_keras, _ = roc_curve(y_test_tmp, y_pred_keras)
+    # print("___")
+    # print(fpr_keras)
+    # print("___")
+    # print(tpr_keras)
+    # print("___")
     auc_keras = auc(fpr_keras, tpr_keras)
     # print(auc_keras)
     return auc_keras
+
+
+def SR_maker(y_test_tmp, y_pred_keras):
+    specificity, recall, th = specificity_recall_calculator(y_test_tmp, y_pred_keras)
+    score = 0
+    count = 0
+    for i in range(0 ,len(recall)):
+        if specificity[i] == 0.95:
+            score += recall[i]
+            count += count + 1
+
+    if score != 0:
+        return score/count
+
+    for i in range(0 ,len(recall)):
+        if specificity[i] <= 0.952 and specificity[i] >= 0.948:
+            score += recall[i]
+            count += 1
+
+    if score != 0:
+        return score/count
+
+    for i in range(0, len(recall)):
+        if specificity[i] <= 0.955 and specificity[i] >= 0.945:
+            score += recall[i]
+            count += 1
+
+    if score != 0:
+        return score / count
+
 
 
 def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True, save=True):
