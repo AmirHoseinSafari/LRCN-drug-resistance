@@ -144,8 +144,8 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
         rf_model = RandomForestClassifier(n_estimators=n_estimators, min_samples_split=min_samples_split,
                                           bootstrap=bootstrap, max_depth=max_depth).fit(X_train2, y_train2)
 
-        score_val, score_sr = ROC_PR.ROC_ML(rf_model, X_val2, y_val2, "RF", 0, rf=True)
-        score_test = ROC_PR.ROC_ML(rf_model, X_test2, y_test2, "RF", 0, rf=True)
+        score_val, _ = ROC_PR.ROC_ML(rf_model, X_val2, y_val2, "RF", 0, rf=True)
+        score_test, score_sr = ROC_PR.ROC_ML(rf_model, X_test2, y_test2, "RF", 0, rf=True)
         print(i, flush=True)
         # print(score1, flush=True)
         res_test.append(score_test)
