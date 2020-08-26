@@ -113,7 +113,7 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
     res_test = []
     res_val = []
     res_sr = []
-    for i in range(0, len(y_train)):
+    for i in range(0, len(y_train[0])):
         X_train2 = X_train.values.tolist()
         X_test2 = X_test.values.tolist()
         X_val2 = X_val.values.tolist()
@@ -150,13 +150,12 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
         # print(score1, flush=True)
         res_test.append(score_test)
         res_val.append(score_val)
-        print(score_sr)
         res_sr.append(score_sr)
         all_scores = all_scores + score_val
 
 
     global rf_val_score, rf_test_score
-    res_val.append(all_scores / len(y_train))
+    res_val.append(all_scores / len(y_train[0]))
     rf_val_score.append(res_val)
     rf_test_score.append(res_test)
     rf_sr_score.append(res_sr)
@@ -164,8 +163,8 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
 
     print("val score", res_val)
     print("test score", res_test)
-    print(all_scores / len(y_train), flush=True)
-    return all_scores / len(y_train)
+    print(all_scores / len(y_train[0]), flush=True)
+    return all_scores / len(y_train[0])
 
 
 def BO_SVM(X, y):
