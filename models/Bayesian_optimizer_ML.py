@@ -114,9 +114,9 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
     res_val = []
     res_sr = []
     for i in range(0, len(y_train[0])):
-        X_train2 = X_train.values.tolist()
-        X_test2 = X_test.values.tolist()
-        X_val2 = X_val.values.tolist()
+        X_train2 = X_train.tolist()
+        X_test2 = X_test.tolist()
+        X_val2 = X_val.tolist()
 
         y_train2 = y_train[:, i]
         y_test2 = y_test[:, i]
@@ -294,6 +294,7 @@ def prepare_data(features, label):
         y.append(tmp)
 
     y = np.array(y)
+    features = np.array(features)
     return features, y, FrameSize
 
 
@@ -306,9 +307,6 @@ def run_bayesian(df_train, labels):
     global y_train
     global y_test
     global y_val
-
-    X = X.sample(frac=1)
-    np.random.shuffle(y)
 
     for i in range(0, 10):
         print("fold: " + str(i))
