@@ -214,16 +214,16 @@ def run_one_fold(model):
 
     # Return the accuracy.
     # print(history.history['val_masked_accuracy'])
-    score = ROC_PR.ROC_Score(model, X_val, y_val)
+    score = ROC_PR.ROC_Score(model, X_test, y_test) #TODO
     score_test = ROC_PR.ROC_Score(model, X_test, y_test)
     score_for_each_drug = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + "BO_delete"), True)
-    spec_recall = ROC_PR.PR(model, X_test, y_test)
+    spec_recall, prec_recall = ROC_PR.PR(model, X_test, y_test)
 
     print('area under ROC curve for val:', score)
     print('area under ROC curve for test:', score_test)
     print(score_for_each_drug)
     print("recall at 95 spec: ", spec_recall)
-
+    print("precision recall: ", prec_recall)
     return score
 
 
@@ -390,7 +390,7 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion):
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
-    optimizer.maximize(init_points=10, n_iter=10, )
+    optimizer.maximize(init_points=30, n_iter=30, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
