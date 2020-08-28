@@ -43,6 +43,91 @@ def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
     return all_scores/len(labels)
 
 
+def get_model_SVM_new(kernel=0, degree=1, C=1, gamma=1):
+    from sklearn.svm import SVC
+    all_scores = 0
+    C = 10 ** (int(C))
+    gamma = 10 ** (int(gamma))
+    degree = int(degree)
+    kernel = int(kernel)
+
+    global X_train
+    global X_test
+    global X_val
+    global y_train
+    global y_test
+    global y_val
+
+    res_test = []
+    res_val = []
+    res_sr = []
+    res_pr = []
+    for i in range(0, len(y_train[0])):
+        X_train2 = X_train.tolist()
+        X_test2 = X_test.tolist()
+        X_val2 = X_val.tolist()
+
+        y_train2 = y_train[:, i]
+        y_test2 = y_test[:, i]
+        y_val2 = y_val[:, i]
+        y_train2 = y_train2.tolist()
+        y_test2 = y_test2.tolist()
+        y_val2 = y_val2.tolist()
+
+        for i2 in range(len(y_train2) - 1, -1, -1):
+            if y_train2[i2] != 0.0 and y_train2[i2] != 1.0:
+                del y_train2[i2]
+                del X_train2[i2]
+
+        for i2 in range(len(y_test2) - 1, -1, -1):
+            if y_test2[i2] != 0.0 and y_test2[i2] != 1.0:
+                del y_test2[i2]
+                del X_test2[i2]
+
+        for i2 in range(len(y_val2) - 1, -1, -1):
+            if y_val2[i2] != 0.0 and y_val2[i2] != 1.0:
+                del y_val2[i2]
+                del X_val2[i2]
+        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42,
+        #                                                     shuffle=True)
+
+        if kernel == 0:
+            svm_model_linear = SVC(kernel='linear', C=C).fit(X_train2, y_train2)
+        elif kernel == 1:
+            svm_model_linear = SVC(kernel='poly', C=C, degree=degree).fit(X_train2, y_train2)
+        else:
+            svm_model_linear = SVC(kernel='rbf', C=C, gamma=gamma).fit(X_train2, y_train2)
+        # try:
+        #     score1 = ROC_PR.ROC_ML(svm_model_linear, X_test, y_test, "SVM", 0)
+        # except:
+        #     score1 = svm_model_linear.score(X_test, y_test)
+
+        score_val, _, _ = ROC_PR.ROC_ML(svm_model_linear, X_val2, y_val2, "LR", 0)
+        score_test, score_sr, score_pr = ROC_PR.ROC_ML(svm_model_linear, X_test2, y_test2, "LR", 0)
+        print(i, flush=True)
+        # print(score1, flush=True)
+        res_test.append(score_test)
+        res_val.append(score_val)
+        res_sr.append(score_sr)
+        res_pr.append(score_pr)
+        all_scores = all_scores + score_val
+
+
+    global rf_val_score, rf_test_score
+    res_val.append(all_scores / len(y_train[0]))
+    rf_val_score.append(res_val)
+    rf_test_score.append(res_test)
+    rf_sr_score.append(res_sr)
+
+
+    print("val score", res_val)
+    print("test score", res_test)
+    print("recall at 95 spec: ", res_sr)
+    print("precision recall: ", res_pr)
+    print(all_scores / len(y_train[0]), flush=True)
+    return all_scores / len(y_train[0])
+
+
 def get_model_LR(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2):
     from sklearn.linear_model import LogisticRegression
     all_scores = 0
@@ -89,6 +174,101 @@ def get_model_LR(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2):
 df_train, labels = 0, 0
 
 
+def get_model_LR_new(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2):
+    from sklearn.linear_model import LogisticRegression
+    all_scores = 0
+    C = 10 ** (int(C))
+    penalty = int(penalty)
+    solver = int(solver)
+    l1_ratio = l1_ratio / 10
+    max_iter = 10 ** max_iter
+    print(max_iter)
+
+    global X_train
+    global X_test
+    global X_val
+    global y_train
+    global y_test
+    global y_val
+
+    res_test = []
+    res_val = []
+    res_sr = []
+    res_pr = []
+    for i in range(0, len(y_train[0])):
+        X_train2 = X_train.tolist()
+        X_test2 = X_test.tolist()
+        X_val2 = X_val.tolist()
+
+        y_train2 = y_train[:, i]
+        y_test2 = y_test[:, i]
+        y_val2 = y_val[:, i]
+        y_train2 = y_train2.tolist()
+        y_test2 = y_test2.tolist()
+        y_val2 = y_val2.tolist()
+
+        for i2 in range(len(y_train2) - 1, -1, -1):
+            if y_train2[i2] != 0.0 and y_train2[i2] != 1.0:
+                del y_train2[i2]
+                del X_train2[i2]
+
+        for i2 in range(len(y_test2) - 1, -1, -1):
+            if y_test2[i2] != 0.0 and y_test2[i2] != 1.0:
+                del y_test2[i2]
+                del X_test2[i2]
+
+        for i2 in range(len(y_val2) - 1, -1, -1):
+            if y_val2[i2] != 0.0 and y_val2[i2] != 1.0:
+                del y_val2[i2]
+                del X_val2[i2]
+        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42,
+        #                                                     shuffle=True)
+
+        if penalty == 0:
+            lr_model_linear = LogisticRegression(C=C, penalty='l1', solver='liblinear', max_iter=max_iter).fit(X_train2,
+                                                                                                               y_train2)
+        elif penalty == 1:
+            if solver == 0:
+                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='newton-cg', max_iter=max_iter).fit(
+                    X_train2, y_train2)
+            elif solver == 1:
+                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='sag', max_iter=max_iter).fit(X_train2,
+                                                                                                             y_train2)
+            else:
+                lr_model_linear = LogisticRegression(C=C, penalty='l2', solver='lbfgs', max_iter=max_iter).fit(X_train2,
+                                                                                                               y_train2)
+        elif penalty == 2:
+            lr_model_linear = LogisticRegression(C=C, penalty='elasticnet', solver='saga', max_iter=max_iter,
+                                                 l1_ratio=l1_ratio).fit(X_train2, y_train2)
+        else:
+            lr_model_linear = LogisticRegression(C=C, penalty='none', max_iter=max_iter).fit(X_train2, y_train2)
+
+        score_val, _, _ = ROC_PR.ROC_ML(lr_model_linear, X_val2, y_val2, "LR", 0)
+        score_test, score_sr, score_pr = ROC_PR.ROC_ML(lr_model_linear, X_test2, y_test2, "LR", 0)
+        print(i, flush=True)
+        # print(score1, flush=True)
+        res_test.append(score_test)
+        res_val.append(score_val)
+        res_sr.append(score_sr)
+        res_pr.append(score_pr)
+        all_scores = all_scores + score_val
+
+
+    global rf_val_score, rf_test_score
+    res_val.append(all_scores / len(y_train[0]))
+    rf_val_score.append(res_val)
+    rf_test_score.append(res_test)
+    rf_sr_score.append(res_sr)
+
+
+    print("val score", res_val)
+    print("test score", res_test)
+    print("recall at 95 spec: ", res_sr)
+    print("precision recall: ", res_pr)
+    print(all_scores / len(y_train[0]), flush=True)
+    return all_scores / len(y_train[0])
+
+
 def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0):
     from sklearn.ensemble import RandomForestClassifier
     all_scores = 0
@@ -113,6 +293,7 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
     res_test = []
     res_val = []
     res_sr = []
+    res_pr = []
     for i in range(0, len(y_train[0])):
         X_train2 = X_train.tolist()
         X_test2 = X_test.tolist()
@@ -144,13 +325,14 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
         rf_model = RandomForestClassifier(n_estimators=n_estimators, min_samples_split=min_samples_split,
                                           bootstrap=bootstrap, max_depth=max_depth).fit(X_train2, y_train2)
 
-        score_val, _ = ROC_PR.ROC_ML(rf_model, X_val2, y_val2, "RF", 0, rf=True)
-        score_test, score_sr = ROC_PR.ROC_ML(rf_model, X_test2, y_test2, "RF", 0, rf=True)
+        score_val, _, _ = ROC_PR.ROC_ML(rf_model, X_val2, y_val2, "RF", 0, rf=True)
+        score_test, score_sr, score_pr = ROC_PR.ROC_ML(rf_model, X_test2, y_test2, "RF", 0, rf=True)
         print(i, flush=True)
         # print(score1, flush=True)
         res_test.append(score_test)
         res_val.append(score_val)
         res_sr.append(score_sr)
+        res_pr.append(score_pr)
         all_scores = all_scores + score_val
 
 
@@ -163,15 +345,17 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
 
     print("val score", res_val)
     print("test score", res_test)
+    print("recall at 95 spec: ", res_sr)
+    print("precision recall: ", res_pr)
     print(all_scores / len(y_train[0]), flush=True)
     return all_scores / len(y_train[0])
 
 
-def BO_SVM(X, y):
-    global df_train
-    df_train = X
-    global labels
-    labels = y
+def BO_SVM():
+    # global df_train
+    # df_train = X
+    # global labels
+    # labels = y
     # X_train2, X_test2, y_train2, y_test2 = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
 
     # global X_train
@@ -183,14 +367,14 @@ def BO_SVM(X, y):
     # global y_test
     # y_test = y_test2
 
-    fit_with_partial = partial(get_model_SVM)
+    fit_with_partial = partial(get_model_SVM_new)
 
     fit_with_partial(kernel=0, degree=1, C=1, gamma=1)
 
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'C': (-10, 10), "degree": (0.9, 100), "kernel": (0.9, 3.1), 'gamma': (-5, 5)}
+    pbounds = {'C': (-2, 2), "degree": (0.9, 20), "kernel": (0.9, 3.1), 'gamma': (-3, 3)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
@@ -206,11 +390,11 @@ def BO_SVM(X, y):
     print("resultttttttttttttt SVM" + str(i), flush=True)
     print(optimizer.max, flush=True)
 
-def BO_LR(X, y):
-    global df_train
-    df_train = X
-    global labels
-    labels = y
+def BO_LR():
+    # global df_train
+    # df_train = X
+    # global labels
+    # labels = y
 
     # X_train2, X_test2, y_train2, y_test2 = train_test_split(X, y, test_size=0.1, random_state=42, shuffle=True)
     #
@@ -223,7 +407,7 @@ def BO_LR(X, y):
     # global y_test
     # y_test = y_test2
 
-    fit_with_partial = partial(get_model_LR)
+    fit_with_partial = partial(get_model_LR_new)
 
     fit_with_partial(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2)
 
@@ -308,6 +492,7 @@ def run_bayesian(df_train, labels):
     global y_test
     global y_val
 
+    print("RF")
     for i in range(0, 10):
         print("fold: " + str(i))
         length = int(len(X) / 10)
@@ -334,11 +519,69 @@ def run_bayesian(df_train, labels):
         y_test = y_test2
         y_val = y_val2
         BO_RF()
-        global rf_val_score, rf_test_score
-        print("rf_val_score")
-        print(rf_val_score)
-        print("rf_test_score")
-        print(rf_test_score)
+
+    print("LR")
+    for i in range(0, 10):
+        print("fold: " + str(i))
+        length = int(len(X) / 10)
+        if i == 0:
+            X_train2 = X[length:]
+            X_test2 = X[0:length]
+            y_train2 = y[length:]
+            y_test2 = y[0:length]
+        elif i != 9:
+            X_train2 = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
+            X_test2 = X[length * i:length * (i + 1)]
+            y_train2 = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+            y_test2 = y[length * i:length * (i + 1)]
+        else:
+            X_train2 = X[0:length * i]
+            X_test2 = X[length * i:]
+            y_train2 = y[0:length * i]
+            y_test2 = y[length * i:]
+        X_train2, X_val2, y_train2, y_val2 = train_test_split(X_train2, y_train2, test_size=0.1, random_state=1,
+                                                              shuffle=False)
+        X_train = X_train2
+        X_test = X_test2
+        X_val = X_val2
+        y_train = y_train2
+        y_test = y_test2
+        y_val = y_val2
+        BO_LR()
+
+    print("SVM")
+    for i in range(0, 10):
+        print("fold: " + str(i))
+        length = int(len(X) / 10)
+        if i == 0:
+            X_train2 = X[length:]
+            X_test2 = X[0:length]
+            y_train2 = y[length:]
+            y_test2 = y[0:length]
+        elif i != 9:
+            X_train2 = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
+            X_test2 = X[length * i:length * (i + 1)]
+            y_train2 = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+            y_test2 = y[length * i:length * (i + 1)]
+        else:
+            X_train2 = X[0:length * i]
+            X_test2 = X[length * i:]
+            y_train2 = y[0:length * i]
+            y_test2 = y[length * i:]
+        X_train2, X_val2, y_train2, y_val2 = train_test_split(X_train2, y_train2, test_size=0.1, random_state=1,
+                                                              shuffle=False)
+        X_train = X_train2
+        X_test = X_test2
+        X_val = X_val2
+        y_train = y_train2
+        y_test = y_test2
+        y_val = y_val2
+        BO_SVM()
+        # global rf_val_score, rf_test_score
+        # print("rf_val_score")
+        # print(rf_val_score)
+        # print("rf_test_score")
+        # print(rf_test_score)
 
 
 if __name__ == '__main__':

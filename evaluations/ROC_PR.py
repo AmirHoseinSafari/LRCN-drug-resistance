@@ -199,8 +199,10 @@ def SR_maker(y_test_tmp, y_pred_keras):
         if specificity[i] <= 0.955 and specificity[i] >= 0.940:
             score += recall[i]
             count += 1
-
-    return (score / count), auc(lr_recall, lr_precision)
+    if score != 0:
+        return (score / count), auc(lr_recall, lr_precision)
+    else:
+        return 0, auc(lr_recall, lr_precision)
 
 
 
@@ -245,7 +247,8 @@ def ROC_ML(model, X_test, y_test, name, i, rf=False):
         ax = plt.gca()
         score = plot_roc_curve(model, X_test, y_test, ax=ax, alpha=0.8)
         plt.show()
-        return score.roc_auc, SR_maker(y_test, model.predict(X_test))
+        sr, pr = SR_maker(y_test, model.predict(X_test))
+        return score.roc_auc, sr, pr
     else:
         y_pred_keras_tmp = model.decision_function(X_test)
         fpr_keras, tpr_keras, _ = roc_curve(y_test, y_pred_keras_tmp)
@@ -266,4 +269,6 @@ def ROC_ML(model, X_test, y_test, name, i, rf=False):
         plt.show()
         plt.draw()
         fig1.savefig('result/ROC_' + name + str(i) + '.png', dpi=100)
-        return auc_keras
+
+        sr, pr = SR_maker(y_test, model.predict(X_test))
+        return auc_keras, sr, pr
