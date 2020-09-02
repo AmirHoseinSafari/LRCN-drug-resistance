@@ -32,6 +32,10 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64,
 
     model = Sequential()
     model.add(Dropout(dropout2_rate))
+
+    #TODO
+    print(i1)
+
     for i in range(0, i1):
         if i == 0:
             # model.add(TimeDistributed(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same')))
@@ -131,6 +135,9 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
     i1 = int(i1)
     i2 = int(i2)
     i3 = int(i3)
+
+    #TODO
+    i1 = 0
 
     dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
     dense_2_neurons = max(int(dense_2_neurons_x128 * 64), 64)
@@ -386,11 +393,11 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion):
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
-        pbounds=pbounds,
+        pbounds=pbounds_LSTM,
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )
-    optimizer.maximize(init_points=30, n_iter=30, )
+    optimizer.maximize(init_points=15, n_iter=15, )
 
     for i, res in enumerate(optimizer.res):
         print("Iteration {}: \n\t{}".format(i, res))
