@@ -33,9 +33,6 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64,
     model = Sequential()
     model.add(Dropout(dropout2_rate))
 
-    #TODO
-    print(i1)
-
     for i in range(0, i1):
         if i == 0:
             # model.add(TimeDistributed(Conv1D(filters=filterCNN1, kernel_size=kernelCNN1, activation='relu', padding='same')))
@@ -136,8 +133,6 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
     i2 = int(i2)
     i3 = int(i3)
 
-    #TODO
-    i1 = 0
 
     dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
     dense_2_neurons = max(int(dense_2_neurons_x128 * 64), 64)
@@ -192,7 +187,8 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
               filterCNN5, kernelCNN5, poolCNN5,
               LSTM1, LSTM2, LSTM3, LSTM4, LSTM5, i1, i2, i3)
 
-    return run_one_fold(model)
+    #TODO
+    return run_k_fold(model)
 
 
 def run_one_fold(model):
