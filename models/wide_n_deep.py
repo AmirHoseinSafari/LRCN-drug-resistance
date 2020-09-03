@@ -91,8 +91,8 @@ def fit_with(dropout2_rate, l2_reg, dense_1_neurons_x128,
 
     model = get_model(dropout2_rate, l2_reg, dense_1_neurons,
                       dense_2_neurons, dense_3_neurons, dense_4_neurons, dense_5_neurons, i1)
-
-    return run_one_fold(model)
+    #TODO
+    return run_k_fold(model)
 
 
 def run_one_fold(model):
@@ -125,10 +125,72 @@ def run_one_fold(model):
     return score
 
 
+def run_k_fold(model):
+    global X_train, X_test, y_train, y_test
+    global X, y, check
+    if check == 0:
+        check = 1
+        X = np.append(X_train, X_test, axis=0)
+        y = np.append(y_train, y_test, axis=0)
+        X_train = 0
+        X_test = 0
+        y_train = 0
+        y_test = 0
+
+    cvscores = []
+    scores_each_drug = []
+    for i in range(0, 10):
+        print("fold:" + str(i))
+        length = int(len(X) / 10)
+        if i == 0:
+            X_train_tmp= X[length:]
+            X_test_tmp = X[0:length]
+            y_train_tmp = y[length:]
+            y_test_tmp = y[0:length]
+        elif i != 9:
+            X_train_tmp = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
+            X_test_tmp = X[length * i:length * (i + 1)]
+            y_train_tmp = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+            y_test_tmp = y[length * i:length * (i + 1)]
+        else:
+            X_train_tmp = X[0:length * i]
+            X_test_tmp = X[length * i:]
+            y_train_tmp = y[0:length * i]
+            y_test_tmp = y[length * i:]
+
+        model.compile(
+            loss=masked_loss_function,
+            optimizer='Adam',
+            metrics=[masked_accuracy]
+        )
+
+        # plot_model(model, to_file='model_plot.png', show_shapes=True)
+
+        history = model.fit(
+            X_train_tmp,
+            y_train_tmp,
+            epochs=epochs,
+            batch_size=128,
+            # shuffle=True,
+            verbose=2,
+            validation_data=(X_test_tmp, y_test_tmp)
+        )
+
+        score = ROC_PR.ROC_Score(model, X_train_tmp, y_train_tmp, limited=limited)
+        print('area under ROC curve:', score)
+        cvscores.append(score)
+        scores_each_drug.append(ROC_PR.ROC(model, X_test_tmp, y_test_tmp, ("LRCN" + "BO_delete" + str(i)), True))
+    print(np.mean(cvscores))
+    if np.mean(cvscores) > 0.97:
+        model.save()
+    print(scores_each_drug)
+    return np.mean(cvscores)
+
+
 X_train, X_test, X_val, y_train, y_test, y_val = 0, 0, 0, 0, 0, 0
 feat_num = 0
 X, y = 0, 0
-
+check = 0
 
 def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2):
     global X_train
@@ -186,27 +248,31 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2):
 def run_bayesian(df_train, labels):
     X, y, FrameSize = prepare_date(df_train, labels)
 
-    for i in range(0, 10):
-        print("fold: " + str(i))
-        length = int(len(X)/10)
-        if i == 0:
-            X_train = X[length:]
-            X_test = X[0:length]
-            y_train = y[length:]
-            y_test = y[0:length]
-        elif i != 9:
-            X_train = np.append(X[0:length*i], X[length*(i+1):], axis=0)
-            X_test = X[length*i:length*(i+1)]
-            y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
-            y_test = y[length * i:length * (i + 1)]
-        else:
-            X_train = X[0:length * i]
-            X_test = X[length * i:]
-            y_train = y[0:length * i]
-            y_test = y[length * i:]
+    #TODO
 
-        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1, shuffle=False)
+    # for i in range(0, 10):
+    #     print("fold: " + str(i))
+    #     length = int(len(X)/10)
+    #     if i == 0:
+    #         X_train = X[length:]
+    #         X_test = X[0:length]
+    #         y_train = y[length:]
+    #         y_test = y[0:length]
+    #     elif i != 9:
+    #         X_train = np.append(X[0:length*i], X[length*(i+1):], axis=0)
+    #         X_test = X[length*i:length*(i+1)]
+    #         y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+    #         y_test = y[length * i:length * (i + 1)]
+    #     else:
+    #         X_train = X[0:length * i]
+    #         X_test = X[length * i:]
+    #         y_train = y[0:length * i]
+    #         y_test = y[length * i:]
 
-        BO(X_train, X_test, X_val, y_train, y_test, y_val)
+        # X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1, shuffle=False)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1, shuffle=False)
+
+        # BO(X_train, X_test, X_val, y_train, y_test, y_val)
+    BO(X_train, X_test, [], y_train, y_test, [])
 
 
