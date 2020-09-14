@@ -176,7 +176,7 @@ def run_k_fold(model):
             validation_data=(X_test_tmp, y_test_tmp)
         )
 
-        score = ROC_PR.ROC_Score(model, X_train_tmp, y_train_tmp, limited=limited)
+        score = ROC_PR.ROC_Score(model, X_train_tmp, y_train_tmp, limited=False)
         print('area under ROC curve:', score)
         cvscores.append(score)
         scores_each_drug.append(ROC_PR.ROC(model, X_test_tmp, y_test_tmp, ("LRCN" + "BO_delete" + str(i)), True))
@@ -274,5 +274,37 @@ def run_bayesian(df_train, labels):
 
         # BO(X_train, X_test, X_val, y_train, y_test, y_val)
     BO(X_train, X_test, [], y_train, y_test, [])
+
+
+if __name__ == '__main__':
+    dense_1_neurons_x128 = 8.1
+    dense_2_neurons_x128 = 8.1
+    dense_3_neurons_x128 = 0.9
+    dense_4_neurons_x128 = 8.1
+    dense_5_neurons_x128 = 0.9
+    dropout2_rate = 0.5
+    i1 = 5.1
+    l2_reg = 0.1
+
+    i1 = int(i1)
+    import random
+
+    if random.randint(0, 10) < 5:
+        l2_reg = l2_reg * 0.1
+
+    dense_1_neurons = max(int(dense_1_neurons_x128 * 64), 64)
+    dense_2_neurons = max(int(dense_2_neurons_x128 * 64), 64)
+    dense_3_neurons = max(int(dense_3_neurons_x128 * 64), 64)
+    dense_4_neurons = max(int(dense_4_neurons_x128 * 64), 64)
+    dense_5_neurons = max(int(dense_5_neurons_x128 * 64), 64)
+
+    print(i1)
+    print(dense_1_neurons)
+    print(dense_2_neurons)
+    print(dense_3_neurons)
+    print(dense_4_neurons)
+    print(dense_5_neurons)
+
+    print(l2_reg)
 
 
