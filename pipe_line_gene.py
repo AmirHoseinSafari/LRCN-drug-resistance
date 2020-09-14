@@ -5,7 +5,7 @@ epochs = 200
 
 
 def train():
-    df_train, labels = data_preprocess.process(38, shuffle_operon_locally=True)
+    df_train, labels = data_preprocess.process(38)
     # df_train, labels = data_preprocess.process(38, shuffle_operon_group=True)
     # ML_methods.model_run(df_train, labels)
     # model_gene_based.run_model(df_train, labels, epochs)
