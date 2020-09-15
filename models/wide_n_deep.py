@@ -109,6 +109,7 @@ def run_one_fold(model):
         # shuffle=True,
         verbose=2,
         validation_data=(X_val, y_val)
+        callbacks=[gc.co]
     )
 
     score = ROC_PR.ROC_Score(model, X_val, y_val)
