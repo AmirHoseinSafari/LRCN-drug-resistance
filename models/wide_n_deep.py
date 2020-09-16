@@ -17,8 +17,8 @@ epochs = 60
 
 
 class MyCustomCallback(tf.keras.callbacks.Callback):
-  def on_epoch_end(self, epoch, logs=None):
-    gc.collect()
+    def on_epoch_end(self, epoch, logs=None):
+        gc.collect()
 
 
 def masked_loss_function(y_true, y_pred):
@@ -169,8 +169,7 @@ def run_k_fold(model):
         model.compile(
             loss=masked_loss_function,
             optimizer='Adam',
-            metrics=[masked_accuracy],
-            callbacks=[MyCustomCallback()]
+            metrics=[masked_accuracy]
         )
 
         # plot_model(model, to_file='model_plot.png', show_shapes=True)
@@ -182,7 +181,8 @@ def run_k_fold(model):
             batch_size=128,
             # shuffle=True,
             verbose=2,
-            validation_data=(X_test_tmp, y_test_tmp)
+            validation_data=(X_test_tmp, y_test_tmp),
+            callbacks = [MyCustomCallback()]
         )
 
         score = ROC_PR.ROC_Score(model, X_train_tmp, y_train_tmp, limited=False)
