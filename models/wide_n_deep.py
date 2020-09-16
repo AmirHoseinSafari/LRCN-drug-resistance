@@ -7,11 +7,18 @@ import numpy as np
 import keras.backend as K
 from keras.layers import Dense, Dropout
 from functools import partial
+import gc
+import tensorflow as tf
 
 from evaluations import ROC_PR
 
 NUM_CLASSES = 12
 epochs = 60
+
+
+class MyCustomCallback(tf.keras.callbacks.Callback):
+  def on_epoch_end(self, epoch, logs=None):
+    gc.collect()
 
 
 def masked_loss_function(y_true, y_pred):
@@ -108,8 +115,8 @@ def run_one_fold(model):
         batch_size=128,
         # shuffle=True,
         verbose=2,
-        validation_data=(X_val, y_val)
-        callbacks=[gc.co]
+        validation_data=(X_val, y_val),
+        callbacks=[MyCustomCallback()]
     )
 
     score = ROC_PR.ROC_Score(model, X_val, y_val)
@@ -162,7 +169,8 @@ def run_k_fold(model):
         model.compile(
             loss=masked_loss_function,
             optimizer='Adam',
-            metrics=[masked_accuracy]
+            metrics=[masked_accuracy],
+            callbacks=[MyCustomCallback()]
         )
 
         # plot_model(model, to_file='model_plot.png', show_shapes=True)
