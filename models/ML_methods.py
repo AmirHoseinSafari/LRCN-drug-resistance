@@ -179,22 +179,23 @@ def model_run(df_train, labels):
     # Bayesian_optimizer_ML.BO_LR(df_train, labels)
     # Bayesian_optimizer_ML.BO_RF(df_train, labels)
     # TODO check before run
-    for i in range(0, len(labels)):
-        print(i)
-        res.append(i)
-        print(res)
-        dfCurrentDrug = labels[i]
-        X = df_train.values.tolist()
-        y = dfCurrentDrug.values.tolist()
-        for i2 in range(len(y) - 1, -1, -1):
-            if y[i2][0] != 0.0 and y[i2][0] != 1.0:
-                del y[i2]
-                del X[i2]
-        # svm_kfold(X, y, i)
-        # lr_kfold(X, y, i)
-        # rf_kfold(X, y, i)
-    f = open('result/mlResult.txt', 'w')
-    for ele in res:
-        f.write(str(ele) + '\n')
-    f.close()
+
+    # for i in range(0, len(labels)):
+    #     print(i)
+    #     res.append(i)
+    #     print(res)
+    #     dfCurrentDrug = labels[i]
+    #     X = df_train.values.tolist()
+    #     y = dfCurrentDrug.values.tolist()
+    #     for i2 in range(len(y) - 1, -1, -1):
+    #         if y[i2][0] != 0.0 and y[i2][0] != 1.0:
+    #             del y[i2]
+    #             del X[i2]
+    #     # svm_kfold(X, y, i)
+    #     # lr_kfold(X, y, i)
+    #     # rf_kfold(X, y, i)
+    # f = open('result/mlResult.txt', 'w')
+    # for ele in res:
+    #     f.write(str(ele) + '\n')
+    # f.close()
 

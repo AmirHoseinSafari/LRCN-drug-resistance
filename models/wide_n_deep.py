@@ -98,8 +98,8 @@ def fit_with(dropout2_rate, l2_reg, dense_1_neurons_x128,
 
     model = get_model(dropout2_rate, l2_reg, dense_1_neurons,
                       dense_2_neurons, dense_3_neurons, dense_4_neurons, dense_5_neurons, i1)
-    #TODO
-    return run_k_fold(model)
+
+    return run_one_fold(model)
 
 
 def run_one_fold(model):
@@ -257,32 +257,29 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2):
 def run_bayesian(df_train, labels):
     X, y, FrameSize = prepare_date(df_train, labels)
 
-    #TODO
+    for i in range(0, 10):
+        print("fold: " + str(i))
+        length = int(len(X)/10)
+        if i == 0:
+            X_train = X[length:]
+            X_test = X[0:length]
+            y_train = y[length:]
+            y_test = y[0:length]
+        elif i != 9:
+            X_train = np.append(X[0:length*i], X[length*(i+1):], axis=0)
+            X_test = X[length*i:length*(i+1)]
+            y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+            y_test = y[length * i:length * (i + 1)]
+        else:
+            X_train = X[0:length * i]
+            X_test = X[length * i:]
+            y_train = y[0:length * i]
+            y_test = y[length * i:]
 
-    # for i in range(0, 10):
-    #     print("fold: " + str(i))
-    #     length = int(len(X)/10)
-    #     if i == 0:
-    #         X_train = X[length:]
-    #         X_test = X[0:length]
-    #         y_train = y[length:]
-    #         y_test = y[0:length]
-    #     elif i != 9:
-    #         X_train = np.append(X[0:length*i], X[length*(i+1):], axis=0)
-    #         X_test = X[length*i:length*(i+1)]
-    #         y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
-    #         y_test = y[length * i:length * (i + 1)]
-    #     else:
-    #         X_train = X[0:length * i]
-    #         X_test = X[length * i:]
-    #         y_train = y[0:length * i]
-    #         y_test = y[length * i:]
-
-        # X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1, shuffle=False)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1, shuffle=False)
-
-        # BO(X_train, X_test, X_val, y_train, y_test, y_val)
-    BO(X_train, X_test, [], y_train, y_test, [])
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1, shuffle=False)
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1, shuffle=False)
+        BO(X_train, X_test, X_val, y_train, y_test, y_val)
+    # BO(X_train, X_test, [], y_train, y_test, [])
 
 
 if __name__ == '__main__':

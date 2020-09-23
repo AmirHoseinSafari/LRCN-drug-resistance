@@ -197,7 +197,6 @@ def run_one_fold(model):
         optimizer='Adam',
         metrics=[masked_accuracy]
     )
-    # TODO
     # Train the model with the train dataset.
     history = model.fit(
         X_train,
@@ -206,7 +205,7 @@ def run_one_fold(model):
         batch_size=128,
         # shuffle=True,
         verbose=2,
-        validation_data=(X_test, y_test)
+        validation_data=(X_val, y_val)
     )
 
     # Evaluate the model with the eval dataset.
@@ -216,7 +215,7 @@ def run_one_fold(model):
 
     # Return the accuracy.
     # print(history.history['val_masked_accuracy'])
-    score = ROC_PR.ROC_Score(model, X_test, y_test) #TODO
+    score = ROC_PR.ROC_Score(model, X_val, y_val)
     score_test = ROC_PR.ROC_Score(model, X_test, y_test)
     score_for_each_drug = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + "BO_delete"), True)
     spec_recall, prec_recall = ROC_PR.PR(model, X_test, y_test)
