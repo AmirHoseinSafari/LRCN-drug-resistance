@@ -1,1 +1,1 @@
-LSTM drug resistance
+LRCN drug resistance
