@@ -492,8 +492,9 @@ def run_bayesian(df_train, labels):
     global y_test
     global y_val
 
+    #TODO
     print("RF")
-    for i in range(0, 10):
+    for i in range(0, 3):
         print("fold: " + str(i))
         length = int(len(X) / 10)
         if i == 0:
@@ -520,63 +521,63 @@ def run_bayesian(df_train, labels):
         y_val = y_val2
         BO_RF()
 
-    print("LR")
-    for i in range(0, 10):
-        print("fold: " + str(i))
-        length = int(len(X) / 10)
-        if i == 0:
-            X_train2 = X[length:]
-            X_test2 = X[0:length]
-            y_train2 = y[length:]
-            y_test2 = y[0:length]
-        elif i != 9:
-            X_train2 = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
-            X_test2 = X[length * i:length * (i + 1)]
-            y_train2 = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
-            y_test2 = y[length * i:length * (i + 1)]
-        else:
-            X_train2 = X[0:length * i]
-            X_test2 = X[length * i:]
-            y_train2 = y[0:length * i]
-            y_test2 = y[length * i:]
-        X_train2, X_val2, y_train2, y_val2 = train_test_split(X_train2, y_train2, test_size=0.1, random_state=1,
-                                                              shuffle=False)
-        X_train = X_train2
-        X_test = X_test2
-        X_val = X_val2
-        y_train = y_train2
-        y_test = y_test2
-        y_val = y_val2
-        BO_LR()
-
-    print("SVM")
-    for i in range(0, 10):
-        print("fold: " + str(i))
-        length = int(len(X) / 10)
-        if i == 0:
-            X_train2 = X[length:]
-            X_test2 = X[0:length]
-            y_train2 = y[length:]
-            y_test2 = y[0:length]
-        elif i != 9:
-            X_train2 = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
-            X_test2 = X[length * i:length * (i + 1)]
-            y_train2 = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
-            y_test2 = y[length * i:length * (i + 1)]
-        else:
-            X_train2 = X[0:length * i]
-            X_test2 = X[length * i:]
-            y_train2 = y[0:length * i]
-            y_test2 = y[length * i:]
-        X_train2, X_val2, y_train2, y_val2 = train_test_split(X_train2, y_train2, test_size=0.1, random_state=1,
-                                                              shuffle=False)
-        X_train = X_train2
-        X_test = X_test2
-        X_val = X_val2
-        y_train = y_train2
-        y_test = y_test2
-        y_val = y_val2
-        BO_SVM()
+    # print("LR")
+    # for i in range(0, 10):
+    #     print("fold: " + str(i))
+    #     length = int(len(X) / 10)
+    #     if i == 0:
+    #         X_train2 = X[length:]
+    #         X_test2 = X[0:length]
+    #         y_train2 = y[length:]
+    #         y_test2 = y[0:length]
+    #     elif i != 9:
+    #         X_train2 = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
+    #         X_test2 = X[length * i:length * (i + 1)]
+    #         y_train2 = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+    #         y_test2 = y[length * i:length * (i + 1)]
+    #     else:
+    #         X_train2 = X[0:length * i]
+    #         X_test2 = X[length * i:]
+    #         y_train2 = y[0:length * i]
+    #         y_test2 = y[length * i:]
+    #     X_train2, X_val2, y_train2, y_val2 = train_test_split(X_train2, y_train2, test_size=0.1, random_state=1,
+    #                                                           shuffle=False)
+    #     X_train = X_train2
+    #     X_test = X_test2
+    #     X_val = X_val2
+    #     y_train = y_train2
+    #     y_test = y_test2
+    #     y_val = y_val2
+    #     BO_LR()
+    #
+    # print("SVM")
+    # for i in range(0, 10):
+    #     print("fold: " + str(i))
+    #     length = int(len(X) / 10)
+    #     if i == 0:
+    #         X_train2 = X[length:]
+    #         X_test2 = X[0:length]
+    #         y_train2 = y[length:]
+    #         y_test2 = y[0:length]
+    #     elif i != 9:
+    #         X_train2 = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
+    #         X_test2 = X[length * i:length * (i + 1)]
+    #         y_train2 = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+    #         y_test2 = y[length * i:length * (i + 1)]
+    #     else:
+    #         X_train2 = X[0:length * i]
+    #         X_test2 = X[length * i:]
+    #         y_train2 = y[0:length * i]
+    #         y_test2 = y[length * i:]
+    #     X_train2, X_val2, y_train2, y_val2 = train_test_split(X_train2, y_train2, test_size=0.1, random_state=1,
+    #                                                           shuffle=False)
+    #     X_train = X_train2
+    #     X_test = X_test2
+    #     X_val = X_val2
+    #     y_train = y_train2
+    #     y_test = y_test2
+    #     y_val = y_val2
+    #     BO_SVM()
         # global rf_val_score, rf_test_score
         # print("rf_val_score")
         # print(rf_val_score)

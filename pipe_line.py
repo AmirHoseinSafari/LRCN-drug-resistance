@@ -30,7 +30,7 @@ epochs = 200
 #     pool.map (run, (i for i in range(0, 4)))
 
 def train():
-    df_train, labels = data_preprocess.process(38, limited=True)
+    df_train, labels = data_preprocess.process(38)
     # model_one_vs_all.run_model(df_train, labels, epochs, limited=True)
     ML_methods.model_run(df_train, labels)
 
