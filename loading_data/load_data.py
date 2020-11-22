@@ -90,7 +90,7 @@ def load_data_random_dataset(path):
 
 
 def load_data_operon_dataset(path):
-    dt = pd.read_csv(path + 'shuffled_operon.csv', header=None)
+    dt = pd.read_csv(path + 'shuffled_operon_global.csv', header=None)
     dt.set_index(dt.columns[0], inplace=True, drop=True)
     return dt
 
