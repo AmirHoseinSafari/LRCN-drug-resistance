@@ -1,13 +1,23 @@
+import random
+
 import numpy as np
 import keras.backend as K
 from keras.layers import SpatialDropout1D, LSTM, Dense, Dropout, MaxPooling1D, Conv1D, Flatten
 from keras import Sequential
 from functools import partial
+import string
 
 from evaluations import ROC_PR
 
 NUM_CLASSES = 12
 epochs = 60
+
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
+
 
 def masked_loss_function(y_true, y_pred):
     mask = K.cast(K.not_equal(y_true, -1), K.floatx())
@@ -191,7 +201,35 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
 
 
 def run_one_fold(model):
+    #
+    # X_train2 = tf.cast(X_train, tf.float32)
+    # X_test2 = tf.cast(X_test, tf.float32)
+    # X_val2 = tf.cast(X_val, tf.float32)
+    # y_train2 = tf.cast(y_train, tf.float32)
+    # y_test2 = tf.cast(y_test, tf.float32)
+    # y_val2 = tf.cast(y_val, tf.float32)
+
+
+    # X_train2 = np.array(X_train)
+    # X_train2 = tf.convert_to_tensor(X_train2,dtype=tf.float32)
+    # X_train2 = tf.cast(X_train2, tf.float32)
+
+    # y_train2 = np.array(y_train)
+    # y_train2 = tf.convert_to_tensor(y_train2, dtype=tf.float32)
+    # y_train2 = np.array(y_train)
+    # y_train2 = tf.cast(y_train2, tf.float32)
+
+    # print(X_train.)
     # Train the model for a specified number of epochs.
+
+    X_train2 = np.array(X_train).astype(np.float)
+    X_test2 = np.array(X_test).astype(np.float)
+    X_val2 = np.array(X_val).astype(np.float)
+
+    y_train2 = np.array(y_train).astype(np.float)
+    y_test2 = np.array(y_test).astype(np.float)
+    y_val2 = np.array(y_val).astype(np.float)
+
     model.compile(
         loss=masked_loss_function,
         optimizer='Adam',
@@ -199,13 +237,13 @@ def run_one_fold(model):
     )
     # Train the model with the train dataset.
     history = model.fit(
-        X_train,
-        y_train,
+        X_train2,
+        y_train2,
         epochs=epochs,
         batch_size=128,
         # shuffle=True,
         verbose=2,
-        validation_data=(X_val, y_val)
+        validation_data=(X_val2, y_val2)
     )
 
     # Evaluate the model with the eval dataset.
@@ -215,16 +253,90 @@ def run_one_fold(model):
 
     # Return the accuracy.
     # print(history.history['val_masked_accuracy'])
-    score = ROC_PR.ROC_Score(model, X_val, y_val)
-    score_test = ROC_PR.ROC_Score(model, X_test, y_test)
-    score_for_each_drug = ROC_PR.ROC(model, X_test, y_test, ("LRCN" + "BO_delete"), True)
-    spec_recall, prec_recall = ROC_PR.PR(model, X_test, y_test)
+    score = ROC_PR.ROC_Score(model, X_val2, y_val2)
+    score_test = ROC_PR.ROC_Score(model, X_test2, y_test2)
+    score_for_each_drug = ROC_PR.ROC(model, X_test2, y_test2, ("LRCN" + "BO_delete"), True)
+    spec_recall, prec_recall = ROC_PR.PR(model, X_test2, y_test2)
 
     print('area under ROC curve for val:', score)
     print('area under ROC curve for test:', score_test)
     print(score_for_each_drug)
     print("recall at 95 spec: ", spec_recall)
     print("precision recall: ", prec_recall)
+
+    string_random = get_random_string(17)
+    print(string_random)
+    model.save(string_random + '.h5')
+
+    # from lime import lime_tabular
+    # ins = lime_tabular.LimeTabularExplainer
+    # explainer = lime_tabular.LimeTabularExplainer.explain_instance(self=ins ,data_row=X_train, predict_fn=model, num_samples=6354)
+    # explainer = lime_tabular.LimeTabularExplainer.explain_instance
+    # import lime
+    # import lime.lime_tabular
+    # import pandas as pd
+
+    # explainer = lime.lime_tabular.LimeTabularExplainer(X_train)
+    # print(len(X_train))
+    # exp = explainer.explain_instance(len(X_train), model.predict, num_features=len(X_train[0]))
+    #
+    # exp.show_in_notebook(show_table=True)
+    #
+    # exp.as_list()
+
+
+    # shap.initjs()
+    #
+    # explainer = shap.DeepExplainer(model, X_train2[:100])
+    # shap_values = explainer.shap_values(X_test2[:10])
+    # shap.summary_plot(shap_values, X_test2, plot_type='bar')
+
+    # worked
+
+    def score(X_test, y_test):
+        return ROC_PR.ROC_Score(model, X_test, y_test)
+
+    from eli5.permutation_importance import get_score_importances
+
+    feature_score = []
+
+    for i in range(0, len(X_test2[0])):
+        lst = []
+        lst.append(i)
+        base_score, score_decreases = get_score_importances(score, X_test2, y_test2, n_iter=1, columns_to_shuffle=lst)
+        feature_importances = np.mean(score_decreases, axis=0)
+        feature_score.append(feature_importances[0])
+        print(feature_score)
+
+    print(feature_score)
+
+
+
+    # model.save('model_save.h5')
+    #
+    # import deeplift
+    # from deeplift.conversion import kerasapi_conversion as kc
+    #
+    # import keras
+    # # print(keras.__version__)
+    # # deeplift_model = kc.convert_sequential_model(model)
+    # deeplift_model = \
+    #     kc.convert_model_from_saved_files(
+    #         'model_save.h5',
+    #         nonlinear_mxts_mode=deeplift.layers.NonlinearMxtsMode.DeepLIFT_GenomicsDefault)
+    #
+    # find_scores_layer_idx = 0
+    #
+    # deeplift_contribs_func = deeplift_model.get_target_contribs_func(
+    #     find_scores_layer_idx=find_scores_layer_idx,
+    #     target_layer_idx=-1)
+    #
+    # scores = np.array(deeplift_contribs_func(task_idx=0,
+    #                                          input_data_list=[X],
+    #                                          batch_size=10,
+    #                                          progress_update=1000))
+
+    # print(scores)
     return score
 
 
@@ -387,7 +499,7 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion):
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
-        pbounds=pbounds_LSTM,
+        pbounds=pbounds,
         verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
     )

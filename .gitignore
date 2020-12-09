@@ -9,3 +9,4 @@ mlResult.txt
 .idea
 *.pyc
 *.xlsx
+*.h5

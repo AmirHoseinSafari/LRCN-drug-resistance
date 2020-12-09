@@ -1,5 +1,6 @@
+import models
 from loading_data import data_preprocess
-from models import ML_methods
+from models import ML_methods, model_one_vs_all
 
 epochs = 200
 
@@ -30,8 +31,9 @@ epochs = 200
 #     pool.map (run, (i for i in range(0, 4)))
 
 def train():
-    df_train, labels = data_preprocess.process(38)
-    # model_one_vs_all.run_model(df_train, labels, epochs, limited=True)
+    df_train, labels = data_preprocess.process(2)
+    print(type(df_train))
+    models.model_one_vs_all.run_model(df_train, labels, epochs, limited=True)
     ML_methods.model_run(df_train, labels)
 
 
