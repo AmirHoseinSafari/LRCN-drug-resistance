@@ -10,3 +10,4 @@ mlResult.txt
 *.pyc
 *.xlsx
 *.h5
+heatmap.png
