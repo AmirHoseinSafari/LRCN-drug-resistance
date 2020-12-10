@@ -52,7 +52,7 @@ def run_ELI5(model, X_train, X_test, X_val, y_train, y_test, y_val):
         base_score, score_decreases = get_score_importances(score, X_test2, y_test2, n_iter=1, columns_to_shuffle=lst)
         feature_importances = np.mean(score_decreases, axis=0)
         feature_score.append(feature_importances[0])
-        print(feature_score)
+        print(i)
 
     print(feature_score)
 
@@ -64,8 +64,29 @@ def load_model(i):
     return new_model
 
 
+def prepare_data(features, label):
+    y = []
+    for i in range(0, len(label)):
+        label[i] = label[i].values.tolist()
+
+    for j in range(0, len(label[0])):
+        tmp = []
+        for i in range(0, len(label)):
+            if label[i][j][0] != 0.0 and label[i][j][0] != 1.0:
+                tmp.extend([-1])
+            else:
+                tmp.extend(label[i][j])
+        y.append(tmp)
+
+    X = features.values.tolist()
+
+    X = np.array(X)
+    y = np.array(y)
+    return X, y
+
+
 def run_feature_importance(df_train, labels):
-    X, y, FrameSize = prepare_data(df_train, labels)
+    X, y = prepare_data(df_train, labels)
 
     for i in range(0, 10):
         print("fold: " + str(i))
