@@ -157,11 +157,11 @@ def run_feature_importance(df_train, labels):
     feature_importance_score = []
 
     for i in range(0, 10):
-        print("fold: " + str(i))
+        print("fold: " + str(i), flush=True)
         model = load_model(i)
         fold_scores = []
         for k in range(0, len(df_train)):
-            print(k)
+            print(k, flush=True)
             iter_scores = []
             for j in range(0, num_iter):
                 labels_temp = labels.copy()
