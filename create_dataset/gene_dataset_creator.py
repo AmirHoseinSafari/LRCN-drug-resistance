@@ -8,14 +8,51 @@ def load_gene_positions():
 
     start = sum(dt[['Start']].values.tolist(),[])
     stop = sum(dt[['Stop']].values.tolist(), [])
-    start = start[0:3981]
-    stop = stop[0:3981]
-    dt = pd.read_csv('Data/EPFL_Data/Mycobacterium_tuberculosis_H37Rv_genes_v3.csv')
-    dt.set_index(dt.columns[0], inplace=True, drop=True)
-
-    start.extend(sum(dt[['Start']].values.tolist(), []))
-    stop.extend(sum(dt[['Stop']].values.tolist(), []))
+    # start = start[0:3981]
+    # stop = stop[0:3981]
+    # dt = pd.read_csv('../Data/EPFL_Data/Mycobacterium_tuberculosis_H37Rv_genes_v3.csv')
+    # dt.set_index(dt.columns[0], inplace=True, drop=True)
+    #
+    # start.extend(sum(dt[['Start']].values.tolist(), []))
+    # stop.extend(sum(dt[['Stop']].values.tolist(), []))
     return start, stop
+
+
+def load_imp_gene_positions():
+    import csv
+
+    file_name = '../Data/important_genes2.csv'
+    data = list(csv.reader(open(file_name)))
+
+    print(data)
+
+    start = []
+    stop = []
+
+    for i in range(1, len(data)):
+        start.append(data[i][2])
+        stop.append(data[i][3])
+
+    return start, stop
+
+
+def find_index_imp_genes(start, stop, imp_start, imp_stop):
+    index = []
+    for i in range(0, len(imp_start)):
+        for j in range(0, len(start)):
+            if start[j] == int(imp_start[i]):
+                if stop[j] == int(imp_stop[i]):
+                    index.append(j)
+                    break
+                else:
+                    print("error")
+            if start[j] > int(imp_start[i]):
+                print(imp_start[i])
+                print("intergenic")
+                break
+    print(len(index))
+    print(index)
+    # index = [4, 5, 17, 52, 123, 206, 207, 294, 363, 364, 429, 510, 514, 598, 678, 679, 680, 689, 690, 691, 715, 716, 724, 725, 726, 730, 752, 1080, 1081, 1256, 1259, 1276, 1296, 1350, 1363, 1405, 1411, 1417, 1419, 1545, 1596, 1597, 1736, 1751, 1789, 1817, 1827, 1911, 1912, 1985, 2041, 2042, 2116, 2126, 2186, 2213, 2276, 2402, 2587, 2600, 2620, 2697, 2716, 2863, 2923, 2947, 2956, 2957, 2973, 2976, 3108, 3129, 3130, 3131, 3132, 3138, 3183, 3216, 3253, 3295, 3384, 3416, 3419, 3486, 3487, 3489, 3491, 3656, 3690, 3782, 3801, 3834, 3840, 3847, 4010, 4051, 4052, 4053, 4054, 4066, 4116, 4117, 4181]
 
 
 def load_snps_positions():
@@ -97,7 +134,9 @@ def table_creator(start, stop, snps):
 
 
 if __name__ == '__main__':
+    imp_start, imp_stop = load_imp_gene_positions()
     start, stop = load_gene_positions()
+    find_index_imp_genes(start, stop, imp_start, imp_stop)
     snps = load_snps_positions()
     table_creator(start, stop, snps)
 
