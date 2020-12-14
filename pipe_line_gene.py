@@ -1,6 +1,6 @@
 from loading_data import data_preprocess
 from models import model_gene_based, wide_n_deep, ML_methods
-from feature_importance import ELI5
+from feature_importance import ELI5, lime
 
 epochs = 200
 
@@ -14,7 +14,11 @@ def train():
     # model_gene_based.run_bayesian(df_train, labels)
     # model_gene_based.run_all(df_train, labels, epochs)
     # model_gene_based.run_model_kfold(df_train,labels,epochs)
-    ELI5.run_feature_importance(df_train, labels)
+
+
+    # ELI5.run_feature_importance(df_train, labels)
+    # ELI5.find_feature_importance()
+    lime.main_function(df_train, labels)
 
 
 def train_shuffle():

@@ -11,3 +11,5 @@ mlResult.txt
 *.xlsx
 *.h5
 heatmap.png
+*.html
+*asd*
