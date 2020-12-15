@@ -197,13 +197,13 @@ def kth_largest_element (k, array):
     index = []
     value = []
     for j in range(0, k):
-        max = 0
+        max = -1
         max_index = -1
         for i in range(0, len(array)):
             if array[i] > max:
                 max = array[i]
                 max_index = i
-        array[max_index] = 0
+        array[max_index] = -1
         index.append(max_index)
         value.append(max)
 
@@ -221,10 +221,10 @@ def find_the_portion(imp_index, feature_index):
     return intersect
 
 
-def find_feature_importance():
+def find_feature_importance(file_name='feature_importance/feature_scores_1_iter.csv', k=100):
     imp_index = [4, 5, 17, 52, 123, 206, 207, 294, 363, 364, 429, 510, 514, 598, 678, 679, 680, 689, 690, 691, 715, 716, 724, 725, 726, 730, 752, 1080, 1081, 1256, 1259, 1276, 1296, 1350, 1363, 1405, 1411, 1417, 1419, 1545, 1596, 1597, 1736, 1751, 1789, 1817, 1827, 1911, 1912, 1985, 2041, 2042, 2116, 2126, 2186, 2213, 2276, 2402, 2587, 2600, 2620, 2697, 2716, 2863, 2923, 2947, 2956, 2957, 2973, 2976, 3108, 3129, 3130, 3131, 3132, 3138, 3183, 3216, 3253, 3295, 3384, 3416, 3419, 3486, 3487, 3489, 3491, 3656, 3690, 3782, 3801, 3834, 3840, 3847, 4010, 4051, 4052, 4053, 4054, 4066, 4116, 4117, 4181]
+    print(len(imp_index))
 
-    file_name = 'feature_importance/feature_scores_1_iter.csv'
     file = open(file_name)
     fe = np.loadtxt(file, delimiter=",")
     fe = fe.transpose()
@@ -235,7 +235,7 @@ def find_feature_importance():
         mean = np.mean(fe[i])
         mean_fe.append(mean)
 
-    value, index = kth_largest_element(100, mean_fe)
+    value, index = kth_largest_element(k, mean_fe)
 
     intersect = find_the_portion(imp_index, index)
     print(len(intersect))
