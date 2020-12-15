@@ -3,7 +3,7 @@ import re
 
 from sklearn.model_selection import train_test_split
 
-from feature_importance.ELI5 import load_model
+from feature_importance.base_approach import load_model
 from models.model_gene_based import prepare_data
 import numpy as np
 
@@ -71,10 +71,10 @@ def main_function(df_train, labels):
 
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1,
                                                           shuffle=False)
-        for i2 in range(200):
-            features = lime_importance(model=load_model(i), X=X_test, y=y_test, fold=i, instance_index=3*i2)
+        for i2 in range(774):
+            features = lime_importance(model=load_model(i), X=X_test, y=y_test, fold=i, instance_index=i2)
             features_processor(features, feature_importance_score)
 
-    with open("feature_scores_lime.csv", "w+") as my_csv:
+    with open("feature_scores_lime_all_test.csv", "w+") as my_csv:
         csvWriter = csv.writer(my_csv, delimiter=',')
         csvWriter.writerows(feature_importance_score)
