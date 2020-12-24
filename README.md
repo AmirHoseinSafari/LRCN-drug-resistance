@@ -31,12 +31,12 @@ We shuffled the features in this code as we explained in the paper.
 Codes here are for loading the proper dataset. You need to call the "data_preprocess.process()" function for this purpose. 
 parameters are as follow:
 
----
+
 num_of_files: this is for the SNP-based data, you can specify the number of files that you want to load.
 nrow: num of rows which are loaded.
 limited: default is False, if you set it True, five of the drugs would be drop (ciprofloxacin, capreomycin, amikacin, ethionamide, moxifloxacin)
 gene_dataset: default is False, if you set it True then the gene-based data would be loaded. 
----
+
 
 You don't need to modify or call the other methods.
 
