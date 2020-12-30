@@ -359,7 +359,7 @@ def get_model_GBT(n_estimators=10, min_samples_split=2, max_depth=1, random_stat
     if random_state < 0:
         random_state = None
     else:
-        random_state = random_state
+        random_state = int(random_state)
     if max_depth > 15:
         max_depth = None
     else:
