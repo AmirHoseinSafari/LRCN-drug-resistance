@@ -406,10 +406,15 @@ def get_model_GBT(n_estimators=10, min_samples_split=2, max_depth=1, random_stat
         #                                                     shuffle=True)
 
         param = {'n_estimators': n_estimators, 'min_samples_split': min_samples_split, 'random_state': random_state, 'max_depth': max_depth}
-        gbt_model = xgb.XGBModel(**param).fit(np.array(X_train2), np.array(y_train2))
+        try:
+            gbt_model = xgb.XGBModel(**param).fit(np.array(X_train2), np.array(y_train2))
+            score_val, _, _ = ROC_PR.ROC_ML(gbt_model, np.array(X_val2), np.array(y_val2), "GBT", 0, xgb=True)
+            score_test, score_sr, score_pr = ROC_PR.ROC_ML(gbt_model, np.array(X_test2), np.array(y_test2), "GBT", 0,
+                                                           xgb=True)
+        except():
+            print("errorrrrrr in GBT", flush=True)
+            score_test, score_sr, score_pr,score_val = 0, 0, 0, 0
 
-        score_val, _, _ = ROC_PR.ROC_ML(gbt_model, np.array(X_val2), np.array(y_val2), "GBT", 0, xgb=True)
-        score_test, score_sr, score_pr = ROC_PR.ROC_ML(gbt_model, np.array(X_test2), np.array(y_test2), "GBT", 0, xgb=True)
         print(i, flush=True)
         # print(score1, flush=True)
         res_test.append(score_test)
@@ -602,7 +607,7 @@ def run_bayesian(df_train, labels):
 
     #TODO
     print("GBT")
-    for i in range(0, 3):
+    for i in range(0, 10):
         print("fold: " + str(i))
         length = int(len(X) / 10)
         if i == 0:
