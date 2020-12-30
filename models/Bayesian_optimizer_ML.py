@@ -351,6 +351,89 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
     return all_scores / len(y_train[0])
 
 
+def get_model_GBT(n_estimators=10, min_samples_split=2, max_depth=1, random_state=0):
+    import xgboost.sklearn as xgb
+    all_scores = 0
+    n_estimators = 10 * int(n_estimators)
+    min_samples_split = int(min_samples_split)
+    if random_state < 0:
+        random_state = None
+    else:
+        random_state = random_state
+    if max_depth > 15:
+        max_depth = None
+    else:
+        max_depth = 10 * int(max_depth)
+
+    global X_train
+    global X_test
+    global X_val
+    global y_train
+    global y_test
+    global y_val
+
+    res_test = []
+    res_val = []
+    res_sr = []
+    res_pr = []
+    for i in range(0, len(y_train[0])):
+        X_train2 = X_train.tolist()
+        X_test2 = X_test.tolist()
+        X_val2 = X_val.tolist()
+
+        y_train2 = y_train[:, i]
+        y_test2 = y_test[:, i]
+        y_val2 = y_val[:, i]
+        y_train2 = y_train2.tolist()
+        y_test2 = y_test2.tolist()
+        y_val2 = y_val2.tolist()
+
+        for i2 in range(len(y_train2) - 1, -1, -1):
+            if y_train2[i2] != 0.0 and y_train2[i2] != 1.0:
+                del y_train2[i2]
+                del X_train2[i2]
+
+        for i2 in range(len(y_test2) - 1, -1, -1):
+            if y_test2[i2] != 0.0 and y_test2[i2] != 1.0:
+                del y_test2[i2]
+                del X_test2[i2]
+
+        for i2 in range(len(y_val2) - 1, -1, -1):
+            if y_val2[i2] != 0.0 and y_val2[i2] != 1.0:
+                del y_val2[i2]
+                del X_val2[i2]
+        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42,
+        #                                                     shuffle=True)
+
+        param = {'n_estimators': n_estimators, 'min_samples_split': min_samples_split, 'random_state': random_state, 'max_depth': max_depth}
+        gbt_model = xgb.XGBModel(**param).fit(np.array(X_train2), np.array(y_train2))
+
+        score_val, _, _ = ROC_PR.ROC_ML(gbt_model, np.array(X_val2), np.array(y_val2), "GBT", 0, xgb=True)
+        score_test, score_sr, score_pr = ROC_PR.ROC_ML(gbt_model, np.array(X_test2), np.array(y_test2), "GBT", 0, xgb=True)
+        print(i, flush=True)
+        # print(score1, flush=True)
+        res_test.append(score_test)
+        res_val.append(score_val)
+        res_sr.append(score_sr)
+        res_pr.append(score_pr)
+        all_scores = all_scores + score_val
+
+
+    global rf_val_score, rf_test_score
+    res_val.append(all_scores / len(y_train[0]))
+    rf_val_score.append(res_val)
+    rf_test_score.append(res_test)
+    rf_sr_score.append(res_sr)
+
+
+    print("val score", res_val)
+    print("test score", res_test)
+    print("recall at 95 spec: ", res_sr)
+    print("precision recall: ", res_pr)
+    print(all_scores / len(y_train[0]), flush=True)
+    return all_scores / len(y_train[0])
+
+
 def BO_SVM():
     # global df_train
     # df_train = X
@@ -456,6 +539,31 @@ def BO_RF():
     print(optimizer.max, flush=True)
 
 
+def BO_GBT():
+    fit_with_partial = partial(get_model_GBT)
+
+    fit_with_partial(n_estimators=10, min_samples_split=2, max_depth=1, random_state=0)
+
+    from bayes_opt import BayesianOptimization
+
+    # Bounded region of parameter space
+    pbounds = {'n_estimators': (1, 10), 'min_samples_split': (2, 5), 'max_depth': (5, 15), 'random_state': (-1, 2)}
+
+    optimizer = BayesianOptimization(
+        f=fit_with_partial,
+        pbounds=pbounds,
+        verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
+        random_state=1,
+    )
+    optimizer.maximize(init_points=15, n_iter=15, )
+
+    for i, res in enumerate(optimizer.res):
+        print("Iteration {}: \n\t{}".format(i, res), flush=True)
+
+    print("resultttttttttttttt RF" + str(i), flush=True)
+    print(optimizer.max, flush=True)
+
+
 X_train, X_test, X_val, y_train, y_test, y_val = 0, 0, 0, 0, 0, 0
 rf_test_score = []
 rf_val_score = []
@@ -493,7 +601,7 @@ def run_bayesian(df_train, labels):
     global y_val
 
     #TODO
-    print("RF")
+    print("GBT")
     for i in range(0, 3):
         print("fold: " + str(i))
         length = int(len(X) / 10)
@@ -519,7 +627,7 @@ def run_bayesian(df_train, labels):
         y_train = y_train2
         y_test = y_test2
         y_val = y_val2
-        BO_RF()
+        BO_GBT()
 
     # print("LR")
     # for i in range(0, 10):

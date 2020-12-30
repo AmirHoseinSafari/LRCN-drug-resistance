@@ -242,7 +242,7 @@ def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True, save=True):
     # fig2.savefig('ROC_Zoom_' + name + '.png', dpi=100)
 
 
-def ROC_ML(model, X_test, y_test, name, i, rf=False):
+def ROC_ML(model, X_test, y_test, name, i, rf=False, xgb=False):
     if rf:
         ax = plt.gca()
         score = plot_roc_curve(model, X_test, y_test, ax=ax, alpha=0.8)
@@ -250,7 +250,10 @@ def ROC_ML(model, X_test, y_test, name, i, rf=False):
         sr, pr = SR_maker(y_test, model.predict(X_test))
         return score.roc_auc, sr, pr
     else:
-        y_pred_keras_tmp = model.decision_function(X_test)
+        if xgb:
+            y_pred_keras_tmp = model.predict(X_test)
+        else:
+            y_pred_keras_tmp = model.decision_function(X_test)
         fpr_keras, tpr_keras, _ = roc_curve(y_test, y_pred_keras_tmp)
         auc_keras = auc(fpr_keras, tpr_keras)
 
