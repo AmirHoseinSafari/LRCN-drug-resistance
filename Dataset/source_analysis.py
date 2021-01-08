@@ -62,7 +62,7 @@ def table_creator(start, stop, snps, df_train):
 
     for i in range(0, len(isolates)):
         if isolates[i][0:3] == "ERR":
-            result.append([isolates[i]])
+            result.append(i)
     # print(result)
     debug = 0
     state = 0
@@ -79,7 +79,7 @@ def table_creator(start, stop, snps, df_train):
     pat_iso = 0
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[i][j] >= 0:
+            if snp_dataset[result[i]][j] >= 0:
                pat_iso = pat_iso + 1
                break
     print("pat_iso " + pat_iso)
@@ -88,12 +88,12 @@ def table_creator(start, stop, snps, df_train):
     result = []
     for i in range(0, len(isolates)):
         if isolates[i][0:3] == "SRR":
-            result.append([isolates[i]])
+            result.append(i)
     print(result)
     pat_iso = 0
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[i][j] >= 0:
+            if snp_dataset[result[i]][j] >= 0:
                 pat_iso = pat_iso + 1
                 break
     print("reseq_iso " + pat_iso)
@@ -101,12 +101,12 @@ def table_creator(start, stop, snps, df_train):
     result = []
     for i in range(0, len(isolates)):
         if isolates[i][0:3] == "SRR" or isolates[i][0:3] == "ERR":
-            result.append([isolates[i]])
+            result.append(i)
     print(result)
     pat_iso = 0
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[i][j] >= 0:
+            if snp_dataset[result[i]][j] >= 0:
                 pat_iso = pat_iso + 1
                 break
     print("all_iso " + pat_iso)
