@@ -1,0 +1,24 @@
+genename,geneid,start,stop,type,Rv number,coding strand,length,associated antibiotic resistance
+gyrB,Rv0005,5240,7267,CDS,Rv0005,forward,2028,"moxifloxacin, gatifloxacin, ofloxacin, levofloxacin"
+gyrA,Rv0006,7302,9818,CDS,Rv0006,forward,2517,"moxifloxacin, gatifloxacin, ofloxacin, levofloxacin"
+iniA,Rv0342,410838,412760,,Rv0342,forward,1923,
+iniC,Rv0343,412757,414238,,Rv0343,forward,1482,
+rpoB,Rv0667,759807,763325,CDS,Rv0667,forward,3519,"rifampicin, rifabutin"
+rpsL,Rv0682,781560,781934,CDS,Rv0682,forward,375,streptomycin
+embR,Rv1267c,1416181,1417347,CDS,Rv1267c,reverse,1167,ethambutol
+rrs,MTB000019,1471846,1473382,rRNA,Rvnr01,forward,1537,"streptomycin, amikacin, kanamycin, capreomycin"
+fabG1,Rv1483,1673440,1674183,CDS,Rv1483,forward,744,"isoniazid, ethionamide, prothionamide"
+inhA,Rv1484,1674202,1675011,CDS,Rv1484,forward,810,"isoniazid, ethionamide, prothionamide"
+rpsA,Rv1630,1833542,1834987,CDS,Rv1630,forward,1446,pyrazinamide
+tlyA,Rv1694,1917940,1918746,CDS,Rv1694,forward,807,capreomycin
+ndh,Rv1854c,2101651,2103042,CDS,Rv1854c,reverse,1392,"isoniazid, ethionamide, prothionamide, clofazimine, thioridazine"
+katG,Rv1908c,2153889,2156111,CDS,Rv1908c,reverse,2223,isoniazid
+pncA,Rv2043c,2288681,2289241,CDS,Rv2043c,reverse,561,pyrazinamide
+eis,Rv2416c,2714124,2715332,CDS,Rv2416c,reverse,1209,kanamycin
+ahpC,Rv2428,2726193,2726780,CDS,Rv2428,forward,588,compensates for KatG deficit
+manB,Rv3264c,3644898,3645977,,Rv3264c,reverse,1080,
+rmlD,Rv3266c,3646895,3647809,,Rv3266c,reverse,915,
+embC,Rv3793,4239863,4243147,CDS,Rv3793,forward,3285,ethambutol
+embA,Rv3794,4243233,4246517,CDS,Rv3794,forward,3285,ethambutol
+embB,Rv3795,4246514,4249810,CDS,Rv3795,forward,3297,ethambutol
+gidB,Rv3919c,4407528,4408202,CDS,Rv3919c,reverse,675,streptomycin
