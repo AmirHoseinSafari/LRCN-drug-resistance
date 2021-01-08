@@ -82,7 +82,7 @@ def table_creator(start, stop, snps, df_train):
             if snp_dataset[result[i]][j] >= 0:
                pat_iso = pat_iso + 1
                break
-    print("pat_iso " + pat_iso)
+    print("pat_iso " + str(pat_iso))
 
 
     result = []
@@ -96,7 +96,7 @@ def table_creator(start, stop, snps, df_train):
             if snp_dataset[result[i]][j] >= 0:
                 pat_iso = pat_iso + 1
                 break
-    print("reseq_iso " + pat_iso)
+    print("reseq_iso " + str(pat_iso))
 
     result = []
     for i in range(0, len(isolates)):
@@ -109,7 +109,7 @@ def table_creator(start, stop, snps, df_train):
             if snp_dataset[result[i]][j] >= 0:
                 pat_iso = pat_iso + 1
                 break
-    print("all_iso " + pat_iso)
+    print("all_iso " + str(pat_iso))
     # for i in range(0, len(start)):
     #     for j in range(snp_index, len(snps)):
     #         # print(str(i) + "___" + str(j))
