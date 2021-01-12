@@ -83,15 +83,21 @@ def table_creator(start, stop, snps, df_train):
     pat = []
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[result[i]][occ_snp_index[j]] == 1:
-                pat_iso = pat_iso + 1
-                found = 0
-                for k in range(0, len(pat)):
-                    if pat[k] == occ_snp_index[j]:
-                        found = 1
-                        break
-                if found == 0:
-                    pat.append(occ_snp_index[j])
+            try:
+                if snp_dataset[result[i]][occ_snp_index[j]] == 1:
+                    pat_iso = pat_iso + 1
+                    found = 0
+                    for k in range(0, len(pat)):
+                        if pat[k] == occ_snp_index[j]:
+                            found = 1
+                            break
+                    if found == 0:
+                        pat.append(occ_snp_index[j])
+            except:
+                print("err")
+                print(occ_snp_index[j])
+                print(result[i])
+                print(len(snp_dataset[result[i]]))
 
     print("pat_iso " + str(pat_iso))
     print(len(pat))
@@ -105,15 +111,21 @@ def table_creator(start, stop, snps, df_train):
     pat = []
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[result[i]][occ_snp_index[j]] == 1:
-                pat_iso = pat_iso + 1
-                found = 0
-                for k in range(0, len(pat)):
-                    if pat[k] == occ_snp_index[j]:
-                        found = 1
-                        break
-                if found == 0:
-                    pat.append(occ_snp_index[j])
+            try:
+                if snp_dataset[result[i]][occ_snp_index[j]] == 1:
+                    pat_iso = pat_iso + 1
+                    found = 0
+                    for k in range(0, len(pat)):
+                        if pat[k] == occ_snp_index[j]:
+                            found = 1
+                            break
+                    if found == 0:
+                        pat.append(occ_snp_index[j])
+            except:
+                print("err")
+                print(occ_snp_index[j])
+                print(result[i])
+                print(len(snp_dataset[result[i]]))
 
     print("pat_iso " + str(pat_iso))
     print(len(pat))
@@ -127,15 +139,21 @@ def table_creator(start, stop, snps, df_train):
     pat = []
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[result[i]][occ_snp_index[j]] == 1:
-                pat_iso = pat_iso + 1
-                found = 0
-                for k in range(0, len(pat)):
-                    if pat[k] == occ_snp_index[j]:
-                        found = 1
-                        break
-                if found == 0:
-                    pat.append(occ_snp_index[j])
+            try:
+                if snp_dataset[result[i]][occ_snp_index[j]] == 1:
+                    pat_iso = pat_iso + 1
+                    found = 0
+                    for k in range(0, len(pat)):
+                        if pat[k] == occ_snp_index[j]:
+                            found = 1
+                            break
+                    if found == 0:
+                        pat.append(occ_snp_index[j])
+            except:
+                print("err")
+                print(occ_snp_index[j])
+                print(result[i])
+                print(len(snp_dataset[result[i]]))
 
     print("pat_iso " + str(pat_iso))
     print(len(pat))
@@ -145,7 +163,7 @@ def table_creator(start, stop, snps, df_train):
 def main(df_train):
     start, end = gene_provider("Data/source/GOIv5_23_genes.txt")
     snps = load_snps_positions()
-    # table_creator(start, end, snps, df_train)
+    table_creator(start, end, snps, df_train)
 
     start, end = gene_provider2("Data/source/GOIv5.txt")
     table_creator(start, end, snps, df_train)
