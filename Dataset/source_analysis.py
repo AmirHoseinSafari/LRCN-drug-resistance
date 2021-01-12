@@ -69,97 +69,83 @@ def table_creator(start, stop, snps, df_train):
 
     occ_snp_index = []
     for j in range(0, len(snps)):
+        passed = 0
         for i in range(0, len(start)):
-            if start[i] <= int(snps[j]) <= stop[i]:
+            if start[i] < int(snps[j]) < stop[i]:
                 occ_snp_index.append(j)
                 break
-            if int(snps[j]) > stop[i]:
+            if start[i] > int(snps[j]):
+                passed = 1
+            if passed == 1 and int(snps[j]) > stop[i]:
                 break
 
     pat_iso = 0
+    pat = []
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[result[i]][occ_snp_index[j]] > 0:
-               pat_iso = pat_iso + 1
-               break
-    print("pat_iso " + str(pat_iso))
+            if snp_dataset[result[i]][occ_snp_index[j]] == 1:
+                pat_iso = pat_iso + 1
+                found = 0
+                for k in range(0, len(pat)):
+                    if pat[k] == occ_snp_index[j]:
+                        found = 1
+                        break
+                if found == 0:
+                    pat.append(occ_snp_index[j])
 
+    print("pat_iso " + str(pat_iso))
+    print(len(pat))
+    print(pat)
 
     result = []
     for i in range(0, len(isolates)):
         if isolates[i][0:3] == "SRR":
             result.append(i)
-    print(result)
     pat_iso = 0
+    pat = []
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[result[i]][occ_snp_index[j]] > 0:
+            if snp_dataset[result[i]][occ_snp_index[j]] == 1:
                 pat_iso = pat_iso + 1
-                break
-    print("reseq_iso " + str(pat_iso))
+                found = 0
+                for k in range(0, len(pat)):
+                    if pat[k] == occ_snp_index[j]:
+                        found = 1
+                        break
+                if found == 0:
+                    pat.append(occ_snp_index[j])
+
+    print("pat_iso " + str(pat_iso))
+    print(len(pat))
+    print(pat)
 
     result = []
     for i in range(0, len(isolates)):
         if isolates[i][0:3] == "SRR" or isolates[i][0:3] == "ERR":
             result.append(i)
-    print(result)
     pat_iso = 0
+    pat = []
     for i in range(0, len(result)):
         for j in range(0, len(occ_snp_index)):
-            if snp_dataset[result[i]][occ_snp_index[j]] > 0:
+            if snp_dataset[result[i]][occ_snp_index[j]] == 1:
                 pat_iso = pat_iso + 1
-                break
-    print("all_iso " + str(pat_iso))
-    # for i in range(0, len(start)):
-    #     for j in range(snp_index, len(snps)):
-    #         # print(str(i) + "___" + str(j))
-    #         # curr_start = start[i]
-    #         # curr_stop = stop[i]
-    #         # curr_snp = snps[j]
-    #         if state == 0:
-    #             if start[i] <= int(snps[j]) and stop[i] > int(snps[j]):
-    #                 snp_index = j
-    #                 state = 1
-    #             elif stop[i] < int(snps[j]):
-    #                 break
-    #         if state == 1:
-    #             if stop[i] < int(snps[j]):
-    #                 debug = debug + 1
-    #                 for k in range(0, len(result)):
-    #                     sum1 = 0
-    #                     if snp_index == j:
-    #                         try:
-    #                             sum1 = snp_dataset[k][j]
-    #                         except:
-    #                             print("errorrrrrrrrrrrrrrrrrrr")
-    #                             continue
-    #                     else:
-    #                         for l in range(snp_index, j):
-    #                             try:
-    #                                 sum1 += snp_dataset[k][l]
-    #                             except:
-    #                                 print("errorrrrrrrrrrrrrrrrrrr")
-    #                                 continue
-    #                     result[k].append(sum1)
-    #                 snp_index = j
-    #                 state = 0
-    #                 break
-    # print(debug)
-    # ressss = 0
-    # print(result[0])
-    # for i in range(1, len(result[0])):
-    #     sum = 0
-    #     for j in range(0, len(result)):
-    #         sum = sum + result[j][i]
-    #     if sum != 0:
-    #         ressss = ressss + 1
-    # print(ressss)
+                found = 0
+                for k in range(0, len(pat)):
+                    if pat[k] == occ_snp_index[j]:
+                        found = 1
+                        break
+                if found == 0:
+                    pat.append(occ_snp_index[j])
+
+    print("pat_iso " + str(pat_iso))
+    print(len(pat))
+    print(pat)
 
 
 def main(df_train):
     start, end = gene_provider("Data/source/GOIv5_23_genes.txt")
     snps = load_snps_positions()
-    table_creator(start, end, snps, df_train)
+    # table_creator(start, end, snps, df_train)
 
     start, end = gene_provider2("Data/source/GOIv5.txt")
     table_creator(start, end, snps, df_train)
