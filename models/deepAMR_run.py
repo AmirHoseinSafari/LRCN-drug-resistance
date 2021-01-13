@@ -232,7 +232,7 @@ def data_processor(df_train, df_label):
 def main_deepamr():
     # load data-------------------
     print('load data...')
-    X1 = pd.read_csv('../Data/gene_data.csv', index_col=0)
+    X1 = pd.read_csv('../Data/gene_data_19.csv', index_col=0)
     Y1 = pd.read_csv('../Data/AllLabels.csv', index_col=0)
     X, Y = data_processor(X1, Y1)
 
@@ -328,9 +328,9 @@ if __name__ == '__main__':
     main_deepamr()
     K.clear_session()
 
-    print('--------------------------------------------')
-    print('DeepAMR_Cluster Demo')
-    sess = tf.Session(graph=tf.get_default_graph())
-    K.set_session(sess)
-    main_deepamr_cluster()
-    K.clear_session()
+    # print('--------------------------------------------')
+    # print('DeepAMR_Cluster Demo')
+    # sess = tf.Session(graph=tf.get_default_graph())
+    # K.set_session(sess)
+    # main_deepamr_cluster()
+    # K.clear_session()
