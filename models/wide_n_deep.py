@@ -11,6 +11,7 @@ import gc
 import tensorflow as tf
 
 from evaluations import ROC_PR
+from models.Bayesian_optimizer import get_random_string
 
 NUM_CLASSES = 12
 epochs = 60
@@ -129,6 +130,10 @@ def run_one_fold(model):
     print(score_for_each_drug)
     print("recall at 95 spec: ", spec_recall)
     print("precision recall: ", prec_recall)
+
+    string_random = get_random_string(17)
+    print(string_random)
+    model.save('wnd_' + string_random + '.h5')
 
     return score
 
