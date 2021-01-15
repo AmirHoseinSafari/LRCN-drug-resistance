@@ -1,8 +1,11 @@
+import pickle
 from functools import partial
 from sklearn.model_selection import train_test_split
 
 from evaluations import ROC_PR
 import numpy as np
+
+from models.Bayesian_optimizer import get_random_string
 
 
 def get_model_SVM(kernel=0, degree=1, C=1, gamma=1):
@@ -62,6 +65,7 @@ def get_model_SVM_new(kernel=0, degree=1, C=1, gamma=1):
     res_val = []
     res_sr = []
     res_pr = []
+    string_random = get_random_string(20)
     for i in range(0, len(y_train[0])):
         X_train2 = X_train.tolist()
         X_test2 = X_test.tolist()
@@ -111,6 +115,8 @@ def get_model_SVM_new(kernel=0, degree=1, C=1, gamma=1):
         res_sr.append(score_sr)
         res_pr.append(score_pr)
         all_scores = all_scores + score_val
+        print('svm' + str(i) + string_random + '.sav')
+        pickle.dump(svm_model_linear, open('svm' + str(i) + string_random + '.sav', 'wb'))
 
 
     global rf_val_score, rf_test_score
@@ -125,6 +131,7 @@ def get_model_SVM_new(kernel=0, degree=1, C=1, gamma=1):
     print("recall at 95 spec: ", res_sr)
     print("precision recall: ", res_pr)
     print(all_scores / len(y_train[0]), flush=True)
+    print(string_random)
     return all_scores / len(y_train[0])
 
 
@@ -195,6 +202,7 @@ def get_model_LR_new(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2):
     res_val = []
     res_sr = []
     res_pr = []
+    string_random = get_random_string(20)
     for i in range(0, len(y_train[0])):
         X_train2 = X_train.tolist()
         X_test2 = X_test.tolist()
@@ -252,6 +260,8 @@ def get_model_LR_new(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2):
         res_sr.append(score_sr)
         res_pr.append(score_pr)
         all_scores = all_scores + score_val
+        print('lr' + str(i) + string_random + '.sav')
+        pickle.dump(lr_model_linear, open('lr' + str(i) + string_random + '.sav', 'wb'))
 
 
     global rf_val_score, rf_test_score
@@ -266,6 +276,7 @@ def get_model_LR_new(C=1, penalty=1, solver=1, l1_ratio=1, max_iter=2):
     print("recall at 95 spec: ", res_sr)
     print("precision recall: ", res_pr)
     print(all_scores / len(y_train[0]), flush=True)
+    print(string_random)
     return all_scores / len(y_train[0])
 
 
@@ -294,6 +305,7 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
     res_val = []
     res_sr = []
     res_pr = []
+    string_random = get_random_string(20)
     for i in range(0, len(y_train[0])):
         X_train2 = X_train.tolist()
         X_test2 = X_test.tolist()
@@ -334,6 +346,8 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
         res_sr.append(score_sr)
         res_pr.append(score_pr)
         all_scores = all_scores + score_val
+        print('rf' + str(i) + string_random + '.sav')
+        pickle.dump(rf_model, open('rf' + str(i) + string_random + '.sav', 'wb'))
 
 
     global rf_val_score, rf_test_score
@@ -348,6 +362,7 @@ def get_model_RF(n_estimators=10, min_samples_split=2, max_depth=1, bootstrap=0)
     print("recall at 95 spec: ", res_sr)
     print("precision recall: ", res_pr)
     print(all_scores / len(y_train[0]), flush=True)
+    print(string_random)
     return all_scores / len(y_train[0])
 
 
@@ -376,6 +391,8 @@ def get_model_GBT(n_estimators=10, min_samples_split=2, max_depth=1, random_stat
     res_val = []
     res_sr = []
     res_pr = []
+    string_random = get_random_string(20)
+
     for i in range(0, len(y_train[0])):
         X_train2 = X_train.tolist()
         X_test2 = X_test.tolist()
@@ -416,6 +433,8 @@ def get_model_GBT(n_estimators=10, min_samples_split=2, max_depth=1, random_stat
             score_val, _, _ = ROC_PR.ROC_ML(gbt_model, np.array(X_val2), np.array(y_val2), "GBT", 0, xgb=True)
             score_test, score_sr, score_pr = ROC_PR.ROC_ML(gbt_model, np.array(X_test2), np.array(y_test2), "GBT", 0,
                                                            xgb=True)
+            print('gbt' + str(i) + string_random + '.sav')
+            pickle.dump(gbt_model, open('gbt' + str(i) + string_random + '.sav', 'wb'))
         except():
             print("errorrrrrr in GBT", flush=True)
             score_test, score_sr, score_pr,score_val = 0, 0, 0, 0
@@ -441,6 +460,9 @@ def get_model_GBT(n_estimators=10, min_samples_split=2, max_depth=1, random_stat
     print("recall at 95 spec: ", res_sr)
     print("precision recall: ", res_pr)
     print(all_scores / len(y_train[0]), flush=True)
+
+    print(string_random)
+
     return all_scores / len(y_train[0])
 
 
@@ -467,7 +489,7 @@ def BO_SVM():
     from bayes_opt import BayesianOptimization
 
     # Bounded region of parameter space
-    pbounds = {'C': (-2, 2), "degree": (0.9, 20), "kernel": (0.9, 3.1), 'gamma': (-3, 3)}
+    pbounds = {'C': (-2, 2), "degree": (0.9, 10), "kernel": (0.9, 3.1), 'gamma': (-3, 3)}
 
     optimizer = BayesianOptimization(
         f=fit_with_partial,
@@ -637,6 +659,9 @@ def run_bayesian(df_train, labels):
         y_train = y_train2
         y_test = y_test2
         y_val = y_val2
+        # loaded_model = pickle.load(open('gbt0uapobneyqjzmpcasd.sav', 'rb'))
+        # result = loaded_model.predict(X_test)
+        # print(result)
         BO_GBT()
 
     # print("LR")
