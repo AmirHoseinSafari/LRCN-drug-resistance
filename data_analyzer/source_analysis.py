@@ -167,3 +167,16 @@ def main(df_train):
 
     start, end = gene_provider2("Data/source/GOIv5.txt")
     table_creator(start, end, snps, df_train)
+
+
+# reseq: 32432
+# patric: 62075
+# 94507
+# reseq: 130254
+# patric: 221192
+# 351446
+
+15134
+30796
+40974
+

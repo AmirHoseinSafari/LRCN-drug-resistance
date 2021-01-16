@@ -2,7 +2,7 @@ import pandas as pd
 
 l = []
 new = []
-f = open("/Users/amir/PycharmProjects/Lab/LSTM-DR/LSTM-drug-resistance/Dataset/list.txt", "r")
+f = open("/Users/amir/PycharmProjects/Lab/LSTM-DR/LSTM-drug-resistance/data_analyzer/list.txt", "r")
 for x in f:
     tmp = x.split(',')
     for i in range(0, len(tmp)):
@@ -11,7 +11,7 @@ for x in f:
 print(len(l))
 
 
-f = open("/Users/amir/PycharmProjects/Lab/LSTM-DR/LSTM-drug-resistance/Dataset/list copy.txt", "r")
+f = open("/Users/amir/PycharmProjects/Lab/LSTM-DR/LSTM-drug-resistance/data_analyzer/list copy.txt", "r")
 for x in f:
     tmp = x.split('/')
     print(tmp[0])
