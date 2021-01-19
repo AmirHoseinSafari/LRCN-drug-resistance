@@ -137,6 +137,7 @@ for i in range(0, len(isolate)):
     #     if passed == 1 and position[i] > stop[j]:
     #         break SRR6153157
 
+<<<<<<< Updated upstream
     f = open('bccdc_data.csv', 'w')
     for item in res:
         for i in range(len(item)):
@@ -146,3 +147,127 @@ for i in range(0, len(isolate)):
                 f.write(',' + str(item[i]))
         f.write('\n')
     f.close()
+=======
+f = open('bccdc_data.csv', 'w')
+for item in res:
+    for i in range(len(item)):
+        if i == 0:
+            f.write(str(item[i]))
+        else:
+            f.write(',' + str(item[i]))
+    f.write('\n')
+f.close()
+
+#res : 1 sus : 0
+tsv_file = open("../Data/bccdc_phenotype.tsv")
+read_tsv = csv.reader(tsv_file, delimiter="\t")
+
+isolate = []
+drug = []
+status = []
+
+for row in read_tsv:
+    isolate.append(row[0])
+    drug.append(row[1])
+    status.append(row[2])
+
+
+isolate = isolate[1:]
+drug = drug[1:]
+status = status[1:]
+
+zeros_d = []
+labels = []
+
+for i in range(0, 5):
+    zeros_d.append(-1)
+
+for i in range(0, len(res)):
+    tmp = []
+    for i in range(0, 5):
+        tmp.append(-1)
+    # tmp = [res[i][0]]
+    labels.append(tmp)
+
+print(labels)
+for i in range(0, len(isolate)):
+    # print(labels[0:10])
+    if isolate[i] in iso_dict:
+        index_pointer = int(iso_dict[isolate[i]])
+    else:
+        # print("error")
+        continue
+    if drug[i] == "PYRAZINAMIDE":
+        if status[i] == "RESISTANT":
+            # print(status[i])
+            # print(i)
+            # print(index_pointer)
+            # print("ASdadq")
+            # print(labels[index_pointer])
+            labels[index_pointer][2] = 1
+            # print(labels[index_pointer])
+        elif status[i] == "SUSCEPTIBLE":
+            # print(status[i])
+            # print(i)
+            # print(index_pointer)
+            labels[index_pointer][2] = 0
+        else:
+            print("wtf")
+    elif drug[i] == "ISONIAZID":
+        if status[i] == "RESISTANT":
+            # print("ASdadq")
+            labels[index_pointer][3] = 1
+        elif status[i] == "SUSCEPTIBLE":
+            labels[index_pointer][3] = 0
+        else:
+            print("wtf")
+    elif drug[i] == "STREPTOMYCIN":
+        if status[i] == "RESISTANT":
+            # print("ASdadq")
+            labels[index_pointer][0] = 1
+        elif status[i] == "SUSCEPTIBLE":
+            labels[index_pointer][0] = 0
+        else:
+            print("wtf")
+    elif drug[i] == "RIFAMPICIN":
+        if status[i] == "RESISTANT":
+            # print("ASdadq")
+            labels[index_pointer][1] = 1
+        elif status[i] == "SUSCEPTIBLE":
+            labels[index_pointer][1] = 0
+        else:
+            print("wtf")
+    elif drug[i] == "ETHAMBUTOL":
+        if status[i] == "SUSCEPTIBLE":
+            # print("sdfewf e")
+            # print(labels[index_pointer])
+            labels[index_pointer][4] = 1
+            # print(labels[index_pointer])
+        elif status[i] == "RESISTANT":
+            # print("sdfewf e")
+            # print(labels[index_pointer])
+            labels[index_pointer][4] = 0
+            # print(labels[index_pointer])
+        else:
+            print("wtf")
+    else:
+        print("errorrrrrrr")
+        continue
+
+f = open('bccdc_data_label.csv', 'w')
+
+for i in range(0, len(labels)):
+    for j in range(0, len(labels[i])):
+        if labels[i][j] != 0:
+            print(labels[i][j] )
+
+for item in labels:
+    # print(item)
+    for i in range(len(item)):
+        if i == 0:
+            f.write(str(item[i]))
+        else:
+            f.write(',' + str(item[i]))
+    f.write('\n')
+f.close()
+>>>>>>> Stashed changes

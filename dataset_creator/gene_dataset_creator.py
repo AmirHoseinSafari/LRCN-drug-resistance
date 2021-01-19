@@ -72,7 +72,7 @@ def load_snps_positions():
 def table_creator(start, stop, snps):
     snp_index = 0
 
-    #TODO - You should change here - This suppose to load your SNP dataset into df_train
+    # TODO - You should change here - This suppose to load your SNP dataset into df_train
     df_train = data_loader.process(38)
 
     isolates = df_train.index.values
@@ -87,6 +87,7 @@ def table_creator(start, stop, snps):
 
     debug = 0
     state = 0
+    indexes = []
     for i in range(0, len(start)):
         for j in range(snp_index, len(snps)):
             # print(str(i) + "___" + str(j))
@@ -102,6 +103,7 @@ def table_creator(start, stop, snps):
             if state == 1:
                 if stop[i] < int(snps[j]):
                     debug = debug + 1
+                    indexes.append(i)
                     for k in range(0, len(result)):
                         sum1 = 0
                         if snp_index == j:
@@ -122,6 +124,8 @@ def table_creator(start, stop, snps):
                     state = 0
                     break
     print(debug)
+    print(len(indexes))
+    print(indexes)
     f = open('gene_data.csv', 'w')
     for item in result:
         for i in range(len(item)):
@@ -134,9 +138,9 @@ def table_creator(start, stop, snps):
 
 
 if __name__ == '__main__':
-    imp_start, imp_stop = load_imp_gene_positions()
+    # imp_start, imp_stop = load_imp_gene_positions()
     start, stop = load_gene_positions()
-    find_index_imp_genes(start, stop, imp_start, imp_stop)
+    # find_index_imp_genes(start, stop, imp_start, imp_stop)
     snps = load_snps_positions()
     table_creator(start, stop, snps)
 
@@ -161,6 +165,8 @@ if __name__ == '__main__':
     #         continue
     #     elif int(snps[i]) > stop[index]:
     #         index = index + 1
+    #         if index == len(start):
+    #             break
     #         i = i - 1
     # print(count)
     # print(arr)

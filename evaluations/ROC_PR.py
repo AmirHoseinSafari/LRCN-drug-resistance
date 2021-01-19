@@ -24,13 +24,27 @@ def specificity_recall_calculator(y_true, probas_pred, pos_label=None,
     return np.r_[specificity[sl], 1], np.r_[recall[sl], 0], thresholds[sl]
 
 
-def PR(model, X_test, y_test):
+def PR(model, X_test, y_test, bccdc=True):
     y_pred_keras_tmp = model.predict(X_test)
     y_pred_keras = []
     y_test_tmp = []
     scores_sr = []
     scores_pr = []
     global num_of_drugs
+
+
+    if bccdc:
+        num_of_drugs = 5
+
+        tmp_b = []
+        for i in range(0, len(y_pred_keras_tmp)):
+            tmp_b_b = [y_pred_keras_tmp[i][0], y_pred_keras_tmp[i][1], y_pred_keras_tmp[i][2], y_pred_keras_tmp[i][6],
+                       y_pred_keras_tmp[i][8]]
+            tmp_b.append(tmp_b_b)
+
+        y_pred_keras_tmp = np.array(tmp_b)
+
+
 
     for i in range(0, num_of_drugs):  # len(y_test[0])):
         y_test_tmp = y_test[:, i]
@@ -76,7 +90,7 @@ def PR(model, X_test, y_test):
     return scores_sr, scores_pr
 
 
-def ROC(model, X_test, y_test, name, multi=False, limited=False):
+def ROC(model, X_test, y_test, name, multi=False, limited=False, bccdc=False):
     y_pred_keras_tmp = model.predict(X_test)
     y_pred_keras = []
     y_test_tmp = []
@@ -84,6 +98,19 @@ def ROC(model, X_test, y_test, name, multi=False, limited=False):
     global num_of_drugs
     if limited:
         num_of_drugs = 7
+
+
+    if bccdc:
+        num_of_drugs = 5
+
+        tmp_b = []
+        for i in range(0, len(y_pred_keras_tmp)):
+            tmp_b_b = [y_pred_keras_tmp[i][0], y_pred_keras_tmp[i][1], y_pred_keras_tmp[i][2], y_pred_keras_tmp[i][6],
+                       y_pred_keras_tmp[i][8]]
+            tmp_b.append(tmp_b_b)
+
+        y_pred_keras_tmp = np.array(tmp_b)
+
 
     if multi == False:
         for i in range(0, len(y_pred_keras_tmp)):
@@ -103,6 +130,10 @@ def ROC(model, X_test, y_test, name, multi=False, limited=False):
                 else:
                     i2 = i2 + 1
             try:
+                # print(len(y_test_tmp))
+                # print(len(y_test_tmp[0]))
+                # print(len(y_pred_keras))
+                # print(len(y_pred_keras[0]))
                 if i != 0:
                     if i < num_of_drugs - 1:
                         scores.append(ROC_maker(y_test_tmp, y_pred_keras, name + " _ " + str(i), False, False))
@@ -245,6 +276,12 @@ def ROC_maker(y_test_tmp, y_pred_keras, name, clear=True, save=True):
 def ROC_ML(model, X_test, y_test, name, i, rf=False, xgb=False):
     if rf:
         ax = plt.gca()
+        # print(len(X_test))
+        # print(len(X_test[0]))
+        # print(len(X_test[0][0]))
+        # print(len(y_test))
+        # print(len(y_test[0]))
+        # print(len(y_test[0][0]))
         score = plot_roc_curve(model, X_test, y_test, ax=ax, alpha=0.8)
         plt.show()
         sr, pr = SR_maker(y_test, model.predict(X_test))
