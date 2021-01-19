@@ -462,7 +462,8 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
 
 
 def prepare_data(features, label):
-    FrameSize = 200
+    # TODO
+    FrameSize = 1
 
     y = []
     for i in range(0, len(label)):
@@ -480,9 +481,9 @@ def prepare_data(features, label):
     X = features.values.tolist()
 
     for i in range(0, len(X)):
-        if len(X[i]) < ((len(X[i]) // FrameSize + 1) * FrameSize):
-            for j in range(0, (((len(X[i]) // FrameSize + 1) * FrameSize) - len(X[i]))):
-                X[i].append(0)
+        # if len(X[i]) < ((len(X[i]) // FrameSize + 1) * FrameSize):
+        #     for j in range(0, (((len(X[i]) // FrameSize + 1) * FrameSize) - len(X[i]))):
+        #         X[i].append(0)
         X[i] = np.reshape(X[i], (FrameSize, len(X[i]) // FrameSize))
 
     X = np.array(X)

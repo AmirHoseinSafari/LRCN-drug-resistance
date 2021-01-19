@@ -9,20 +9,20 @@ epochs = 200
 
 def train():
     df_train, labels = data_preprocess.process(38, gene_dataset=True)
-    gene_dataset_creator.main()
+    # gene_dataset_creator.main()
     # df_train, labels = data_preprocess.process(2)
     # source_analysis.main(df_train)
     # df_train, labels = data_preprocess.process(38, shuffle_operon_group=True)
     # ML_methods.model_run(df_train, labels)
     # model_gene_based.run_model(df_train, labels, epochs)
     # wide_n_deep.run_bayesian(df_train, labels)
-    # model_gene_based.run_bayesian(df_train, labels)
+    model_gene_based.run_bayesian(df_train, labels)
     # model_gene_based.run_all(df_train, labels, epochs)
     # model_gene_based.run_model_kfold(df_train,labels,epochs)
 
 
     # base_approach.run_feature_importance(df_train, labels)
-    # base_approach.find_feature_importance(file_name='feature_importance/score_results/lime_all.csv', k=500)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/lime_all.csv', k=50)
     # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_all_test.csv', k=100)
     # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_test_200.csv', k=100)
     # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_train.csv', k=100)
