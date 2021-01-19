@@ -214,7 +214,7 @@ def find_the_portion(imp_index, feature_index):
     intersect = []
     for i in range(0, len(imp_index)):
         for j in range(0, len(feature_index)):
-            if imp_index[i] == feature_index[j]:
+            if feature_index[j] + 1 >= imp_index[i] >= feature_index[j] - 1:
                 intersect.append(feature_index[j])
                 break
 
