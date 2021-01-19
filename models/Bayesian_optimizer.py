@@ -293,22 +293,23 @@ def run_one_fold(model):
 
     # worked
 
-    def score(X_test, y_test):
-        return ROC_PR.ROC_Score(model, X_test, y_test)
-
-    from eli5.permutation_importance import get_score_importances
-
-    feature_score = []
-
-    for i in range(0, len(X_test2[0])):
-        lst = []
-        lst.append(i)
-        base_score, score_decreases = get_score_importances(score, X_test2, y_test2, n_iter=1, columns_to_shuffle=lst)
-        feature_importances = np.mean(score_decreases, axis=0)
-        feature_score.append(feature_importances[0])
-        print(feature_score)
-
-    print(feature_score)
+    # TODO this block worked
+    # def score(X_test, y_test):
+    #     return ROC_PR.ROC_Score(model, X_test, y_test)
+    #
+    # from eli5.permutation_importance import get_score_importances
+    #
+    # feature_score = []
+    #
+    # for i in range(0, len(X_test2[0])):
+    #     lst = []
+    #     lst.append(i)
+    #     base_score, score_decreases = get_score_importances(score, X_test2, y_test2, n_iter=1, columns_to_shuffle=lst)
+    #     feature_importances = np.mean(score_decreases, axis=0)
+    #     feature_score.append(feature_importances[0])
+    #     print(feature_score)
+    #
+    # print(feature_score)
 
 
 

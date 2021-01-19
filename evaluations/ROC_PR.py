@@ -24,7 +24,7 @@ def specificity_recall_calculator(y_true, probas_pred, pos_label=None,
     return np.r_[specificity[sl], 1], np.r_[recall[sl], 0], thresholds[sl]
 
 
-def PR(model, X_test, y_test, bccdc=True):
+def PR(model, X_test, y_test, bccdc=False):
     y_pred_keras_tmp = model.predict(X_test)
     y_pred_keras = []
     y_test_tmp = []
@@ -308,7 +308,7 @@ def ROC_ML(model, X_test, y_test, name, i, rf=False, xgb=False):
         fig1 = plt.gcf()
         plt.show()
         plt.draw()
-        fig1.savefig('result/ROC_' + name + str(i) + '.png', dpi=100)
+        # fig1.savefig('result/ROC_' + name + str(i) + '.png', dpi=100)
 
         sr, pr = SR_maker(y_test, model.predict(X_test))
         return auc_keras, sr, pr
