@@ -137,6 +137,14 @@ def table_creator(start, stop, snps):
     f.close()
 
 
+def main():
+    # imp_start, imp_stop = load_imp_gene_positions()
+    start, stop = load_gene_positions()
+    # find_index_imp_genes(start, stop, imp_start, imp_stop)
+    snps = load_snps_positions()
+    table_creator(start, stop, snps)
+
+
 if __name__ == '__main__':
     # imp_start, imp_stop = load_imp_gene_positions()
     start, stop = load_gene_positions()
