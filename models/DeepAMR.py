@@ -355,7 +355,7 @@ class deepamr:
 
     def predict(self):
         y_pred_prob_tmp = self.deepamr_model.predict(self.x_test, batch_size=self.batch_size)
-        self.deepamr_model.save('../saved_models/DPAMR/deepamr' + str(num_num-1) + '.h5')
+        # self.deepamr_model.save('../saved_models/DPAMR/deepamr' + str(num_num-1) + '.h5')
         y_pred_prob = self.deepamr_model.predict(self.x_test, batch_size=self.batch_size)
         th = self.class_threshold
         for i in range(len(th)):

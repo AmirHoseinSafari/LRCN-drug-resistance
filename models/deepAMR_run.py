@@ -235,7 +235,7 @@ from loading_data import load_data
 
 def process(numOfFiles, nrow=0):
     # ../../../../ project / compbio - lab / Drug - resistance - TB /
-    df_train = load_data.load_data(list(range(1, numOfFiles)), '../Data/', nrow)
+    df_train = load_data.load_data(list(range(1, numOfFiles)), 'Data/', nrow)
 
     print('train set: {0}'.format(df_train.shape))
 
@@ -253,7 +253,7 @@ def main_deepamr():
     # print(X)
 
     # X1 = pd.read_csv('../Data/gene_data_19.csv', index_col=0)
-    Y1 = pd.read_csv('../Data/AllLabels.csv', index_col=0)
+    Y1 = pd.read_csv('Data/AllLabels.csv', index_col=0)
 
     X, Y = data_processor(X1, Y1)
     # print(X)
@@ -329,7 +329,8 @@ def main_deepamr_cluster():
     M.predict()
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
+def main():
     import numpy as np
     import tensorflow as tf
     import random as rn

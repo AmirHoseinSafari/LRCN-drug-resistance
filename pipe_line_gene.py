@@ -1,5 +1,5 @@
 from loading_data import data_preprocess
-from models import model_gene_based, wide_n_deep, ML_methods
+from models import model_gene_based, wide_n_deep, ML_methods, deepAMR_run
 from feature_importance import base_approach, lime
 from data_analyzer import source_analysis
 from dataset_creator import gene_dataset_creator
@@ -8,12 +8,13 @@ epochs = 200
 
 
 def train():
+    deepAMR_run.main()
     # df_train, labels = data_preprocess.process(38, gene_dataset=True)
     # gene_dataset_creator.main()
-    df_train, labels = data_preprocess.process(38)
+    # df_train, labels = data_preprocess.process(38)
     # source_analysis.main(df_train)
     # df_train, labels = data_preprocess.process(38, shuffle_operon_group=True)
-    ML_methods.model_run(df_train, labels)
+    # ML_methods.model_run(df_train, labels)
     # model_gene_based.run_model(df_train, labels, epochs)
     # wide_n_deep.run_bayesian(df_train, labels)
     # model_gene_based.run_bayesian(df_train, labels)
