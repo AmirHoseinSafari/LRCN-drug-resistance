@@ -31,6 +31,9 @@ import matplotlib.pyplot as plt
 from keras import backend as K
 
 
+num_num = 9
+
+
 def masked_loss_function(y_true, y_pred):
     mask = K.cast(K.not_equal(y_true, -1), K.floatx())
     return K.binary_crossentropy(y_true * mask, y_pred * mask)
@@ -361,7 +364,6 @@ class deepamr:
             # print("1")
             print('Performance to label %s is:' % i, perf_mat)
 
-num_num = 9
 
 class ClusteringLayer(Layer):
     """
