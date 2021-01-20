@@ -137,17 +137,6 @@ for i in range(0, len(isolate)):
     #     if passed == 1 and position[i] > stop[j]:
     #         break SRR6153157
 
-<<<<<<< Updated upstream
-    f = open('bccdc_data.csv', 'w')
-    for item in res:
-        for i in range(len(item)):
-            if i == 0:
-                f.write(str(item[i]))
-            else:
-                f.write(',' + str(item[i]))
-        f.write('\n')
-    f.close()
-=======
 f = open('bccdc_data.csv', 'w')
 for item in res:
     for i in range(len(item)):
@@ -238,12 +227,12 @@ for i in range(0, len(isolate)):
         else:
             print("wtf")
     elif drug[i] == "ETHAMBUTOL":
-        if status[i] == "SUSCEPTIBLE":
+        if status[i] == "RESISTANT":
             # print("sdfewf e")
             # print(labels[index_pointer])
             labels[index_pointer][4] = 1
             # print(labels[index_pointer])
-        elif status[i] == "RESISTANT":
+        elif status[i] == "SUSCEPTIBLE":
             # print("sdfewf e")
             # print(labels[index_pointer])
             labels[index_pointer][4] = 0
@@ -270,4 +259,3 @@ for item in labels:
             f.write(',' + str(item[i]))
     f.write('\n')
 f.close()
->>>>>>> Stashed changes

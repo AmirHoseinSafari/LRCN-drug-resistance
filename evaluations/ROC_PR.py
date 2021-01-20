@@ -111,7 +111,6 @@ def ROC(model, X_test, y_test, name, multi=False, limited=False, bccdc=False):
 
         y_pred_keras_tmp = np.array(tmp_b)
 
-
     if multi == False:
         for i in range(0, len(y_pred_keras_tmp)):
             y_pred_keras.append(y_pred_keras_tmp[i][1])
