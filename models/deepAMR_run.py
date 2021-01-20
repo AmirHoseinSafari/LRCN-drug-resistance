@@ -229,13 +229,34 @@ def data_processor(df_train, df_label):
     return df_train, pd.concat(labels, axis=1).replace(np.nan, -1)
 
 
+
+from loading_data import load_data
+
+
+def process(numOfFiles, nrow=0):
+    # ../../../../ project / compbio - lab / Drug - resistance - TB /
+    df_train = load_data.load_data(list(range(38, numOfFiles)), '../Data/', nrow)
+
+    print('train set: {0}'.format(df_train.shape))
+
+    return df_train
+
+
 def main_deepamr():
     # load data-------------------
     print('load data...')
-    X1 = pd.read_csv('../Data/gene_data_19.csv', index_col=0)
-    Y1 = pd.read_csv('../Data/AllLabels.csv', index_col=0)
-    X, Y = data_processor(X1, Y1)
+    X1 = process(2)
+    # X1 = pd.read_csv('../Data/gene_data.csv', index_col=0)
+    # Y1 = pd.read_csv('../Data/AllLabels.csv', index_col=0)
 
+    # X, Y = data_processor(X1, Y1)
+    # print(X)
+
+    # X1 = pd.read_csv('../Data/gene_data_19.csv', index_col=0)
+    Y1 = pd.read_csv('../Data/AllLabels.csv', index_col=0)
+
+    X, Y = data_processor(X1, Y1)
+    # print(X)
     # Y = Y.replace(np.nan, -1)
     M = deepamr(X, Y)
     # -------------------------------------------------------

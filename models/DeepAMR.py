@@ -191,7 +191,7 @@ class deepamr:
         y_val = y_train_tmp[val_list[0]]
 
         print(type(y_train))
-        for i in range(0, 10):
+        for i in range(0, num_num):
             print("fold: " + str(i))
             length = int(len(self.X) / 10)
             if i == 0:
@@ -225,7 +225,7 @@ class deepamr:
 
         self.makedivisible_to_all()
 
-    def AutoEncoder(self, dims=[3967, 500, 1000, 20], act='relu', init='uniform', drop_rate=0.3): #TODO should fix
+    def AutoEncoder(self, dims=[739999, 500, 1000, 20], act='relu', init='uniform', drop_rate=0.3): #TODO should fix
         """
         Fully connected auto-encoder model, symmetric.
         Arguments:
@@ -352,13 +352,16 @@ class deepamr:
 
     def predict(self):
         y_pred_prob_tmp = self.deepamr_model.predict(self.x_test, batch_size=self.batch_size)
+        self.deepamr_model.save('../saved_models/DPAMR/deepamr' + str(num_num-1) + '.h5')
         y_pred_prob = self.deepamr_model.predict(self.x_test, batch_size=self.batch_size)
         th = self.class_threshold
         for i in range(len(th)):
             y_pred_prob_tmp[i] = np.where(y_pred_prob_tmp[i] > th[i], 1, 0)
             perf_mat = eva_def().performance_calculation(self.y_test[:, i], y_pred_prob_tmp[0], y_pred_prob[0])
+            # print("1")
             print('Performance to label %s is:' % i, perf_mat)
 
+num_num = 9
 
 class ClusteringLayer(Layer):
     """
@@ -607,6 +610,7 @@ class deepamr_cluster(deepamr):
         for i in range(len(th)):
             y_pred_prob_tmp[i] = np.where(y_pred_prob_tmp[i] > th[i], 1, 0)
             perf_mat = eva_def().performance_calculation(self.y_test[:, i], y_pred_prob_tmp[0], y_pred_prob[0])
+            print("2")
             print('Performance to label %s is:' % i, perf_mat)
 
             # evaluate the clustering performance
