@@ -579,6 +579,44 @@ def run_bayesian(df_train, labels, limited=False, portion=0.1):
         Bayesian_optimizer.BO(X_train, X_test, X_val, y_train, y_test, y_val, limited, portion)
 
 
+def run_bayesian_single(df_train, labels, limited=False, portion=0.1):
+    X, y, FrameSize = prepare_data(df_train, labels)
+    X2 = X
+    y2 = y
+    for j in range(0, 12):
+        print("drug: " + str(j))
+        tmp = []
+        tmp_x = []
+        dele = []
+        for k in range(0, len(y2)):
+            if y2[k][j] == 1 or y2[k][j] == 0:
+                tmp.append(y2[k][j])
+                tmp_x.append(X2[k])
+        y = tmp
+        X = tmp_x
+        for i in range(3, 4):
+            print("fold: " + str(i))
+            length = int(len(X) / 10)
+            if i == 0:
+                X_train = X[length:]
+                X_test = X[0:length]
+                y_train = y[length:]
+                y_test = y[0:length]
+            elif i != 9:
+                X_train = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
+                X_test = X[length * i:length * (i + 1)]
+                y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+                y_test = y[length * i:length * (i + 1)]
+            else:
+                X_train = X[0:length * i]
+                X_test = X[length * i:]
+                y_train = y[0:length * i]
+                y_test = y[length * i:]
+
+            X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1, shuffle=False)
+            Bayesian_optimizer.BO(X_train, X_test, X_val, y_train, y_test, y_val, limited, portion)
+
+
 def run_all(df_train, labels, epoch):
     X, y, FrameSize = prepare_data(df_train, labels)
     # X = to_categorical(X, dtype=np.int8)

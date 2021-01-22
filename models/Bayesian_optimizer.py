@@ -13,6 +13,9 @@ NUM_CLASSES = 12
 epochs = 60
 
 
+#TODO
+single = True
+
 def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
@@ -125,6 +128,8 @@ def get_model(dropout2_rate=0.2, dense_1_neurons=64,
             model.add(Dropout(dropout2_rate))
     if limited :
         model.add(Dense(7, activation='sigmoid'))
+    elif single:
+        model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(12, activation='sigmoid'))
     return model
@@ -197,7 +202,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
               filterCNN5, kernelCNN5, poolCNN5,
               LSTM1, LSTM2, LSTM3, LSTM4, LSTM5, i1, i2, i3)
 
-    return run_one_fold(model)
+    return run_single_fold(model)
 
 
 def run_one_fold(model):
@@ -338,6 +343,49 @@ def run_one_fold(model):
     #                                          progress_update=1000))
 
     # print(scores)
+    return score
+
+
+def run_single_fold(model):
+    X_train2 = np.array(X_train).astype(np.float)
+    X_test2 = np.array(X_test).astype(np.float)
+    X_val2 = np.array(X_val).astype(np.float)
+
+    y_train2 = np.array(y_train).astype(np.float)
+    y_test2 = np.array(y_test).astype(np.float)
+    y_val2 = np.array(y_val).astype(np.float)
+
+    model.compile(
+        loss=masked_loss_function,
+        optimizer='Adam',
+        metrics=[masked_accuracy]
+    )
+    # Train the model with the train dataset.
+    history = model.fit(
+        X_train2,
+        y_train2,
+        epochs=epochs,
+        batch_size=128,
+        # shuffle=True,
+        verbose=2,
+        validation_data=(X_val2, y_val2)
+    )
+
+    # score = ROC_PR.ROC_Score(model, X_val2, y_val2)
+    # score_for_each_drug = ROC_PR.ROC(model, X_test2, y_test2, ("LRCN" + "BO_delete"), True)
+
+    y_p = model.predict(X_test2)
+    i = 0
+    while i < len(y_test2):
+        if y_test2[i] != 0 and y_test2[i] != 1:
+            y_test2 = np.delete(y_test2, i)
+            y_p = np.delete(y_p, i)
+        else:
+            i = i + 1
+    score = ROC_PR.ROC_maker(y_test, y_p, "asd")
+    print('area under ROC curve for val:', score)
+    # print(score_for_each_drug)
+
     return score
 
 
