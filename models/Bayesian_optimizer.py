@@ -202,7 +202,7 @@ def fit_with(dropout2_rate, dense_1_neurons_x128,
               filterCNN5, kernelCNN5, poolCNN5,
               LSTM1, LSTM2, LSTM3, LSTM4, LSTM5, i1, i2, i3)
 
-    return run_single_fold(model)
+    return run_one_fold(model)
 
 
 def run_one_fold(model):
@@ -269,9 +269,30 @@ def run_one_fold(model):
     print("recall at 95 spec: ", spec_recall)
     print("precision recall: ", prec_recall)
 
-    string_random = get_random_string(17)
-    print(string_random)
-    model.save(string_random + '.h5')
+    global scores
+    global fold_num
+    global comp
+    if len(scores) == 0:
+        # string_random = get_random_string(17)
+        # print(string_random)
+        print(scores)
+        print(score)
+        model.save('LRCN' + str(comp) + '_' + str(fold_num) + '.h5')
+        scores.append(score)
+    else:
+        br = 0
+        for iter in range(0, len(scores)):
+            if scores[iter] > score:
+                print(scores)
+                print(score)
+                br = 1
+                break
+        if br == 0:
+            print(br)
+            print(scores)
+            print(score)
+            model.save('LRCN' + str(comp) + '_' + str(fold_num) + '.h5')
+        scores.append(score)
 
     # from lime import lime_tabular
     # ins = lime_tabular.LimeTabularExplainer
@@ -455,9 +476,12 @@ X_train, X_test, X_val, y_train, y_test, y_val = 0, 0, 0, 0, 0, 0
 limited = False
 X, y = 0, 0
 check = 0
+scores = []
+fold_num = 0
+comp = 0
 
 
-def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion):
+def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion, fold_num_i, comp2):
     global X_train
     X_train = X_train2
     global X_test
@@ -472,7 +496,12 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion):
     y_val = y_val2
     global limited
     limited = limited2
+    global fold_num
+    fold_num = fold_num_i
+    global comp
+    comp = comp2
 
+    comp2 = comp2 + 0.1
     fit_with_partial = partial(fit_with)
 
     fit_with_partial(dropout2_rate=0.2, dense_1_neurons_x128=1, dense_2_neurons_x128=1, dense_3_neurons_x128=1,
@@ -532,18 +561,18 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion):
                     }
 
 
-    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, 8.1),
-               "dense_2_neurons_x128": (0.9, 8.1),
-               "dense_3_neurons_x128": (0.9, 8.1),
-               "dense_4_neurons_x128": (0.9, 8.1),
-               "dense_5_neurons_x128": (0.9, 8.1),
-               "filterCNN1": (3.9, 8.1), "kernelCNN1": (2.9, 6.1), "poolCNN1": (2.9, 6.1),
-               "filterCNN2": (3.9, 8.1), "kernelCNN2": (2.9, 6.1), "poolCNN2": (2.9, 6.1),
-               "filterCNN3": (3.9, 8.1), "kernelCNN3": (2.9, 6.1), "poolCNN3": (2.9, 6.1),
-               "filterCNN4": (3.9, 8.1), "kernelCNN4": (2.9, 6.1), "poolCNN4": (2.9, 6.1),
-               "filterCNN5": (3.9, 8.1), "kernelCNN5": (2.9, 6.1), "poolCNN5": (2.9, 6.1),
-               "LSTM1": (0.9, 8.1), "LSTM2": (0.9, 8.1), "LSTM3": (0.9, 8.1), "LSTM4": (0.9, 8.1), "LSTM5": (0.9, 8.1),
-               "i1": (1.9, 5.1), "i2": (1.9, 5.1), "i3": (1.9, 5.1),
+    pbounds = {'dropout2_rate': (0.1, 0.5), "dense_1_neurons_x128": (0.9, comp2),
+               "dense_2_neurons_x128": (0.9, comp2),
+               "dense_3_neurons_x128": (0.9, comp2),
+               "dense_4_neurons_x128": (0.9, comp2),
+               "dense_5_neurons_x128": (0.9, comp2),
+               "filterCNN1": (3.9, comp2 + 3), "kernelCNN1": (2.9, comp2 + 2), "poolCNN1": (2.9, comp2 + 2),
+               "filterCNN2": (3.9, comp2 + 3), "kernelCNN2": (2.9, comp2 + 2), "poolCNN2": (2.9, comp2 + 2),
+               "filterCNN3": (3.9, comp2 + 3), "kernelCNN3": (2.9, comp2 + 2), "poolCNN3": (2.9, comp2 + 2),
+               "filterCNN4": (3.9, comp2 + 3), "kernelCNN4": (2.9, comp2 + 2), "poolCNN4": (2.9, comp2 + 2),
+               "filterCNN5": (3.9, comp2 + 3), "kernelCNN5": (2.9, comp2 + 2), "poolCNN5": (2.9, comp2 + 2),
+               "LSTM1": (0.9, comp2), "LSTM2": (0.9, comp2), "LSTM3": (0.9, comp2), "LSTM4": (0.9, comp2), "LSTM5": (0.9, comp2),
+               "i1": (1.9, comp2 + 1), "i2": (1.9, comp2 + 1), "i3": (1.9, comp2 + 1),
                }
 
     optimizer = BayesianOptimization(
@@ -947,20 +976,20 @@ if __name__ == '__main__':
 
 
     # pure LSTM
-    LSTM1 = 5.559974417023026
-    LSTM2 = 7.082064653671237
-    LSTM3 = 5.372471089054764
-    LSTM4 = 6.802611752726484
-    LSTM5 = 1.7695998006449467
-    dense_1_neurons_x128 = 5.6152943552398895
-    dense_2_neurons_x128 = 3.4373195170534263
-    dense_3_neurons_x128 = 3.59536032165431
-    dense_4_neurons_x128 = 2.300509984026279
-    dense_5_neurons_x128 = 3.8161670087956545
-    dropout2_rate = 0.18725148040207906
-    i1 = 0.0
-    i2 = 2.417719456185797
-    i3 = 4.1624599809776335
+    # LSTM1 = 5.559974417023026
+    # LSTM2 = 7.082064653671237
+    # LSTM3 = 5.372471089054764
+    # LSTM4 = 6.802611752726484
+    # LSTM5 = 1.7695998006449467
+    # dense_1_neurons_x128 = 5.6152943552398895
+    # dense_2_neurons_x128 = 3.4373195170534263
+    # dense_3_neurons_x128 = 3.59536032165431
+    # dense_4_neurons_x128 = 2.300509984026279
+    # dense_5_neurons_x128 = 3.8161670087956545
+    # dropout2_rate = 0.18725148040207906
+    # i1 = 0.0
+    # i2 = 2.417719456185797
+    # i3 = 4.1624599809776335
 
     i1 = int(i1)
     i2 = int(i2)

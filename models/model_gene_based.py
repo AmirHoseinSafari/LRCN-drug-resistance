@@ -463,7 +463,7 @@ def model_shuffle_index_0(FrameSize, X, X_train, X_test, y_train, y_test, epoch,
 
 def prepare_data(features, label):
     # TODO
-    FrameSize = 1
+    FrameSize = 200
 
     y = []
     for i in range(0, len(label)):
@@ -481,9 +481,9 @@ def prepare_data(features, label):
     X = features.values.tolist()
 
     for i in range(0, len(X)):
-        # if len(X[i]) < ((len(X[i]) // FrameSize + 1) * FrameSize):
-        #     for j in range(0, (((len(X[i]) // FrameSize + 1) * FrameSize) - len(X[i]))):
-        #         X[i].append(0)
+        if len(X[i]) < ((len(X[i]) // FrameSize + 1) * FrameSize):
+            for j in range(0, (((len(X[i]) // FrameSize + 1) * FrameSize) - len(X[i]))):
+                X[i].append(0)
         X[i] = np.reshape(X[i], (FrameSize, len(X[i]) // FrameSize))
 
     X = np.array(X)
@@ -553,30 +553,38 @@ def run_model(df_train, labels, epoch, limited=False):
         model_CNN_LSTM(FrameSize, X, X_train, X_test, y_train, y_test, epoch, earlyStopping, "gene_20_" + str(i))
 
 
-def run_bayesian(df_train, labels, limited=False, portion=0.1):
+def run_bayesian(df_train, labels, limited=False, portion=0.1, comp_iter=1):
     X, y, FrameSize = prepare_data(df_train, labels)
+    for comp in range(comp_iter, comp_iter + 1):
+        print(str(comp) + '____________________________')
+        for i in range(0, 10):
+            print("fold: " + str(i))
+            length = int(len(X) / 10)
+            if i == 0:
+                X_train = X[length:]
+                X_test = X[0:length]
+                y_train = y[length:]
+                y_test = y[0:length]
+            elif i != 9:
+                X_train = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
+                X_test = X[length * i:length * (i + 1)]
+                y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
+                y_test = y[length * i:length * (i + 1)]
+            else:
+                X_train = X[0:length * i]
+                X_test = X[length * i:]
+                y_train = y[0:length * i]
+                y_test = y[length * i:]
 
-    for i in range(0, 10):
-        print("fold: " + str(i))
-        length = int(len(X) / 10)
-        if i == 0:
-            X_train = X[length:]
-            X_test = X[0:length]
-            y_train = y[length:]
-            y_test = y[0:length]
-        elif i != 9:
-            X_train = np.append(X[0:length * i], X[length * (i + 1):], axis=0)
-            X_test = X[length * i:length * (i + 1)]
-            y_train = np.append(y[0:length * i], y[length * (i + 1):], axis=0)
-            y_test = y[length * i:length * (i + 1)]
-        else:
-            X_train = X[0:length * i]
-            X_test = X[length * i:]
-            y_train = y[0:length * i]
-            y_test = y[length * i:]
+            X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1, shuffle=False)
+            Bayesian_optimizer.BO(X_train, X_test, X_val, y_train, y_test, y_val, limited, portion, i, comp)
 
-        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1, shuffle=False)
-        Bayesian_optimizer.BO(X_train, X_test, X_val, y_train, y_test, y_val, limited, portion)
+
+def run_bayesian_kfold(df_train, labels, limited=False, portion=0.1):
+    X, y, FrameSize = prepare_data(df_train, labels)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=portion, random_state=1, shuffle=True)
+
+    Bayesian_optimizer.BO(X_train, X_test, [], y_train, y_test, [], limited, portion)
 
 
 def run_bayesian_single(df_train, labels, limited=False, portion=0.1):

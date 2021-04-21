@@ -766,41 +766,108 @@ if __name__ == '__main__':
     #  'params': {'C': -1.5906622846886966, 'l1_ratio': 4.140559878195683, 'max_iter': 3.427680347001039,
     #             'penalty': 1.811194392959186, 'solver': 0.9599441507353046}}
 
-    C = -1.5906622846886966
-    l1_ratio = 4.140559878195683
-    max_iter = 1.9694400157727745
-    penalty = 1.811194392959186
-    solver = 0.9599441507353046
-    max_iter = 10 ** max_iter
-    C = 10 ** (int(C))
-    penalty = int(penalty)
-    solver = int(solver)
-    l1_ratio = l1_ratio / 10
-    print(C)
-    print(l1_ratio)
-    print(penalty)
-    print(solver)
-    print(max_iter)
+    # max_depth =  13.007445686755366
+    # min_samples_split =  4.904784727158193
+    # n_estimators =  3.8208176034331855
+    # random_state =  1.0769678470079422
 
-    print("___")
+    # max_depth =  14.888610889064948
+    # min_samples_split =  4.244496963139518
+    # n_estimators =  3.5239959285796467
+    # random_state =  1.3678379853544653
+    # #
+    max_depth =  9.17304802367127
+    min_samples_split =  3.676069485337255
+    n_estimators =  2.263482447357104
+    random_state =  -0.40569553274536363
+    #
+    max_depth =  6.467558908171131
+    min_samples_split =  2.2770157843063936
+    n_estimators =  2.676341902399038
+    random_state =  0.03668218112914312
+    #
+    max_depth =  7.11628116000059
+    min_samples_split =  2.7966399781166786
+    n_estimators =  5.424158433523044
+    random_state =  -0.8399123646487588
 
-    bootstrap = -0.922544907560638
-    max_depth = 5.847050981700784
-    min_samples_split = 4.994497043033141
-    n_estimators = 14.815287020046105
+
+    max_depth =  9.17304802367127
+    min_samples_split =  3.676069485337255
+    n_estimators =  2.263482447357104
+    random_state =  -0.40569553274536363
+    #
+    max_depth =  5.35974045182736
+    min_samples_split =  2.1953193008319913
+    n_estimators =  9.924797504376732
+    random_state =  1.2160124089096085
+    #
+    max_depth =  6.467558908171131
+    min_samples_split =  2.2770157843063936
+    n_estimators =  2.676341902399038
+    random_state =  0.03668218112914312
+    #
+    max_depth =  5.068061943154863
+    min_samples_split =  4.97552730560031
+    n_estimators =  1.1581061127115535
+    random_state =  -0.29315445063695056
+    #
+    max_depth =  7.11628116000059
+    min_samples_split =  2.7966399781166786
+    n_estimators =  5.424158433523044
+    random_state =  -0.8399123646487588
 
     n_estimators = 10 * int(n_estimators)
     min_samples_split = int(min_samples_split)
-    if bootstrap < 0:
-        bootstrap = False
+    if random_state < 0:
+        random_state = None
     else:
-        bootstrap = True
+        random_state = int(random_state)
     if max_depth > 15:
         max_depth = None
     else:
         max_depth = 10 * int(max_depth)
 
-    print(bootstrap)
+
     print(max_depth)
     print(min_samples_split)
     print(n_estimators)
+    print(random_state)
+    # C = -1.5906622846886966
+    # l1_ratio = 4.140559878195683
+    # max_iter = 1.9694400157727745
+    # penalty = 1.811194392959186
+    # solver = 0.9599441507353046
+    # max_iter = 10 ** max_iter
+    # C = 10 ** (int(C))
+    # penalty = int(penalty)
+    # solver = int(solver)
+    # l1_ratio = l1_ratio / 10
+    # print(C)
+    # print(l1_ratio)
+    # print(penalty)
+    # print(solver)
+    # print(max_iter)
+    #
+    # print("___")
+    #
+    # bootstrap = -0.922544907560638
+    # max_depth = 5.847050981700784
+    # min_samples_split = 4.994497043033141
+    # n_estimators = 14.815287020046105
+    #
+    # n_estimators = 10 * int(n_estimators)
+    # min_samples_split = int(min_samples_split)
+    # if bootstrap < 0:
+    #     bootstrap = False
+    # else:
+    #     bootstrap = True
+    # if max_depth > 15:
+    #     max_depth = None
+    # else:
+    #     max_depth = 10 * int(max_depth)
+    #
+    # print(bootstrap)
+    # print(max_depth)
+    # print(min_samples_split)
+    # print(n_estimators)
