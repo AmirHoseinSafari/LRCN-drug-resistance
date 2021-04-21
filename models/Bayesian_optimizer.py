@@ -14,7 +14,7 @@ epochs = 60
 
 
 #TODO
-single = True
+single = False
 
 def get_random_string(length):
     letters = string.ascii_lowercase
