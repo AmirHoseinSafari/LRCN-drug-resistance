@@ -500,6 +500,8 @@ def BO(X_train2, X_test2, X_val2, y_train2, y_test2, y_val2, limited2, portion, 
     fold_num = fold_num_i
     global comp
     comp = comp2
+    global scores
+    scores = []
 
     comp2 = comp2 + 0.1
     fit_with_partial = partial(fit_with)
