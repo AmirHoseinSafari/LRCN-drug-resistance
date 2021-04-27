@@ -17,18 +17,43 @@ def train():
     # ML_methods.model_run(df_train, labels)
     # model_gene_based.run_model(df_train, labels, epochs)
     # wide_n_deep.run_bayesian(df_train, labels)
-    model_gene_based.run_bayesian(df_train, labels, comp_iter=1)
+    # model_gene_based.run_bayesian(df_train, labels, comp_iter=1)
     # model_gene_based.run_bayesian_single(df_train, labels)
     # model_gene_based.run_all(df_train, labels, epochs)
     # model_gene_based.run_model_kfold(df_train,labels,epochs)
 
 
     # base_approach.run_feature_importance(df_train, labels)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/lime_all.csv', k=200)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_all_test.csv', k=200)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_test_200.csv', k=200)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_train.csv', k=200)
+    #
+    # print("______")
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/lime_all.csv', k=100)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_all_test.csv',
+    #                                       k=100)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_test_200.csv',
+    #                                       k=100)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_train.csv',
+    #                                       k=100)
+    # print("______")
     # base_approach.find_feature_importance(file_name='feature_importance/score_results/lime_all.csv', k=50)
-    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_all_test.csv', k=50)
-    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_test_200.csv', k=50)
-    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_train.csv', k=50)
-    # lime.main_function(df_train, labels)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_all_test.csv',
+    #                                       k=50)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_test_200.csv',
+    #                                       k=50)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_train.csv',
+    #                                       k=50)
+    # print("______")
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/lime_all.csv', k=20)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_all_test.csv',
+    #                                       k=20)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_test_200.csv',
+    #                                       k=20)
+    # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_train.csv',
+    #                                       k=20)
+    lime.main_function(df_train, labels)
 
 
 def train_shuffle():
