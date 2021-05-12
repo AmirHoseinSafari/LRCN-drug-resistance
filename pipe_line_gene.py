@@ -18,6 +18,7 @@ def train():
     # model_gene_based.run_model(df_train, labels, epochs)
     # wide_n_deep.run_bayesian(df_train, labels)
     # model_gene_based.run_bayesian(df_train, labels, comp_iter=1)
+    # model_gene_based.run_bayesian_kfold(df_train, labels, comp_iter=1)
     # model_gene_based.run_bayesian_single(df_train, labels)
     # model_gene_based.run_all(df_train, labels, epochs)
     # model_gene_based.run_model_kfold(df_train,labels,epochs)
@@ -53,6 +54,19 @@ def train():
     #                                       k=20)
     # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_train.csv',
     #                                       k=20)
+
+    # for i in range(1, 9):
+    #     print(i)
+    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_' + str(i) + '.csv', k=100)
+    #
+    # for i in range(1, 9):
+    #     print(i)
+    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_' + str(i) + '.csv', k=50)
+    #
+    # for i in range(1, 9):
+    #     print(i)
+    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_' + str(i) + '.csv', k=20)
+
     lime.main_function(df_train, labels)
 
 
