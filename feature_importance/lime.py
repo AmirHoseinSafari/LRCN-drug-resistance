@@ -100,8 +100,8 @@ def main_function(df_train, labels):
 
             X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1,
                                                               shuffle=False)
-            for i2 in range(200):
-                features = lime_importance(model=load_model(i, complexity), X=X_train, y=y_train, fold=i, instance_index=25*i2)
+            for i2 in range(len(X_train) - 1):
+                features = lime_importance(model=load_model(i, complexity), X=X_train, y=y_train, fold=i, instance_index=i2)
                 print("len features")
                 print(len(features))
                 print("before:")
