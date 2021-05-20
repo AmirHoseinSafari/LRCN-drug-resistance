@@ -110,9 +110,10 @@ def main_function(df_train, labels):
             i2 = []
             for i22 in range(len(X_train) - 1):
                 i2.append(i22)
-
+            model_current = load_model(i, complexity)
             with multiprocessing.Pool(processes=250) as pool:
-                pool.map(partial(lime_importance, model=load_model(i, complexity), X=X_train, y=y_train,
+
+                pool.map(partial(lime_importance, model=model_current, X=X_train, y=y_train,
                                             res=feature_importance_score, fold=i), i2)
 
             # for i2 in range(len(X_train) - 1):
