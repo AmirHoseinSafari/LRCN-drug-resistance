@@ -1,14 +1,17 @@
 import csv
+import multiprocessing
 import re
 
 from sklearn.model_selection import train_test_split
-
+from functools import partial
+from itertools import repeat
+from multiprocessing import Pool, freeze_support
 from feature_importance.base_approach import load_model
 from models.model_gene_based import prepare_data
 import numpy as np
 
 
-def lime_importance(model, X, y, fold, instance_index=0):
+def lime_importance(model, X, y, fold, res, instance_index=0):
     from lime import lime_tabular
     data_columns = []
     print("X shape")
@@ -21,7 +24,10 @@ def lime_importance(model, X, y, fold, instance_index=0):
     feuture_lists = exp.as_list()
     # exp.save_to_file("lime" + str(fold) + "_" + str(instance_index) + ".html")
     # print(feuture_lists[0][0])
-    return feuture_lists
+    features_processor(feuture_lists, res)
+
+    print(len(res))
+    return res
 
 
 def features_processor(feature, res):
@@ -100,16 +106,25 @@ def main_function(df_train, labels):
 
             X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1,
                                                               shuffle=False)
-            for i2 in range(len(X_train) - 1):
-                features = lime_importance(model=load_model(i, complexity), X=X_train, y=y_train, fold=i, instance_index=i2)
-                print("len features")
-                print(len(features))
-                print("before:")
-                print(len(feature_importance_score))
-                features_processor(features, feature_importance_score)
-                print("after:")
-                print(len(feature_importance_score))
 
-        with open("feature_scores_lime_train_" + str(complexity) + ".csv", "w+") as my_csv:
+            i2 = []
+            for i22 in range(len(X_train) - 1):
+                i2.append(i22)
+
+            with multiprocessing.Pool(processes=250) as pool:
+                pool.map(partial(lime_importance, model=load_model(i, complexity), X=X_train, y=y_train,
+                                            res=feature_importance_score, fold=i), i2)
+
+            # for i2 in range(len(X_train) - 1):
+            #     features = lime_importance(model=load_model(i, complexity), X=X_train, y=y_train, fold=i, instance_index=i2)
+            #     print("len features")
+            #     print(len(features))
+            #     print("before:")
+            #     print(len(feature_importance_score))
+            #     features_processor(features, feature_importance_score)
+                # print("after:")
+                # print(len(feature_importance_score))
+
+        with open("feature_scores_lime_train_parallel_" + str(complexity) + ".csv", "w+") as my_csv:
             csvWriter = csv.writer(my_csv, delimiter=',')
             csvWriter.writerows(feature_importance_score)
