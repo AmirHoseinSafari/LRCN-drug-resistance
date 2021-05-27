@@ -55,17 +55,21 @@ def train():
     # base_approach.find_feature_importance(file_name='feature_importance/score_results/feature_scores_lime_train.csv',
     #                                       k=20)
 
-    # for i in range(1, 9):
+    # for i in range(1, 8):
     #     print(i)
-    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_' + str(i) + '.csv', k=100)
+    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_150_' + str(i) + '.csv', k=200)
     #
-    # for i in range(1, 9):
+    # for i in range(1, 8):
     #     print(i)
-    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_' + str(i) + '.csv', k=50)
+    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_150_' + str(i) + '.csv', k=100)
     #
-    # for i in range(1, 9):
+    # for i in range(1, 8):
     #     print(i)
-    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_' + str(i) + '.csv', k=20)
+    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_150_' + str(i) + '.csv', k=50)
+    #
+    # for i in range(1, 8):
+    #     print(i)
+    #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_150_' + str(i) + '.csv', k=20)
 
     lime.main_function(df_train, labels)
 
