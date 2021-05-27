@@ -7,6 +7,7 @@ from functools import partial
 from itertools import repeat
 from multiprocessing import Pool, freeze_support
 from feature_importance.base_approach import load_model
+from loading_data import data_preprocess
 from models.model_gene_based import prepare_data
 import numpy as np
 
@@ -78,11 +79,13 @@ def features_processor(feature, res):
 #     return X, y, FrameSize
 
 
-def main_function(df_train, labels):
+def main_function(i2=0):
+    df_train, labels = data_preprocess.process(38, gene_dataset=True)
     X, y, FrameSize = prepare_data(df_train, labels)
     feature_importance_score = []
     global offset
-
+    offset = i2
+    # fold = i2[0]
     for complexity in range(1, 9):
         feature_importance_score = []
         for i in range(0, 10):

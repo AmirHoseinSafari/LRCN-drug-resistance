@@ -3,6 +3,12 @@ from models import model_gene_based, wide_n_deep, ML_methods, deepAMR_run
 from feature_importance import base_approach, lime
 from data_analyzer import source_analysis
 from dataset_creator import gene_dataset_creator
+from functools import partial
+from itertools import repeat
+from multiprocessing import Pool, freeze_support
+import multiprocessing
+
+
 
 epochs = 200
 
@@ -71,7 +77,16 @@ def train():
     #     print(i)
     #     base_approach.find_feature_importance(file_name='feature_importance/score_results/split/feature_scores_lime_train_150_' + str(i) + '.csv', k=20)
 
-    lime.main_function(df_train, labels)
+    i2 = []
+
+    for i11 in range(0, 25):
+        i2.append(i11)
+
+    print(i2)
+
+    with multiprocessing.Pool(processes=25) as pool:
+        pool.map(lime.main_function, i2)
+    # lime.main_function(df_train, labels)
 
 
 def train_shuffle():
