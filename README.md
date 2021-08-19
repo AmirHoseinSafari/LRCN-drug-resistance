@@ -47,12 +47,11 @@ Once the dataset is loaded, based on the type of data the baysian optimization i
 
 ### pipe_line_gene.py:
 
-This is the main class for running the models on the gene-based dataset, it simply loads the data using "data_preprocess.process()" and then run the proper model on it.
+This is the main class for running the models on the gene-based dataset. it simply loads the data using "data_preprocess.process()" and then run the proper model on it.
 
 ### pipe_line.py:
 
-This is the main class for running the models on the SNP-based dataset, it simply loads the data using "data_preprocess.process()" and then run the proper model on it.
-
+This is the main class for running the models on the SNP-based dataset. it starts by loading the data using "data_preprocess.process()". Then loaded data is split for performing a k-fold cross validation and on each fold, a baysian optimization on the hyper-parameters of the model is performed to tune them. Each model is evaluated based on its ROC.
 
 
 ### models/model_gene_based.py:
