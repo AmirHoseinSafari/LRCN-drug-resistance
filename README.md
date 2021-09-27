@@ -67,6 +67,5 @@ This file has the main implementation of the model. Which is the implementation 
 ## Citation
 If you found the content of this repository useful, please cite us:
 
-https://www.biorxiv.org/content/10.1101/2020.11.07.372136v1?rss=1
-
+https://dl.acm.org/doi/abs/10.1145/3459930.3469534
 ---
